@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v6";
+const CACHE_NAME = "reading-lamp-v7";
 const SHELL_FILES = [
   "./",
   "./index.html",
