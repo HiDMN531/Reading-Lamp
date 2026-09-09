@@ -23,18 +23,50 @@ const LS = {
   history: "rl_history",
 };
 
-const get = (k, d) => { const v = localStorage.getItem(k); return v === null ? d : v; };
+const get = (k, d) => {
+  try {
+    const v = localStorage.getItem(k);
+    return v === null ? d : v;
+  } catch {
+    return memoryFallback[k] !== undefined ? memoryFallback[k] : d;
+  }
+};
 const getNum = (k, d) => parseInt(get(k, String(d)), 10);
 const getBool = (k, d) => get(k, d ? "1" : "0") === "1";
-const set = (k, v) => localStorage.setItem(k, String(v));
+
+// In-memory fallback used only if localStorage itself is unavailable
+// (e.g. "Block All Cookies" enabled in Safari, or private-mode quota issues).
+// Keeps the app usable for the current session even then.
+const memoryFallback = {};
+let storageBlocked = false;
+
+function set(k, v) {
+  try {
+    localStorage.setItem(k, String(v));
+    return true;
+  } catch (err) {
+    console.error("localStorage write failed", err);
+    memoryFallback[k] = String(v);
+    storageBlocked = true;
+    return false;
+  }
+}
 
 function getHistory() {
-  try { return JSON.parse(localStorage.getItem(LS.history) || "[]"); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(LS.history) || memoryFallback[LS.history] || "[]"); }
+  catch { return []; }
 }
 function pushHistory(entry) {
   const h = getHistory();
   h.unshift(entry);
-  localStorage.setItem(LS.history, JSON.stringify(h.slice(0, 500)));
+  const payload = JSON.stringify(h.slice(0, 500));
+  try {
+    localStorage.setItem(LS.history, payload);
+  } catch (err) {
+    console.error("localStorage write failed", err);
+    memoryFallback[LS.history] = payload;
+    storageBlocked = true;
+  }
 }
 
 // ---------------------- Level system ----------------------
@@ -145,20 +177,37 @@ wordCountInput.addEventListener("input", () => { wordCountValue.textContent = wo
 dailyGoalInput.addEventListener("input", () => { dailyGoalValue.textContent = dailyGoalInput.value; });
 
 document.getElementById("saveSettingsBtn").addEventListener("click", () => {
-  set(LS.apiKey, apiKeyInput.value.trim());
-  setLevel(parseInt(levelInput.value, 10));
-  set(LS.wordCount, parseInt(wordCountInput.value, 10));
-  set(LS.dailyGoal, parseInt(dailyGoalInput.value, 10));
-  set(LS.showReflection, toggleReflection.checked ? "1" : "0");
-  set(LS.showVocab, toggleVocab.checked ? "1" : "0");
-  set(LS.showQuiz, toggleQuiz.checked ? "1" : "0");
-  settingsModal.hidden = true;
-  renderHome();
+  apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
+
+  const ok1 = set(LS.apiKey, apiKeyInput.value.trim());
+  const ok2 = set(LS.level, String(parseInt(levelInput.value, 10)));
+  const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
+  const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
+  const ok5 = set(LS.showReflection, toggleReflection.checked ? "1" : "0");
+  const ok6 = set(LS.showVocab, toggleVocab.checked ? "1" : "0");
+  const ok7 = set(LS.showQuiz, toggleQuiz.checked ? "1" : "0");
+
+  if (ok1 && ok2 && ok3 && ok4 && ok5 && ok6 && ok7) {
+    settingsModal.hidden = true;
+    renderHome();
+  } else {
+    // Storage is blocked (private mode / cookies disabled / quota).
+    // Settings still work for THIS session via the in-memory fallback,
+    // so close the modal and let the user continue, but warn clearly.
+    settingsModal.hidden = true;
+    renderHome();
+    showError("この端末では設定を保存できませんでした（プライベートブラウズや「すべてのCookieをブロック」がオンだと保存できません）。今回のセッション中は使えますが、アプリを閉じると消えます。");
+  }
+});
+
+apiKeyInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.getElementById("saveSettingsBtn").click();
 });
 
 document.getElementById("resetHistoryBtn").addEventListener("click", () => {
   if (confirm("これまでの記録をすべて消去します。よろしいですか？")) {
-    localStorage.removeItem(LS.history);
+    try { localStorage.removeItem(LS.history); } catch {}
+    delete memoryFallback[LS.history];
     renderHome();
     settingsModal.hidden = true;
   }
@@ -396,7 +445,7 @@ async function generate({ topic, apiKey }) {
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-5",
       max_tokens: 4000,
       system: buildSystemPrompt(),
       messages: [{ role: "user", content: `Topic: ${topic}` }],
