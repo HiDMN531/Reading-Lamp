@@ -246,6 +246,12 @@ a { color: var(--amber); }
 .history-list .h-meta { color: var(--ink-faint); white-space: nowrap; }
 .history-empty { color: var(--ink-faint); font-size: 13px; padding: 4px 2px; }
 
+/* Global safety net: the [hidden] attribute must always win, no matter
+   what `display` a more specific class rule sets elsewhere in this file. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------- Loading ---------- */
 .view-loading {
   display: flex;
@@ -425,6 +431,9 @@ a { color: var(--amber); }
   align-items: flex-end;
   justify-content: center;
   z-index: 200;
+}
+.modal-backdrop[hidden] {
+  display: none;
 }
 @media (min-width: 520px) {
   .modal-backdrop { align-items: center; }
