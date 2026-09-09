@@ -1,10 +1,11 @@
-const CACHE_NAME = "reading-lamp-v7";
+const CACHE_NAME = "reading-lamp-v8";
 const SHELL_FILES = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.json",
+  "./stories.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
 ];

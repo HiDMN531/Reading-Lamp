@@ -161,12 +161,24 @@
   <div class="modal" role="dialog" aria-labelledby="settingsTitle">
     <h2 id="settingsTitle" class="modal-title">設定</h2>
 
-    <label class="modal-label" for="apiKeyInput">Anthropic API キー</label>
-    <input type="password" id="apiKeyInput" class="text-input" placeholder="sk-ant-..." autocomplete="off" />
-    <p class="modal-hint">
-      キーはこの端末のブラウザ内にのみ保存されます。
-      <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> で発行できます。
-    </p>
+    <div class="toggle-section" style="margin-top:0;padding-top:0;border-top:none;">
+      <label class="toggle-row">
+        <span>
+          <span class="toggle-name">オフラインの文章バンクを使う</span>
+          <span class="toggle-desc">APIキー不要。あらかじめ用意した文章からランダムに出題します（現在24篇、順次追加予定）</span>
+        </span>
+        <input type="checkbox" id="toggleOfflineBank" />
+      </label>
+    </div>
+
+    <div id="apiKeySection">
+      <label class="modal-label" for="apiKeyInput">Anthropic API キー</label>
+      <input type="password" id="apiKeyInput" class="text-input" placeholder="sk-ant-..." autocomplete="off" />
+      <p class="modal-hint">
+        キーはこの端末のブラウザ内にのみ保存されます。
+        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> で発行できます。
+      </p>
+    </div>
 
     <label class="modal-label" for="levelInput">読みやすさレベル</label>
     <input type="range" id="levelInput" min="1" max="10" step="1" value="5" />

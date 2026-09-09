@@ -49,6 +49,8 @@ const LS = {
   showVocab: "rl_show_vocab",
   showQuiz: "rl_show_quiz",
   history: "rl_history",
+  offlineBank: "rl_offline_bank",
+  seenStoryIds: "rl_seen_story_ids",
 };
 
 const get = (k, d) => {
@@ -175,6 +177,8 @@ const dailyGoalValue = document.getElementById("dailyGoalValue");
 const toggleReflection = document.getElementById("toggleReflection");
 const toggleVocab = document.getElementById("toggleVocab");
 const toggleQuiz = document.getElementById("toggleQuiz");
+const toggleOfflineBank = document.getElementById("toggleOfflineBank");
+const apiKeySection = document.getElementById("apiKeySection");
 
 function renderLevelDescription(n) {
   const info = levelInfo(parseInt(n, 10));
@@ -193,6 +197,8 @@ function openSettings() {
   toggleReflection.checked = getBool(LS.showReflection, false);
   toggleVocab.checked = getBool(LS.showVocab, false);
   toggleQuiz.checked = getBool(LS.showQuiz, false);
+  toggleOfflineBank.checked = getBool(LS.offlineBank, false);
+  apiKeySection.style.display = toggleOfflineBank.checked ? "none" : "block";
   settingsModal.hidden = false;
 }
 
@@ -203,6 +209,9 @@ settingsModal.addEventListener("click", (e) => { if (e.target === settingsModal)
 levelInput.addEventListener("input", () => renderLevelDescription(levelInput.value));
 wordCountInput.addEventListener("input", () => { wordCountValue.textContent = wordCountInput.value; });
 dailyGoalInput.addEventListener("input", () => { dailyGoalValue.textContent = dailyGoalInput.value; });
+toggleOfflineBank.addEventListener("change", () => {
+  apiKeySection.style.display = toggleOfflineBank.checked ? "none" : "block";
+});
 
 document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
@@ -214,8 +223,9 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok5 = set(LS.showReflection, toggleReflection.checked ? "1" : "0");
   const ok6 = set(LS.showVocab, toggleVocab.checked ? "1" : "0");
   const ok7 = set(LS.showQuiz, toggleQuiz.checked ? "1" : "0");
+  const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
 
-  if (ok1 && ok2 && ok3 && ok4 && ok5 && ok6 && ok7) {
+  if (ok1 && ok2 && ok3 && ok4 && ok5 && ok6 && ok7 && ok8) {
     settingsModal.hidden = true;
     renderHome();
   } else {
@@ -379,10 +389,16 @@ document.getElementById("anotherBtn").addEventListener("click", startSession);
 document.getElementById("homeBtn").addEventListener("click", () => { renderHome(); showView("home"); });
 
 async function startSession() {
+  const useBank = getBool(LS.offlineBank, false);
+
+  if (useBank) {
+    return startOfflineSession();
+  }
+
   const apiKey = get(LS.apiKey, "");
   if (!apiKey) {
     openSettings();
-    showError("先に Anthropic API キーを設定してください。");
+    showError("先に Anthropic API キーを設定してください。もしくは「オフラインの文章バンクを使う」を設定でオンにしてください。");
     return;
   }
 
@@ -412,6 +428,84 @@ async function startSession() {
     showView("home");
     showError(readableError(err));
   }
+}
+
+// ---------------------- Offline story bank ----------------------
+
+let STORY_BANK = null; // loaded lazily, cached for the rest of the session
+let storyBankLoadError = null;
+
+async function loadStoryBank() {
+  if (STORY_BANK) return STORY_BANK;
+  try {
+    const res = await fetch("stories.json");
+    if (!res.ok) throw new Error("stories.json " + res.status);
+    STORY_BANK = await res.json();
+    return STORY_BANK;
+  } catch (err) {
+    storyBankLoadError = err;
+    throw err;
+  }
+}
+
+function getSeenIds() {
+  try { return new Set(JSON.parse(get(LS.seenStoryIds, "[]"))); }
+  catch { return new Set(); }
+}
+function markSeen(id) {
+  const seen = getSeenIds();
+  seen.add(id);
+  set(LS.seenStoryIds, JSON.stringify([...seen]));
+}
+
+function pickStory(bank, topic, level) {
+  const seen = getSeenIds();
+
+  const matchesTopic = (s) => topic === "random" || topic === "custom" || s.topic === topic;
+
+  // Prefer the exact level, then fan out to nearby levels, then any level,
+  // each time preferring stories the reader hasn't seen yet.
+  const byDistance = [...bank].sort((a, b) => Math.abs(a.level - level) - Math.abs(b.level - level));
+  const candidates = byDistance.filter(matchesTopic);
+  const pool = candidates.length ? candidates : byDistance; // fall back to any topic
+
+  const unseen = pool.filter((s) => !seen.has(s.id));
+  const finalPool = unseen.length ? unseen : pool; // everything seen: allow repeats
+
+  // Among the closest-level matches available in finalPool, pick randomly.
+  const minDist = Math.abs(finalPool[0].level - level);
+  const closest = finalPool.filter((s) => Math.abs(s.level - level) === minDist);
+  return closest[Math.floor(Math.random() * closest.length)];
+}
+
+async function startOfflineSession() {
+  showView("loading");
+  document.getElementById("loadingText").textContent = "文章を選んでいます…";
+
+  let bank;
+  try {
+    bank = await loadStoryBank();
+  } catch (err) {
+    showView("home");
+    showError("文章バンクの読み込みに失敗しました。オフラインで初回起動している可能性があります。一度オンラインの状態でアプリを開き直してください。");
+    return;
+  }
+
+  if (!bank || bank.length === 0) {
+    showView("home");
+    showError("文章バンクが空です。");
+    return;
+  }
+
+  const topic = topicSelect.value === "custom" ? "random" : topicSelect.value;
+  const story = pickStory(bank, topic, getLevel());
+
+  session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id };
+  markSeen(story.id);
+
+  renderReading(session);
+  showView("reading");
+  readingStartedAt = Date.now();
 }
 
 function readableError(err) {
