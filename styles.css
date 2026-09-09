@@ -419,6 +419,7 @@ a { color: var(--amber); }
 /* ---------- Modal ---------- */
 .modal-backdrop {
   position: fixed; inset: 0;
+  height: var(--vvh, 100vh);
   background: #00000088;
   display: flex;
   align-items: flex-end;
@@ -434,7 +435,7 @@ a { color: var(--amber); }
   max-width: 460px;
   border-radius: 20px 20px 0 0;
   padding: 26px 22px 30px;
-  max-height: 88vh;
+  max-height: min(88vh, calc(var(--vvh, 100vh) - 24px));
   overflow-y: auto;
 }
 @media (min-width: 520px) {

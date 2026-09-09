@@ -10,6 +10,34 @@
 //  - The reader chooses the topic
 // =====================================================================
 
+// ---------------------- Global error visibility ----------------------
+// On a phone there is no console to check, so surface any JS error
+// on-screen instead of failing silently. This must be the very first
+// thing that runs, before anything else can throw.
+
+window.addEventListener("error", (e) => {
+  alert("エラーが発生しました:\n" + e.message + "\n(" + (e.filename || "").split("/").pop() + ":" + e.lineno + ")");
+});
+window.addEventListener("unhandledrejection", (e) => {
+  alert("エラーが発生しました:\n" + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
+
+// iOS Safari (especially in home-screen standalone mode) does not resize
+// `position: fixed` elements when the on-screen keyboard opens, so a
+// bottom-sheet modal can end up partly hidden behind the keyboard. Track
+// the real visible height via visualViewport and let the modal use that
+// instead of 100vh.
+function updateViewportHeight() {
+  const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  document.documentElement.style.setProperty("--vvh", h + "px");
+}
+updateViewportHeight();
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateViewportHeight);
+  window.visualViewport.addEventListener("scroll", updateViewportHeight);
+}
+window.addEventListener("resize", updateViewportHeight);
+
 // ---------------------- Storage ----------------------
 
 const LS = {
@@ -202,6 +230,13 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
 
 apiKeyInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") document.getElementById("saveSettingsBtn").click();
+});
+
+// When the keyboard opens, nudge the modal so the Save button stays reachable.
+apiKeyInput.addEventListener("focus", () => {
+  setTimeout(() => {
+    document.getElementById("saveSettingsBtn").scrollIntoView({ block: "nearest" });
+  }, 300);
 });
 
 document.getElementById("resetHistoryBtn").addEventListener("click", () => {
