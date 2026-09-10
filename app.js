@@ -45,9 +45,6 @@ const LS = {
   wordCount: "rl_word_count",
   level: "rl_level",
   dailyGoal: "rl_daily_goal",
-  showReflection: "rl_show_reflection",
-  showVocab: "rl_show_vocab",
-  showQuiz: "rl_show_quiz",
   history: "rl_history",
   offlineBank: "rl_offline_bank",
   seenStoryIds: "rl_seen_story_ids",
@@ -174,9 +171,6 @@ const wordCountInput = document.getElementById("wordCountInput");
 const wordCountValue = document.getElementById("wordCountValue");
 const dailyGoalInput = document.getElementById("dailyGoalInput");
 const dailyGoalValue = document.getElementById("dailyGoalValue");
-const toggleReflection = document.getElementById("toggleReflection");
-const toggleVocab = document.getElementById("toggleVocab");
-const toggleQuiz = document.getElementById("toggleQuiz");
 const toggleOfflineBank = document.getElementById("toggleOfflineBank");
 const apiKeySection = document.getElementById("apiKeySection");
 
@@ -194,9 +188,6 @@ function openSettings() {
   wordCountValue.textContent = getNum(LS.wordCount, 800);
   dailyGoalInput.value = getNum(LS.dailyGoal, 1500);
   dailyGoalValue.textContent = getNum(LS.dailyGoal, 1500);
-  toggleReflection.checked = getBool(LS.showReflection, false);
-  toggleVocab.checked = getBool(LS.showVocab, false);
-  toggleQuiz.checked = getBool(LS.showQuiz, false);
   toggleOfflineBank.checked = getBool(LS.offlineBank, false);
   apiKeySection.style.display = toggleOfflineBank.checked ? "none" : "block";
   settingsModal.hidden = false;
@@ -220,12 +211,9 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok2 = set(LS.level, String(parseInt(levelInput.value, 10)));
   const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
   const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
-  const ok5 = set(LS.showReflection, toggleReflection.checked ? "1" : "0");
-  const ok6 = set(LS.showVocab, toggleVocab.checked ? "1" : "0");
-  const ok7 = set(LS.showQuiz, toggleQuiz.checked ? "1" : "0");
-  const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
+  const ok5 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
 
-  if (ok1 && ok2 && ok3 && ok4 && ok5 && ok6 && ok7 && ok8) {
+  if (ok1 && ok2 && ok3 && ok4 && ok5) {
     settingsModal.hidden = true;
     renderHome();
   } else {
@@ -526,21 +514,6 @@ function buildSystemPrompt() {
     ? `Restrict yourself to roughly the most frequent ${fmt(info.headwords)} words of English (a graded-reader band). Beyond that band, allow at most 1-2 unfamiliar words per 100 words of text, and only where surrounding context makes the meaning guessable without a dictionary.`
     : `Use unsimplified, natural English at the level of a general-audience book or quality newspaper. Do not artificially restrict vocabulary.`;
 
-  const wantReflection = getBool(LS.showReflection, false);
-  const wantVocab = getBool(LS.showVocab, false);
-  const wantQuiz = getBool(LS.showQuiz, false);
-
-  let extras = "";
-  if (wantReflection) {
-    extras += `\n- "reflection_questions": 3 to 5 open-ended questions in English inviting the reader to think back on the piece. Not yes/no trivia.`;
-  }
-  if (wantVocab) {
-    extras += `\n- "vocabulary": 5 to 12 useful words or phrases actually used in the piece, each with a short, simple English explanation (definition-style, not a translation).`;
-  }
-  if (wantQuiz) {
-    extras += `\n- "quiz": 3 to 5 multiple-choice questions in English, each with exactly 4 options, a "correct_index", and a short "explanation".`;
-  }
-
   return `You write original English material for a Japanese adult's extensive reading (多読) practice.
 
 The single most important rule: THE TEXT MUST BE COMFORTABLE TO READ WITHOUT A DICTIONARY. Extensive reading only works when the reader recognises around 98% of the words and can move forward without stopping. A text that is slightly too easy is correct; a text that is slightly too hard is a failure.
@@ -560,7 +533,7 @@ Respond with ONLY a single JSON object, no markdown fences and no commentary:
 {
   "topic": "the topic category used",
   "title": "a short title",
-  "text": "the full passage, paragraphs separated by \\n\\n"${extras ? "," : ""}${extras}
+  "text": "the full passage, paragraphs separated by \\n\\n"
 }`;
 }
 
@@ -711,85 +684,6 @@ function renderSummary(words, wpm, levelBefore, levelAfter, feedback) {
   if (wpm === 0) notes.push("読書時間が短すぎたため、読む速さは記録しませんでした。");
 
   document.getElementById("summaryNote").textContent = notes.join(" ");
-
-  // Optional post-reading content, only if the reader turned it on.
-  const extras = document.getElementById("extrasArea");
-  extras.innerHTML = "";
-
-  if (getBool(LS.showReflection, false) && Array.isArray(session.reflection_questions) && session.reflection_questions.length) {
-    const h = document.createElement("h3");
-    h.className = "extras-heading";
-    h.textContent = "Reflection";
-    extras.appendChild(h);
-    const ol = document.createElement("ol");
-    ol.className = "reflection-list";
-    session.reflection_questions.forEach((q) => {
-      const li = document.createElement("li");
-      li.textContent = q;
-      ol.appendChild(li);
-    });
-    extras.appendChild(ol);
-  }
-
-  if (getBool(LS.showVocab, false) && Array.isArray(session.vocabulary) && session.vocabulary.length) {
-    const h = document.createElement("h3");
-    h.className = "extras-heading";
-    h.textContent = "Vocabulary";
-    extras.appendChild(h);
-    const ul = document.createElement("ul");
-    ul.className = "vocab-list";
-    session.vocabulary.forEach((v) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span class="vocab-term">${esc(v.term)}</span><span class="vocab-def">${esc(v.explanation)}</span>`;
-      ul.appendChild(li);
-    });
-    extras.appendChild(ul);
-  }
-
-  if (getBool(LS.showQuiz, false) && Array.isArray(session.quiz) && session.quiz.length) {
-    const h = document.createElement("h3");
-    h.className = "extras-heading";
-    h.textContent = "Comprehension check";
-    extras.appendChild(h);
-    session.quiz.forEach((q) => extras.appendChild(buildQuizCard(q)));
-  }
-}
-
-function buildQuizCard(q) {
-  const card = document.createElement("div");
-  card.className = "quiz-card";
-
-  const qEl = document.createElement("p");
-  qEl.className = "quiz-question";
-  qEl.textContent = q.question;
-  card.appendChild(qEl);
-
-  const wrap = document.createElement("div");
-  wrap.className = "quiz-options";
-
-  (q.options || []).forEach((opt, idx) => {
-    const b = document.createElement("button");
-    b.className = "quiz-option";
-    b.textContent = opt;
-    b.addEventListener("click", () => {
-      wrap.querySelectorAll(".quiz-option").forEach((x) => (x.disabled = true));
-      b.classList.add(idx === q.correct_index ? "correct" : "incorrect");
-      if (idx !== q.correct_index) {
-        const right = wrap.querySelectorAll(".quiz-option")[q.correct_index];
-        if (right) right.classList.add("correct");
-      }
-      if (q.explanation && !card.querySelector(".quiz-explanation")) {
-        const e = document.createElement("p");
-        e.className = "quiz-explanation";
-        e.textContent = q.explanation;
-        card.appendChild(e);
-      }
-    });
-    wrap.appendChild(b);
-  });
-
-  card.appendChild(wrap);
-  return card;
 }
 
 // ---------------------- Init ----------------------

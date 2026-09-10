@@ -145,8 +145,6 @@
       </div>
     </div>
 
-    <div id="extrasArea"></div>
-
     <div class="summary-actions">
       <button id="anotherBtn" class="btn-primary btn-lg">もう一篇読む</button>
       <button id="homeBtn" class="btn-ghost">ホームへ戻る</button>
@@ -165,7 +163,7 @@
       <label class="toggle-row">
         <span>
           <span class="toggle-name">オフラインの文章バンクを使う</span>
-          <span class="toggle-desc">APIキー不要。あらかじめ用意した文章からランダムに出題します（現在136篇、レベル5〜10・全7テーマ収録）</span>
+          <span class="toggle-desc">APIキー不要。あらかじめ用意した文章からランダムに出題します（現在24篇、順次追加予定）</span>
         </span>
         <input type="checkbox" id="toggleOfflineBank" />
       </label>
@@ -192,35 +190,6 @@
     <label class="modal-label" for="dailyGoalInput">1日の目標語数</label>
     <input type="range" id="dailyGoalInput" min="500" max="5000" step="250" value="1500" />
     <div class="range-value"><span id="dailyGoalValue">1500</span> 語/日</div>
-
-    <div class="toggle-section">
-      <p class="toggle-section-title">読んだあとの追加コンテンツ</p>
-      <p class="toggle-section-note">多読の原則では、読書そのものが目的で、読後テストは最小限が望ましいとされています。必要なときだけ有効にしてください。</p>
-
-      <label class="toggle-row">
-        <span>
-          <span class="toggle-name">振り返りの問いかけ</span>
-          <span class="toggle-desc">内容について考える英語の質問（採点なし）</span>
-        </span>
-        <input type="checkbox" id="toggleReflection" />
-      </label>
-
-      <label class="toggle-row">
-        <span>
-          <span class="toggle-name">語彙リスト</span>
-          <span class="toggle-desc">本文中の語句の英語での説明</span>
-        </span>
-        <input type="checkbox" id="toggleVocab" />
-      </label>
-
-      <label class="toggle-row">
-        <span>
-          <span class="toggle-name">理解度クイズ</span>
-          <span class="toggle-desc">4択の確認問題</span>
-        </span>
-        <input type="checkbox" id="toggleQuiz" />
-      </label>
-    </div>
 
     <div class="modal-actions">
       <button id="saveSettingsBtn" class="btn-primary">保存</button>
