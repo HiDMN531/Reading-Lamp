@@ -5,7 +5,7 @@
 //  - Text must be EASY: ~98% known words, 1-2 unknown per 100 words
 //  - Volume is the core metric (1,000,000 words as the long-run target)
 //  - Reading fluency (WPM) is tracked, dictionary use discouraged
-//  - Reading is its own reward: quizzes/vocab are opt-in, default off
+//  - Reading is its own reward: no post-reading tests, vocab lists, or quizzes
 //  - The reader may abandon any text without penalty
 //  - The reader chooses the topic
 // =====================================================================
@@ -211,9 +211,9 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok2 = set(LS.level, String(parseInt(levelInput.value, 10)));
   const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
   const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
-  const ok5 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
+  const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
 
-  if (ok1 && ok2 && ok3 && ok4 && ok5) {
+  if (ok1 && ok2 && ok3 && ok4 && ok8) {
     settingsModal.hidden = true;
     renderHome();
   } else {
