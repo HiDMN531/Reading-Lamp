@@ -445,24 +445,42 @@ function markSeen(id) {
   seen.add(id);
   set(LS.seenStoryIds, JSON.stringify([...seen]));
 }
+function clearSeenForPool(ids) {
+  const seen = getSeenIds();
+  ids.forEach((id) => seen.delete(id));
+  set(LS.seenStoryIds, JSON.stringify([...seen]));
+}
+
+// Tracks the most recently offered story so that, right when a pool resets
+// (see below), we don't immediately hand back the very same text again.
+let lastBankStoryId = null;
 
 function pickStory(bank, topic, level) {
   const seen = getSeenIds();
 
   const matchesTopic = (s) => topic === "random" || topic === "custom" || s.topic === topic;
 
-  // Prefer the exact level, then fan out to nearby levels, then any level,
-  // each time preferring stories the reader hasn't seen yet.
+  // Prefer the exact level, then fan out to nearby levels.
   const byDistance = [...bank].sort((a, b) => Math.abs(a.level - level) - Math.abs(b.level - level));
   const candidates = byDistance.filter(matchesTopic);
   const pool = candidates.length ? candidates : byDistance; // fall back to any topic
 
-  const unseen = pool.filter((s) => !seen.has(s.id));
-  const finalPool = unseen.length ? unseen : pool; // everything seen: allow repeats
+  let unseen = pool.filter((s) => !seen.has(s.id));
 
-  // Among the closest-level matches available in finalPool, pick randomly.
-  const minDist = Math.abs(finalPool[0].level - level);
-  const closest = finalPool.filter((s) => Math.abs(s.level - level) === minDist);
+  if (unseen.length === 0) {
+    // The reader has now read every story available in this pool (this
+    // topic's stock, or the whole bank in "random"/"custom" mode). Start a
+    // fresh cycle rather than picking freely among already-read stories:
+    // clear the "seen" record for just this pool, excluding whichever
+    // story was offered last so it isn't immediately handed back again.
+    clearSeenForPool(pool.map((s) => s.id));
+    unseen = pool.filter((s) => s.id !== lastBankStoryId);
+    if (unseen.length === 0) unseen = pool; // pool has only a single story
+  }
+
+  // Among the closest-level matches available among the unseen stories, pick randomly.
+  const minDist = Math.abs(unseen[0].level - level);
+  const closest = unseen.filter((s) => Math.abs(s.level - level) === minDist);
   return closest[Math.floor(Math.random() * closest.length)];
 }
 
@@ -490,6 +508,7 @@ async function startOfflineSession() {
 
   session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id };
   markSeen(story.id);
+  lastBankStoryId = story.id;
 
   renderReading(session);
   showView("reading");
