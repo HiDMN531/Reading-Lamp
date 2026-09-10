@@ -39,8 +39,8 @@ Extensive Reading (ER, 多読) の研究知見にもとづいて設計した PWA
 
 設定画面の「オフラインの文章バンクを使う」をオンにすると、Anthropic APIを一切呼ばずに、あらかじめ用意した文章から出題します。通信費・API利用料がかからず、完全オフラインでも使えます。
 
-- 現在収録：**24篇**（レベル5〜8 × Fantasy/stories・Nature and animals・World affairs・Everyday life・History・Scienceの6テーマ）
-- 目標：レベル5〜10 × 全7テーマ（Famous booksを含む）で合計100篇まで順次追加予定
+- 現在収録：**136篇**（レベル5〜10 × 全7テーマ：Fantasy/stories・Famous books・Nature and animals・World affairs・Everyday life・History・Science）
+- レベル5〜8は各テーマ4〜5篇前後、レベル9・10は各テーマ2篇ずつを収録済み。今後も随時追加予定
 - 読んだ文章はできるだけ重複しないよう記録され、その組み合わせを読み尽くすと同じ文章が再度出ることがあります
 - 収録文章には振り返り・語彙・クイズは付いていません（本文のみ）。それらの機能が必要な場合はAPIモードを使ってください
 - レベル調整（読後の3択フィードバック）は文章バンクモードでも動作します
@@ -55,7 +55,7 @@ styles.css      見た目
 app.js          ロジック本体（レベル管理・生成・計測・記録）
 manifest.json   PWA設定
 sw.js           オフライン用 service worker
-stories.json    オフライン文章バンク（24篇、随時追加）
+stories.json    オフライン文章バンク（136篇、随時追加）
 icons/          アプリアイコン
 ```
 
