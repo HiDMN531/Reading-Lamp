@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v18";
+const CACHE_NAME = "reading-lamp-v21";
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const SHELL_FILES = [
   "./stories.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./icons/settings-gear.png",
 ];
 
 self.addEventListener("install", (event) => {
