@@ -1,4 +1,8 @@
-const CACHE_NAME = "reading-lamp-v27";
+const CACHE_NAME = "reading-lamp-v33";
+// Versions before v32 did not yet have an update prompt. Activate the current
+// release automatically once for those users; prompt-capable versions wait for
+// the user's "更新する" action.
+const UPDATE_PROMPT_FIRST_VERSION = 32;
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -14,9 +18,21 @@ const SHELL_FILES = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_FILES)).catch(() => {})
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(SHELL_FILES))
+      .then(() => caches.keys())
+      .then((keys) => {
+        const needsMigration = keys.some((key) => {
+          const match = /^reading-lamp-v(\d+)$/.exec(key);
+          return match && Number(match[1]) < UPDATE_PROMPT_FIRST_VERSION;
+        });
+        return needsMigration ? self.skipWaiting() : undefined;
+      })
   );
-  self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {

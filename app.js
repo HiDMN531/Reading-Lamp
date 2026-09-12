@@ -41,14 +41,15 @@ window.addEventListener("resize", updateViewportHeight);
 // ---------------------- Storage ----------------------
 
 const LS = {
-  apiKey: "rl_api_key",
   wordCount: "rl_word_count",
   level: "rl_level",
   dailyGoal: "rl_daily_goal",
   history: "rl_history",
   offlineBank: "rl_offline_bank",
   seenStoryIds: "rl_seen_story_ids",
+  levelSignals: "rl_level_signals",
 };
+const HISTORY_LIMIT = 2000;
 
 const get = (k, d) => {
   try {
@@ -67,6 +68,25 @@ const getBool = (k, d) => get(k, d ? "1" : "0") === "1";
 const memoryFallback = {};
 let storageBlocked = false;
 
+// API keys used to be stored in localStorage. Remove any legacy copy and keep
+// the current key in memory only. This prevents it from surviving reloads,
+// browser restarts, backups, or access by scripts running in a later session.
+const LEGACY_API_KEY_STORAGE_KEYS = ["rl_api_key", "rl_api_key_session"];
+let sessionApiKey = "";
+
+for (const key of LEGACY_API_KEY_STORAGE_KEYS) {
+  try { localStorage.removeItem(key); } catch {}
+  try { sessionStorage.removeItem(key); } catch {}
+  delete memoryFallback[key];
+}
+
+function getSessionApiKey() { return sessionApiKey; }
+function setSessionApiKey(value) { sessionApiKey = String(value || "").trim(); }
+function clearSessionApiKey() { sessionApiKey = ""; }
+
+// A page restored from the back-forward cache must not retain the key.
+window.addEventListener("pagehide", clearSessionApiKey);
+
 function set(k, v) {
   try {
     localStorage.setItem(k, String(v));
@@ -80,20 +100,31 @@ function set(k, v) {
 }
 
 function getHistory() {
-  try { return JSON.parse(localStorage.getItem(LS.history) || memoryFallback[LS.history] || "[]"); }
+  try {
+    if (storageBlocked && memoryFallback[LS.history]) {
+      return JSON.parse(memoryFallback[LS.history]);
+    }
+    const stored = localStorage.getItem(LS.history);
+    return JSON.parse(stored === null ? (memoryFallback[LS.history] || "[]") : stored);
+  }
   catch { return []; }
 }
-function pushHistory(entry) {
-  const h = getHistory();
-  h.unshift(entry);
-  const payload = JSON.stringify(h.slice(0, 500));
+function writeHistory(entries) {
+  const payload = JSON.stringify(entries.slice(0, HISTORY_LIMIT));
   try {
     localStorage.setItem(LS.history, payload);
+    return true;
   } catch (err) {
     console.error("localStorage write failed", err);
     memoryFallback[LS.history] = payload;
     storageBlocked = true;
+    return false;
   }
+}
+function pushHistory(entry) {
+  const h = getHistory();
+  h.unshift(entry);
+  return writeHistory(h);
 }
 
 // ---------------------- Level system ----------------------
@@ -116,6 +147,64 @@ const LEVELS = [
 function levelInfo(n) { return LEVELS.find((l) => l.n === n) || LEVELS[4]; }
 function getLevel() { return Math.min(10, Math.max(1, getNum(LS.level, 5))); }
 function setLevel(n) { set(LS.level, Math.min(10, Math.max(1, n))); }
+
+const EASY_STREAK_REQUIRED = 3;
+
+function getLevelSignals(level = getLevel()) {
+  try {
+    const saved = JSON.parse(get(LS.levelSignals, "null"));
+    if (saved && saved.level === level && Number.isInteger(saved.easyStreak)) {
+      return { level, easyStreak: Math.max(0, saved.easyStreak) };
+    }
+  } catch {}
+  return { level, easyStreak: 0 };
+}
+
+function saveLevelSignals(level, easyStreak = 0) {
+  return set(LS.levelSignals, JSON.stringify({ level, easyStreak }));
+}
+
+function adjustLevelFromFeedback(feedback, before) {
+  if (feedback === "hard") {
+    const after = Math.max(1, before - 1);
+    setLevel(after);
+    saveLevelSignals(after, 0);
+    return {
+      before,
+      after,
+      note: after < before
+        ? `次からレベル ${after} に下げます。易しいほうが多読は伸びます。`
+        : "現在はレベル1です。難しい文章は無理せず別の文章に替えてください。",
+    };
+  }
+
+  if (feedback === "easy") {
+    if (before >= 10) {
+      saveLevelSignals(before, 0);
+      return { before, after: before, note: "最高レベルを続けます。" };
+    }
+
+    const streak = getLevelSignals(before).easyStreak + 1;
+    if (streak >= EASY_STREAK_REQUIRED) {
+      const after = before + 1;
+      setLevel(after);
+      saveLevelSignals(after, 0);
+      return { before, after, note: `「やさしすぎた」が3回続いたため、次からレベル ${after} に上げます。` };
+    }
+
+    saveLevelSignals(before, streak);
+    const remaining = EASY_STREAK_REQUIRED - streak;
+    return {
+      before,
+      after: before,
+      note: `レベルはまだ上げません。「やさしすぎた」があと${remaining}回続いたら見直します。`,
+    };
+  }
+
+  // "just" breaks an easy streak and confirms the current level.
+  saveLevelSignals(before, 0);
+  return { before, after: before, note: "" };
+}
 
 // ---------------------- Milestones ----------------------
 // The reference material names 200,000 words as the point where gains
@@ -160,10 +249,88 @@ function showError(msg) {
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const fmt = (n) => Number(n).toLocaleString();
+const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+
+const ABANDON_REASONS = {
+  "too-hard": "難しすぎた",
+  "not-interesting": "興味を持てなかった",
+  "too-long": "長すぎた・時間不足",
+  interrupted: "用事などで中断",
+  other: "その他・未記録",
+};
+
+// ---------------------- Accessible modal handling ----------------------
+
+const appRoot = document.getElementById("app");
+let activeModalElement = null;
+let activeModalCloseRequest = null;
+let modalReturnFocus = null;
+let modalPausedReading = false;
+
+function modalFocusableElements(modal) {
+  return [...modal.querySelectorAll(
+    'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+  )].filter((el) => !el.hidden && !el.closest("[hidden]") && el.getAttribute("aria-hidden") !== "true");
+}
+
+function openAccessibleModal(modal, initialFocus, closeRequest) {
+  if (activeModalElement) return;
+  modalReturnFocus = document.activeElement;
+  activeModalElement = modal;
+  activeModalCloseRequest = closeRequest;
+  modalPausedReading = Boolean(readingClock.running);
+  if (modalPausedReading) pauseReadingTimer();
+  modal.hidden = false;
+  initialFocus.focus();
+  appRoot.inert = true;
+  appRoot.setAttribute("aria-hidden", "true");
+  document.body.classList.add("modal-open");
+}
+
+function closeAccessibleModal({ restoreFocus = true, resumeReading = true } = {}) {
+  if (!activeModalElement) return;
+  const modal = activeModalElement;
+  const returnFocus = modalReturnFocus;
+  const shouldResume = modalPausedReading && resumeReading;
+  modal.hidden = true;
+  appRoot.inert = false;
+  appRoot.removeAttribute("aria-hidden");
+  document.body.classList.remove("modal-open");
+  activeModalElement = null;
+  activeModalCloseRequest = null;
+  modalReturnFocus = null;
+  modalPausedReading = false;
+  if (shouldResume) resumeReadingTimer();
+  if (restoreFocus && returnFocus && typeof returnFocus.focus === "function") {
+    returnFocus.focus();
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!activeModalElement) return;
+  if (e.key === "Escape") {
+    e.preventDefault();
+    if (activeModalCloseRequest) activeModalCloseRequest();
+    return;
+  }
+  if (e.key !== "Tab") return;
+  const focusable = modalFocusableElements(activeModalElement);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
 
 // ---------------------- Settings modal ----------------------
 
 const settingsModal = document.getElementById("settingsModal");
+const settingsButton = document.getElementById("settingsBtn");
 const apiKeyInput = document.getElementById("apiKeyInput");
 const levelInput = document.getElementById("levelInput");
 const levelDescription = document.getElementById("levelDescription");
@@ -173,57 +340,129 @@ const dailyGoalInput = document.getElementById("dailyGoalInput");
 const dailyGoalValue = document.getElementById("dailyGoalValue");
 const toggleOfflineBank = document.getElementById("toggleOfflineBank");
 const apiKeySection = document.getElementById("apiKeySection");
+const wordCountSection = document.getElementById("wordCountSection");
+const modeDescription = document.getElementById("modeDescription");
+const apiKeyStatus = document.getElementById("apiKeyStatus");
+const clearApiKeyBtn = document.getElementById("clearApiKeyBtn");
+const closeSettingsIconBtn = document.getElementById("closeSettingsIconBtn");
+const restoreInput = document.getElementById("restoreInput");
+const settingsStatus = document.getElementById("settingsStatus");
+
+function renderApiKeyStatus() {
+  const isSet = Boolean(getSessionApiKey());
+  apiKeyStatus.textContent = isSet
+    ? "このページ内にAPIキーを設定済みです。"
+    : "APIキーは未設定です。";
+  apiKeyStatus.classList.toggle("is-set", isSet);
+  clearApiKeyBtn.hidden = !isSet;
+}
+
+function usingOfflineBank() {
+  // New users start with the bundled bank. Existing users keep their saved mode.
+  return getBool(LS.offlineBank, true);
+}
+
+function syncSettingsMode(useBank) {
+  apiKeySection.hidden = useBank;
+  wordCountSection.hidden = useBank;
+  modeDescription.textContent = useBank
+    ? "通常はこちらをおすすめします。通信やAPI利用料なしで読めます。"
+    : "オフにするとAI生成モードになります。APIキーはこのページを開いている間だけ保持します。";
+}
 
 function renderLevelDescription(n) {
   const info = levelInfo(parseInt(n, 10));
   const hw = info.headwords ? `${fmt(info.headwords)}語レベル` : "簡略化なし";
   levelDescription.textContent = `レベル ${info.n} — ${info.label} (${hw})`;
+  levelInput.setAttribute("aria-valuetext", `レベル${info.n}、${info.label}、${hw}`);
+}
+
+function updateRangeAccessibility() {
+  wordCountInput.setAttribute("aria-valuetext", `${wordCountInput.value}語`);
+  dailyGoalInput.setAttribute("aria-valuetext", `1日${dailyGoalInput.value}語`);
+}
+
+function closeSettings() {
+  closeAccessibleModal();
+  settingsButton.setAttribute("aria-expanded", "false");
 }
 
 function openSettings() {
-  apiKeyInput.value = get(LS.apiKey, "");
+  apiKeyInput.value = "";
   levelInput.value = getLevel();
   renderLevelDescription(getLevel());
   wordCountInput.value = getNum(LS.wordCount, 800);
   wordCountValue.textContent = getNum(LS.wordCount, 800);
   dailyGoalInput.value = getNum(LS.dailyGoal, 1500);
   dailyGoalValue.textContent = getNum(LS.dailyGoal, 1500);
-  toggleOfflineBank.checked = getBool(LS.offlineBank, false);
-  apiKeySection.style.display = toggleOfflineBank.checked ? "none" : "block";
-  settingsModal.hidden = false;
+  toggleOfflineBank.checked = usingOfflineBank();
+  syncSettingsMode(toggleOfflineBank.checked);
+  renderApiKeyStatus();
+  settingsStatus.textContent = "";
+  updateRangeAccessibility();
+  settingsButton.setAttribute("aria-expanded", "true");
+  openAccessibleModal(settingsModal, closeSettingsIconBtn, closeSettings);
 }
 
-document.getElementById("settingsBtn").addEventListener("click", openSettings);
-document.getElementById("closeSettingsBtn").addEventListener("click", () => { settingsModal.hidden = true; });
-settingsModal.addEventListener("click", (e) => { if (e.target === settingsModal) settingsModal.hidden = true; });
+settingsButton.addEventListener("click", openSettings);
+document.getElementById("closeSettingsBtn").addEventListener("click", closeSettings);
+closeSettingsIconBtn.addEventListener("click", closeSettings);
+settingsModal.addEventListener("click", (e) => { if (e.target === settingsModal) closeSettings(); });
 
 levelInput.addEventListener("input", () => renderLevelDescription(levelInput.value));
-wordCountInput.addEventListener("input", () => { wordCountValue.textContent = wordCountInput.value; });
-dailyGoalInput.addEventListener("input", () => { dailyGoalValue.textContent = dailyGoalInput.value; });
+wordCountInput.addEventListener("input", () => {
+  wordCountValue.textContent = wordCountInput.value;
+  updateRangeAccessibility();
+});
+dailyGoalInput.addEventListener("input", () => {
+  dailyGoalValue.textContent = dailyGoalInput.value;
+  updateRangeAccessibility();
+});
 toggleOfflineBank.addEventListener("change", () => {
-  apiKeySection.style.display = toggleOfflineBank.checked ? "none" : "block";
+  syncSettingsMode(toggleOfflineBank.checked);
 });
 
 document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
 
-  const ok1 = set(LS.apiKey, apiKeyInput.value.trim());
-  const ok2 = set(LS.level, String(parseInt(levelInput.value, 10)));
+  const typedApiKey = apiKeyInput.value.trim();
+  if (!toggleOfflineBank.checked && typedApiKey) setSessionApiKey(typedApiKey);
+  apiKeyInput.value = "";
+
+  if (!toggleOfflineBank.checked && !getSessionApiKey()) {
+    renderApiKeyStatus();
+    showError("AI生成モードでは、このページで使用するAnthropic APIキーを入力してください。");
+    apiKeyInput.focus();
+    return;
+  }
+
+  if (toggleOfflineBank.checked) clearSessionApiKey();
+
+  const previousLevel = getLevel();
+  const selectedLevel = Math.min(10, Math.max(1, parseInt(levelInput.value, 10)));
+  const ok2 = set(LS.level, String(selectedLevel));
+  const okSignals = selectedLevel === previousLevel ? true : saveLevelSignals(selectedLevel, 0);
   const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
   const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
   const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
 
-  if (ok1 && ok2 && ok3 && ok4 && ok8) {
-    settingsModal.hidden = true;
+  if (ok2 && okSignals && ok3 && ok4 && ok8) {
+    closeSettings();
     renderHome();
   } else {
     // Storage is blocked (private mode / cookies disabled / quota).
     // Settings still work for THIS session via the in-memory fallback,
     // so close the modal and let the user continue, but warn clearly.
-    settingsModal.hidden = true;
+    closeSettings();
     renderHome();
     showError("この端末では設定を保存できませんでした（プライベートブラウズや「すべてのCookieをブロック」がオンだと保存できません）。今回のセッション中は使えますが、アプリを閉じると消えます。");
   }
+});
+
+clearApiKeyBtn.addEventListener("click", () => {
+  clearSessionApiKey();
+  apiKeyInput.value = "";
+  renderApiKeyStatus();
 });
 
 apiKeyInput.addEventListener("keydown", (e) => {
@@ -242,7 +481,7 @@ document.getElementById("resetHistoryBtn").addEventListener("click", () => {
     try { localStorage.removeItem(LS.history); } catch {}
     delete memoryFallback[LS.history];
     renderHome();
-    settingsModal.hidden = true;
+    closeSettings();
   }
 });
 
@@ -255,13 +494,119 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   URL.revokeObjectURL(a.href);
 });
 
+function cleanHistoryText(value, fallback = "") {
+  return typeof value === "string" ? value.trim().slice(0, 240) : fallback;
+}
+
+function normalizeHistoryEntry(entry) {
+  if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+  const parsedDate = new Date(entry.date);
+  if (!Number.isFinite(parsedDate.getTime())) return null;
+  const abandoned = entry.abandoned === true;
+  const words = Math.round(Number(entry.words));
+  const level = Math.round(Number(entry.level));
+  if (!Number.isFinite(words) || words < 0 || words > 1000000) return null;
+  if (!abandoned && words <= 0) return null;
+  if (!Number.isFinite(level) || level < 1 || level > 10) return null;
+
+  const normalized = {
+    date: parsedDate.toISOString(),
+    topic: cleanHistoryText(entry.topic, "Unknown"),
+    title: cleanHistoryText(entry.title),
+    words: abandoned ? 0 : words,
+    wpm: Number.isFinite(Number(entry.wpm)) ? Math.max(0, Math.min(1000, Math.round(Number(entry.wpm)))) : 0,
+    level,
+    abandoned,
+  };
+
+  const activeSeconds = Math.round(Number(entry.activeSeconds));
+  if (Number.isFinite(activeSeconds) && activeSeconds >= 0 && activeSeconds <= 86400) {
+    normalized.activeSeconds = activeSeconds;
+  }
+  if (typeof entry.wpmValid === "boolean") normalized.wpmValid = entry.wpmValid;
+  if (["too-short", "too-slow", "too-fast", null].includes(entry.wpmInvalidReason)) {
+    normalized.wpmInvalidReason = entry.wpmInvalidReason;
+  }
+  if (["hard", "just", "easy"].includes(entry.feedback)) normalized.feedback = entry.feedback;
+  const levelAfter = Math.round(Number(entry.levelAfter));
+  if (Number.isFinite(levelAfter) && levelAfter >= 1 && levelAfter <= 10) normalized.levelAfter = levelAfter;
+  if (abandoned && hasOwn(ABANDON_REASONS, entry.abandonReason)) {
+    normalized.abandonReason = entry.abandonReason;
+  }
+  return normalized;
+}
+
+function historyFingerprint(entry) {
+  return [entry.date, entry.topic, entry.title, entry.words, entry.level, entry.abandoned ? 1 : 0].join("|");
+}
+
+restoreInput.addEventListener("change", async () => {
+  settingsStatus.textContent = "";
+  const file = restoreInput.files && restoreInput.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showError("復元ファイルが大きすぎます。5MB以下のJSONを選んでください。");
+    restoreInput.value = "";
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(await file.text());
+    const source = Array.isArray(parsed) ? parsed : parsed && Array.isArray(parsed.history) ? parsed.history : null;
+    if (!source || source.length > 5000) throw new Error("invalid history container");
+    const imported = source.map(normalizeHistoryEntry).filter(Boolean);
+    if (!imported.length) throw new Error("no valid history entries");
+    const current = getHistory();
+    const known = new Set(current.map(historyFingerprint));
+    const additions = [];
+    imported.forEach((entry) => {
+      const fingerprint = historyFingerprint(entry);
+      if (known.has(fingerprint)) return;
+      known.add(fingerprint);
+      additions.push(entry);
+    });
+    if (!additions.length) {
+      settingsStatus.textContent = "すべて既に復元済みです。重複する記録は追加しませんでした。";
+      return;
+    }
+    const merged = [...current, ...additions]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, HISTORY_LIMIT);
+    const retained = new Set(merged.map(historyFingerprint));
+    const restoredCount = additions.filter((entry) => retained.has(historyFingerprint(entry))).length;
+    const omittedCount = additions.length - restoredCount;
+    if (!restoredCount) {
+      settingsStatus.textContent = `保存上限の${fmt(HISTORY_LIMIT)}件より古い記録だけだったため、追加しませんでした。`;
+      return;
+    }
+    if (!confirm(`${restoredCount}件の記録を、現在の記録に追加します。よろしいですか？`)) return;
+    const saved = writeHistory(merged);
+    renderHome();
+    const omittedNote = omittedCount ? ` 古い${omittedCount}件は保存上限のため除外しました。` : "";
+    settingsStatus.textContent = saved
+      ? `${restoredCount}件の記録を復元しました。${omittedNote}`
+      : `${restoredCount}件を今回のセッションへ復元しましたが、端末には保存できませんでした。${omittedNote}`;
+  } catch (err) {
+    showError("記録を復元できませんでした。Reading Lampから書き出したJSONか確認してください。");
+  } finally {
+    restoreInput.value = "";
+  }
+});
+
 // ---------------------- Home ----------------------
 
 const topicSelect = document.getElementById("topicSelect");
 const customTopicInput = document.getElementById("customTopicInput");
-topicSelect.addEventListener("change", () => {
-  customTopicInput.style.display = topicSelect.value === "custom" ? "block" : "none";
-});
+const customTopicOption = topicSelect.querySelector('option[value="custom"]');
+
+function syncTopicMode(useBank = usingOfflineBank()) {
+  customTopicOption.disabled = useBank;
+  customTopicOption.hidden = useBank;
+  if (useBank && topicSelect.value === "custom") topicSelect.value = "random";
+  customTopicInput.hidden = useBank || topicSelect.value !== "custom";
+}
+
+topicSelect.addEventListener("change", () => syncTopicMode());
 
 const TOPIC_POOL = [
   "Fantasy/stories", "Famous books", "Nature and animals",
@@ -272,10 +617,36 @@ function totalWordsRead() {
   return getHistory().reduce((s, h) => s + (h.words || 0), 0);
 }
 
-function recentWpm() {
-  const withWpm = getHistory().filter((h) => h.wpm > 0).slice(0, 5);
+function combinedWpm(entries) {
+  const withWpm = entries.filter((h) => h.wpm > 0 && h.wpmValid !== false);
   if (withWpm.length === 0) return null;
-  return Math.round(withWpm.reduce((s, h) => s + h.wpm, 0) / withWpm.length);
+
+  // Combine words and time instead of averaging session WPM values. This
+  // prevents a very short passage from influencing the result as much as a
+  // longer one. Older records without activeSeconds remain compatible by
+  // treating their saved WPM as a one-minute sample.
+  const totals = withWpm.reduce((acc, h) => {
+    const words = Number(h.words);
+    const seconds = Number(h.activeSeconds);
+    if (words > 0 && seconds > 0) {
+      acc.words += words;
+      acc.seconds += seconds;
+    } else {
+      acc.words += Number(h.wpm);
+      acc.seconds += 60;
+    }
+    return acc;
+  }, { words: 0, seconds: 0 });
+
+  return totals.seconds > 0
+    ? Math.round(totals.words / (totals.seconds / 60))
+    : null;
+}
+
+function recentWpm() {
+  return combinedWpm(
+    getHistory().filter((h) => h.wpm > 0 && h.wpmValid !== false).slice(0, 5)
+  );
 }
 
 function computeStreak() {
@@ -297,6 +668,104 @@ function wordsToday() {
   return getHistory()
     .filter((h) => new Date(h.date).toDateString() === today)
     .reduce((s, h) => s + (h.words || 0), 0);
+}
+
+function renderAnalysisBars(container, items, valueFormatter) {
+  container.innerHTML = "";
+  if (!items.length) {
+    const empty = document.createElement("li");
+    empty.className = "analysis-bar-label";
+    empty.textContent = "記録なし";
+    container.appendChild(empty);
+    return;
+  }
+  const max = Math.max(...items.map((item) => item.value), 1);
+  items.forEach((item) => {
+    const row = document.createElement("li");
+    row.className = "analysis-bar-row";
+
+    const label = document.createElement("span");
+    label.className = "analysis-bar-label";
+    label.textContent = item.label;
+
+    const track = document.createElement("span");
+    track.className = "analysis-bar-track";
+    track.setAttribute("aria-hidden", "true");
+    const fill = document.createElement("span");
+    fill.className = "analysis-bar-fill";
+    fill.style.width = `${Math.max(3, (item.value / max) * 100)}%`;
+    track.appendChild(fill);
+
+    const value = document.createElement("span");
+    value.className = "analysis-bar-value";
+    value.textContent = valueFormatter(item.value);
+
+    row.appendChild(label);
+    row.appendChild(track);
+    row.appendChild(value);
+    container.appendChild(row);
+  });
+}
+
+function renderHistoryAnalysis(history) {
+  const completed = history.filter((h) => !h.abandoned && Number(h.words) > 0);
+  const abandoned = history.filter((h) => h.abandoned);
+  const attempts = completed.length + abandoned.length;
+  const analysisEmpty = document.getElementById("analysisEmpty");
+  const analysisContent = document.getElementById("analysisContent");
+  const hasRecords = attempts > 0;
+  analysisEmpty.hidden = hasRecords;
+  analysisContent.hidden = !hasRecords;
+  if (!hasRecords) return;
+
+  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const last7Days = completed
+    .filter((h) => new Date(h.date).getTime() >= sevenDaysAgo)
+    .reduce((sum, h) => sum + Number(h.words || 0), 0);
+  const totalCompletedWords = completed.reduce((sum, h) => sum + Number(h.words || 0), 0);
+
+  document.getElementById("analysisCompleted").textContent = fmt(completed.length);
+  document.getElementById("analysisLast7Days").textContent = fmt(last7Days);
+  document.getElementById("analysisAvgWords").textContent = completed.length
+    ? fmt(Math.round(totalCompletedWords / completed.length))
+    : "—";
+  document.getElementById("analysisAbandonRate").textContent = attempts
+    ? `${Math.round((abandoned.length / attempts) * 100)}%`
+    : "0%";
+
+  const validWpm = completed.filter((h) => h.wpm > 0 && h.wpmValid !== false);
+  const currentWpm = combinedWpm(validWpm.slice(0, 5));
+  const previousWpm = combinedWpm(validWpm.slice(5, 10));
+  let trendText = "WPMの有効な記録はまだありません。";
+  if (currentWpm !== null && previousWpm === null) {
+    trendText = `最近の読む速さは ${currentWpm} WPMです。比較には10回分の有効記録が必要です。`;
+  } else if (currentWpm !== null && previousWpm !== null) {
+    const change = currentWpm - previousWpm;
+    const direction = Math.abs(change) < 5 ? "ほぼ安定" : change > 0 ? `${change} WPM上昇` : `${Math.abs(change)} WPM低下`;
+    trendText = `最近5回は ${currentWpm} WPM、その前の5回は ${previousWpm} WPMで、${direction}しています。`;
+  }
+  document.getElementById("analysisWpmTrend").textContent = trendText;
+
+  const topicWords = new Map();
+  const levelCounts = new Map();
+  completed.forEach((h) => {
+    const topic = cleanHistoryText(h.topic, "Unknown") || "Unknown";
+    topicWords.set(topic, (topicWords.get(topic) || 0) + Number(h.words || 0));
+    const level = Math.min(10, Math.max(1, Math.round(Number(h.level) || 1)));
+    levelCounts.set(level, (levelCounts.get(level) || 0) + 1);
+  });
+  const reasonCounts = new Map();
+  abandoned.forEach((h) => {
+    const key = hasOwn(ABANDON_REASONS, h.abandonReason) ? h.abandonReason : "other";
+    reasonCounts.set(key, (reasonCounts.get(key) || 0) + 1);
+  });
+
+  const sortedTopics = [...topicWords].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
+  const sortedLevels = [...levelCounts].map(([level, value]) => ({ label: `レベル ${level}`, value })).sort((a, b) => Number(a.label.split(" ")[1]) - Number(b.label.split(" ")[1]));
+  const sortedReasons = [...reasonCounts].map(([reason, value]) => ({ label: ABANDON_REASONS[reason], value })).sort((a, b) => b.value - a.value);
+  renderAnalysisBars(document.getElementById("analysisTopics"), sortedTopics, (value) => `${fmt(value)}語`);
+  renderAnalysisBars(document.getElementById("analysisLevels"), sortedLevels, (value) => `${fmt(value)}篇`);
+  renderAnalysisBars(document.getElementById("analysisAbandonReasons"), sortedReasons, (value) => `${fmt(value)}回`);
 }
 
 function renderHome() {
@@ -326,9 +795,19 @@ function renderHome() {
   document.getElementById("levelNote").textContent =
     `レベル ${info.n}：${info.desc}`;
 
+  const useBank = usingOfflineBank();
+  syncTopicMode(useBank);
+  document.getElementById("modeNote").textContent = useBank
+    ? "オフライン文章バンク ・ APIキー不要"
+    : `AI生成 ・ 1篇 約${fmt(getNum(LS.wordCount, 800))}語`;
+  document.getElementById("startBtn").textContent = useBank
+    ? "文章バンクから読みはじめる"
+    : "AIで文章を作って読む";
+
   const list = document.getElementById("historyList");
   list.innerHTML = "";
   const history = getHistory();
+  renderHistoryAnalysis(history);
   if (history.length === 0) {
     const li = document.createElement("li");
     li.className = "history-empty";
@@ -340,7 +819,7 @@ function renderHome() {
       const d = new Date(h.date);
       const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
       const meta = h.abandoned
-        ? "途中でやめた"
+        ? `途中終了・${ABANDON_REASONS[h.abandonReason] || "理由未記録"}`
         : `${fmt(h.words)}語 ・ ${h.wpm || "—"} wpm`;
       li.innerHTML = `<span class="h-topic">${esc(h.title || h.topic || "")}</span><span class="h-meta">${dateStr} ・ ${meta}</span>`;
       list.appendChild(li);
@@ -370,23 +849,60 @@ function animateLoading() {
 function stopLoading() { clearInterval(loadingTimer); }
 
 let session = null;
-let readingStartedAt = 0;
+const readingClock = { activeMs: 0, startedAt: 0, running: false };
+
+function clockNow() {
+  return window.performance && typeof window.performance.now === "function"
+    ? window.performance.now()
+    : Date.now();
+}
+
+function startReadingTimer() {
+  readingClock.activeMs = 0;
+  readingClock.running = !document.hidden;
+  readingClock.startedAt = readingClock.running ? clockNow() : 0;
+}
+
+function pauseReadingTimer() {
+  if (!readingClock.running) return;
+  readingClock.activeMs += Math.max(0, clockNow() - readingClock.startedAt);
+  readingClock.running = false;
+  readingClock.startedAt = 0;
+}
+
+function resumeReadingTimer() {
+  if (readingClock.running || document.hidden || views.reading.hidden || activeModalElement) return;
+  readingClock.startedAt = clockNow();
+  readingClock.running = true;
+}
+
+function finishReadingTimer() {
+  pauseReadingTimer();
+  return Math.max(0, readingClock.activeMs / 1000);
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) pauseReadingTimer();
+  else resumeReadingTimer();
+});
+window.addEventListener("pagehide", pauseReadingTimer);
+window.addEventListener("pageshow", resumeReadingTimer);
 
 document.getElementById("startBtn").addEventListener("click", startSession);
 document.getElementById("anotherBtn").addEventListener("click", startSession);
 document.getElementById("homeBtn").addEventListener("click", () => { renderHome(); showView("home"); });
 
 async function startSession() {
-  const useBank = getBool(LS.offlineBank, false);
+  const useBank = usingOfflineBank();
 
   if (useBank) {
     return startOfflineSession();
   }
 
-  const apiKey = get(LS.apiKey, "");
+  const apiKey = getSessionApiKey();
   if (!apiKey) {
     openSettings();
-    showError("先に Anthropic API キーを設定してください。もしくは「オフラインの文章バンクを使う」を設定でオンにしてください。");
+    showError("AI生成を使うにはAnthropic APIキーが必要です。設定でオフライン文章バンクへ戻すこともできます。");
     return;
   }
 
@@ -409,10 +925,11 @@ async function startSession() {
     stopLoading();
     renderReading(session);
     showView("reading");
-    readingStartedAt = Date.now();
+    startReadingTimer();
   } catch (err) {
     stopLoading();
     console.error(err);
+    if (/API error (401|403)/.test(String(err && err.message))) clearSessionApiKey();
     showView("home");
     showError(readableError(err));
   }
@@ -505,8 +1022,7 @@ async function startOfflineSession() {
     return;
   }
 
-  const topic = topicSelect.value === "custom" ? "random" : topicSelect.value;
-  const story = pickStory(bank, topic, getLevel());
+  const story = pickStory(bank, topicSelect.value, getLevel());
 
   session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id };
   markSeen(story.id);
@@ -514,14 +1030,15 @@ async function startOfflineSession() {
 
   renderReading(session);
   showView("reading");
-  readingStartedAt = Date.now();
+  startReadingTimer();
 }
 
 function readableError(err) {
   const m = String((err && err.message) || err);
-  if (m.includes("401") || /authentication/i.test(m)) return "APIキーが正しくないようです。設定を確認してください。";
+  if (m.includes("401") || m.includes("403") || /authentication/i.test(m)) return "APIキーが正しくないか、利用権限がありません。キーを消去したため、設定から再入力してください。";
   if (m.includes("429")) return "リクエストが混み合っています。少し待ってから再試行してください。";
   if (m.includes("400")) return "リクエストが受け付けられませんでした。設定の語数を減らして試してみてください。";
+  if (/timed out|AbortError/i.test(m)) return "APIから時間内に応答がありませんでした。通信状況を確認して、もう一度お試しください。";
   if (/Failed to fetch|NetworkError/i.test(m)) return "通信に失敗しました。ネットワーク接続を確認してください。";
   return "生成中にエラーが発生しました: " + m;
 }
@@ -559,25 +1076,41 @@ Respond with ONLY a single JSON object, no markdown fences and no commentary:
 }
 
 async function generate({ topic, apiKey }) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-5",
-      max_tokens: 4000,
-      system: buildSystemPrompt(),
-      messages: [{ role: "user", content: `Topic: ${topic}` }],
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45000);
+  let res;
+
+  try {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      credentials: "omit",
+      cache: "no-store",
+      referrerPolicy: "no-referrer",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-5",
+        max_tokens: 4000,
+        system: buildSystemPrompt(),
+        messages: [{ role: "user", content: `Topic: ${topic}` }],
+      }),
+    });
+  } catch (err) {
+    if (err && err.name === "AbortError") throw new Error("API request timed out");
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`API error ${res.status}: ${body.slice(0, 200)}`);
+    // Do not surface or log a provider response body. It can contain request
+    // details that are unnecessary for a reader-facing error message.
+    throw new Error(`API error ${res.status}`);
   }
 
   const data = await res.json();
@@ -626,24 +1159,51 @@ function renderReading(s) {
 }
 
 document.getElementById("finishReadingBtn").addEventListener("click", () => {
-  session._elapsedSec = Math.max(1, (Date.now() - readingStartedAt) / 1000);
+  session._elapsedSec = finishReadingTimer();
   showView("calibrate");
 });
 
+const abandonModal = document.getElementById("abandonModal");
+const cancelAbandonBtn = document.getElementById("cancelAbandonBtn");
+const abandonReasonButtons = [...document.querySelectorAll("[data-abandon-reason]")];
+
+function cancelAbandon() {
+  closeAccessibleModal();
+}
+
 document.getElementById("abandonBtn").addEventListener("click", () => {
-  // Principle: the reader may abandon a text freely. Log it, credit nothing,
-  // and treat it as a signal that the level may be too high.
+  openAccessibleModal(abandonModal, abandonReasonButtons[0], cancelAbandon);
+});
+
+cancelAbandonBtn.addEventListener("click", cancelAbandon);
+abandonModal.addEventListener("click", (e) => {
+  if (e.target === abandonModal) cancelAbandon();
+});
+
+abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
+  const activeSeconds = finishReadingTimer();
+  const abandonReason = btn.dataset.abandonReason;
+  const levelBefore = getLevel();
+  const adjustment = abandonReason === "too-hard"
+    ? adjustLevelFromFeedback("hard", levelBefore)
+    : { before: levelBefore, after: levelBefore };
+  if (abandonReason !== "too-hard") saveLevelSignals(levelBefore, 0);
+
   pushHistory({
     date: new Date().toISOString(),
     topic: session.topic,
     title: session.title,
     words: 0,
     wpm: 0,
-    level: getLevel(),
+    activeSeconds: Math.round(activeSeconds),
+    level: adjustment.before,
+    levelAfter: adjustment.after,
+    abandonReason,
     abandoned: true,
   });
+  closeAccessibleModal({ restoreFocus: false, resumeReading: false });
   startSession();
-});
+}));
 
 // ---------------------- Calibration ----------------------
 
@@ -653,16 +1213,22 @@ document.querySelectorAll(".calibrate-btn").forEach((btn) => {
 
 function finishSession(feedback) {
   const words = session._words;
-  const minutes = session._elapsedSec / 60;
-  // Guard against an unrealistically fast "read" (tab left open, skimming).
-  const rawWpm = Math.round(words / minutes);
-  const wpm = rawWpm > 600 ? 0 : rawWpm;
+  const activeSeconds = Math.max(0, session._elapsedSec || 0);
+  const rawWpm = activeSeconds > 0 ? Math.round(words / (activeSeconds / 60)) : 0;
+  const wpmInvalidReason = activeSeconds < 10
+    ? "too-short"
+    : rawWpm < 10
+      ? "too-slow"
+      : rawWpm > 600
+        ? "too-fast"
+        : null;
+  const wpmIsValid = wpmInvalidReason === null;
+  const wpm = wpmIsValid ? rawWpm : 0;
 
-  // Level adjustment. Nudge down promptly when hard, up cautiously when easy —
-  // ER favours erring on the easy side.
+  // Hard feedback lowers the level immediately. Easy feedback must be
+  // repeated three times at the same level before moving up.
   const before = getLevel();
-  if (feedback === "hard") setLevel(before - 1);
-  else if (feedback === "easy") setLevel(before + 1);
+  const adjustment = adjustLevelFromFeedback(feedback, before);
 
   pushHistory({
     date: new Date().toISOString(),
@@ -670,18 +1236,22 @@ function finishSession(feedback) {
     title: session.title,
     words,
     wpm,
-    level: before,
+    activeSeconds: Math.round(activeSeconds),
+    wpmValid: wpmIsValid,
+    wpmInvalidReason,
+    level: adjustment.before,
+    levelAfter: adjustment.after,
     feedback,
     abandoned: false,
   });
 
-  renderSummary(words, wpm, before, getLevel(), feedback);
+  renderSummary(words, wpm, adjustment, wpmInvalidReason);
   showView("summary");
 }
 
 // ---------------------- Summary ----------------------
 
-function renderSummary(words, wpm, levelBefore, levelAfter, feedback) {
+function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   const total = totalWordsRead();
 
   document.getElementById("summaryHeadline").textContent = `${fmt(words)} 語を読みました`;
@@ -690,11 +1260,7 @@ function renderSummary(words, wpm, levelBefore, levelAfter, feedback) {
   document.getElementById("summaryTotal").textContent = fmt(total);
 
   const notes = [];
-  if (levelAfter !== levelBefore) {
-    notes.push(levelAfter < levelBefore
-      ? `次からレベル ${levelAfter} に下げます。易しいほうが多読は伸びます。`
-      : `次からレベル ${levelAfter} に上げます。`);
-  }
+  if (adjustment.note) notes.push(adjustment.note);
   const goal = getNum(LS.dailyGoal, 1500);
   const today = wordsToday();
   if (today >= goal) notes.push(`今日の目標 ${fmt(goal)} 語を達成しました。`);
@@ -702,7 +1268,11 @@ function renderSummary(words, wpm, levelBefore, levelAfter, feedback) {
   const crossed = MILESTONES.find((m) => total >= m && total - words < m);
   if (crossed) notes.push(`累計 ${fmt(crossed)} 語に到達しました。`);
 
-  if (wpm === 0) notes.push("読書時間が短すぎたため、読む速さは記録しませんでした。");
+  if (wpmInvalidReason === "too-short") {
+    notes.push("読書時間が10秒未満だったため、読む速さは記録しませんでした。");
+  } else if (wpmInvalidReason) {
+    notes.push("計測値が通常範囲外だったため、読む速さは記録しませんでした。");
+  }
 
   document.getElementById("summaryNote").textContent = notes.join(" ");
 }
@@ -714,6 +1284,56 @@ showView("home");
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    const updateToast = document.getElementById("updateToast");
+    const applyUpdateBtn = document.getElementById("applyUpdateBtn");
+    const dismissUpdateBtn = document.getElementById("dismissUpdateBtn");
+    let waitingWorker = null;
+    let reloadingForUpdate = false;
+
+    const showUpdateNotice = (worker) => {
+      waitingWorker = worker;
+      updateToast.hidden = false;
+    };
+
+    applyUpdateBtn.addEventListener("click", () => {
+      if (!waitingWorker) return;
+      applyUpdateBtn.disabled = true;
+      applyUpdateBtn.textContent = "更新中…";
+      waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    });
+
+    dismissUpdateBtn.addEventListener("click", () => {
+      updateToast.hidden = true;
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (reloadingForUpdate) return;
+      reloadingForUpdate = true;
+      window.location.reload();
+    });
+
+    navigator.serviceWorker.register("sw.js").then((registration) => {
+      if (registration.waiting && navigator.serviceWorker.controller) {
+        showUpdateNotice(registration.waiting);
+      }
+
+      registration.addEventListener("updatefound", () => {
+        const installingWorker = registration.installing;
+        if (!installingWorker) return;
+
+        installingWorker.addEventListener("statechange", () => {
+          if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+            showUpdateNotice(installingWorker);
+          }
+        });
+      });
+
+      // Installed PWAs can stay open for days. Check again whenever the user
+      // returns to the app instead of waiting for the next full navigation.
+      window.addEventListener("focus", () => registration.update().catch(() => {}));
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) registration.update().catch(() => {});
+      });
+    }).catch(() => {});
   });
 }

@@ -1,0 +1,1001 @@
+﻿id,level,topic,title,word_count,sentence_count,avg_sentence_words,mean_zipf_frequency,low_frequency_pct,very_low_frequency_pct,long_word_pct,probable_proper_noun_types,lexical_flags,syntax_flag,status
+s001,5,Fantasy/stories,Lantern Keeper,247,25,9.88,5.949,5.39,0.0,2.49,1,,no,within-guardrails
+s002,5,Nature and animals,Octopus Who Changed Color,285,19,15.0,5.722,6.18,2.18,8.36,2,,no,within-guardrails
+s003,5,World affairs,A City Without Cars,288,22,13.09,5.857,2.43,0.0,8.33,0,,no,within-guardrails
+s004,5,Everyday life,Last Seat on the Train,257,21,12.24,5.883,3.66,0.0,5.69,2,,no,within-guardrails
+s005,5,History,Girl Who Delivered Letters,257,12,21.42,5.808,3.92,0.39,8.63,2,,no,within-guardrails
+s006,5,Science,Why Bread Rises,266,13,20.46,5.762,10.53,1.13,5.64,0,,no,within-guardrails
+s007,6,Fantasy/stories,Cartographer's Mistake,305,22,13.86,5.737,7.02,1.67,8.7,2,,no,within-guardrails
+s008,6,Nature and animals,Migration No One Predicted,294,14,21.0,5.58,7.14,0.68,23.13,0,,no,within-guardrails
+s009,6,World affairs,The Fishing Village That Said No,305,14,21.79,5.724,2.95,0.33,18.03,0,,no,within-guardrails
+s010,6,Everyday life,Learning to Cook From Scratch,272,13,20.92,5.719,5.2,0.74,11.9,1,,no,within-guardrails
+s011,6,History,Bridge Built in a Single Winter,282,10,28.2,5.635,6.74,0.71,17.38,0,,no,within-guardrails
+s012,6,Science,The Strange Physics of Sleep,282,13,21.69,5.684,3.56,0.71,18.51,1,,no,within-guardrails
+s013,7,Fantasy/stories,Clockmaker's Apprentice,387,13,29.77,5.519,8.62,2.09,20.63,1,,no,within-guardrails
+s014,7,Nature and animals,Fungus That Farms Ants,349,11,31.73,5.401,14.04,1.72,26.93,0,,no,within-guardrails
+s015,7,World affairs,When a River Crosses a Border,348,11,31.64,5.11,17.53,1.44,42.53,0,long-words,no,vocabulary-review
+s016,7,Everyday life,Apartment Above the Bakery,352,13,27.08,5.483,13.83,2.31,20.17,2,,no,within-guardrails
+s017,7,History,Telegraph Operator Who Changed a War,392,12,32.67,5.334,14.95,2.06,35.57,1,,no,within-guardrails
+s018,7,Science,The Mathematics Hidden in Seashells,348,10,34.8,5.272,15.8,4.31,30.17,0,very-low-frequency,no,vocabulary-review
+s019,8,Fantasy/stories,Archivist's Debt,446,13,34.31,5.424,17.95,3.41,27.73,2,,no,within-guardrails
+s020,8,Nature and animals,Deep-Sea Creature That Rewrote a Textbook,411,10,41.1,5.104,22.87,4.87,36.25,0,low-frequency,no,vocabulary-review
+s021,8,World affairs,The Currency No Government Controls,377,10,37.7,5.063,19.36,1.59,48.54,0,long-words,no,vocabulary-review
+s022,8,Everyday life,Neighbor Who Kept Score,391,11,35.55,5.411,15.26,2.11,27.37,2,,no,within-guardrails
+s023,8,History,Committee That Erased Itself,372,10,37.2,5.275,15.32,1.88,42.2,0,long-words,no,vocabulary-review
+s024,8,Science,The Memory That Isn't Where You Think It Is,390,12,32.5,5.189,16.67,3.08,39.49,0,,no,within-guardrails
+s025,5,Fantasy/stories,Baker Who Whispered to Bread,260,20,13.0,5.782,8.23,0.41,8.64,4,,no,within-guardrails
+s026,5,Fantasy/stories,Door That Only Opened at Noon,242,16,15.12,5.737,6.69,0.84,5.44,1,,no,within-guardrails
+s027,6,Fantasy/stories,The Tailor's Invisible Thread,242,14,17.29,5.621,11.44,2.54,13.56,1,,no,within-guardrails
+s028,6,Fantasy/stories,River That Remembered Names,231,10,23.1,5.581,12.17,1.3,17.83,1,,no,within-guardrails
+s029,7,Fantasy/stories,Clockmaker's Second Apprentice,271,9,30.11,5.473,12.26,1.92,25.67,2,,no,within-guardrails
+s030,7,Fantasy/stories,The Garden Grown From Borrowed Time,275,11,25.0,5.489,8.58,1.49,25.37,2,,no,within-guardrails
+s031,8,Fantasy/stories,Cartographer Who Sold Directions,301,8,37.62,5.236,12.16,1.69,33.45,2,,no,within-guardrails
+s032,8,Fantasy/stories,Innkeeper's Ledger of Debts,296,8,37.0,5.176,18.21,3.44,35.4,2,,no,within-guardrails
+s033,5,Nature and animals,The Crow Who Remembered Faces,234,13,18.0,5.603,11.11,0.85,16.24,0,,no,within-guardrails
+s034,5,Nature and animals,Why Some Trees Talk Underground,216,9,24.0,5.541,3.7,0.0,21.76,0,,no,within-guardrails
+s035,6,Nature and animals,Fish That Climbs Waterfalls,257,11,23.36,5.405,12.94,1.96,20.39,2,,no,within-guardrails
+s036,6,Nature and animals,The Bees That Vote With Their Bodies,265,9,29.44,5.363,13.21,1.51,29.81,0,,no,within-guardrails
+s037,7,Nature and animals,Elephant's Long Memory for Grief,298,8,37.25,5.18,16.11,2.35,39.6,0,long-words,yes,vocabulary-review
+s038,7,Nature and animals,Bird That Fakes a Broken Wing,303,9,33.67,5.153,18.48,2.64,37.29,0,low-frequency|long-words,no,priority-review
+s039,8,Nature and animals,The Fungus That Controls an Ant's Mind,328,7,46.86,5.0,26.52,3.66,38.11,0,low-frequency,yes,vocabulary-review
+s040,8,Nature and animals,Whale Song That Changed Overnight,332,7,47.43,5.143,16.06,2.42,38.79,1,,yes,syntax-review
+s041,5,World affairs,Town That Shared One Library Book,240,12,20.0,5.789,3.78,0.0,11.76,1,,no,within-guardrails
+s042,8,World affairs,A School With No Walls,229,10,22.9,5.459,7.08,0.88,24.78,2,,no,within-guardrails
+s043,8,World affairs,Island Nation Selling Its Weather,256,8,32.0,5.228,12.5,1.17,41.41,0,,no,within-guardrails
+s044,8,World affairs,City That Rented Out Its Rooftops,268,8,33.5,5.17,11.94,0.0,39.18,0,,no,within-guardrails
+s045,8,World affairs,The Border That Moves Every Spring,320,7,45.71,5.089,19.06,2.81,43.75,0,long-words,yes,vocabulary-review
+s046,7,World affairs,Country Without an Official Language,292,8,36.5,5.176,15.07,2.74,48.29,0,long-words,yes,vocabulary-review
+s047,8,World affairs,Treaty No One Remembers Signing,333,7,47.57,5.164,15.32,1.8,38.74,0,,yes,syntax-review
+s048,8,World affairs,The River Two Countries Refuse to Stop Sharing,318,7,45.43,5.055,14.15,1.26,45.28,0,long-words,yes,vocabulary-review
+s049,5,Everyday life,Umbrella That Belonged to Everyone,217,11,19.73,5.735,8.37,0.47,14.88,2,,no,within-guardrails
+s050,5,Everyday life,Learning to Ride a Bike at Forty,239,13,18.38,5.667,8.94,0.43,13.19,2,,no,within-guardrails
+s051,6,Everyday life,The Neighbor's Garden Wall,236,11,21.45,5.612,8.26,1.3,16.96,2,,no,within-guardrails
+s052,6,Everyday life,Waiting for the Repairman,238,8,29.75,5.51,11.11,0.85,23.5,2,,no,within-guardrails
+s053,7,Everyday life,Silence After the Renovation,328,7,46.86,5.304,15.69,2.77,32.92,1,,yes,syntax-review
+s054,7,Everyday life,The Habit of Sunday Phone Calls,350,7,50.0,5.467,7.29,1.46,25.07,2,,yes,syntax-review
+s055,8,Everyday life,Inheritance of an Empty House,376,7,53.71,5.344,11.35,2.97,32.16,2,,yes,syntax-review
+s056,8,Everyday life,Ritual of the Late Train,400,7,57.14,5.563,8.33,1.01,23.74,1,,yes,syntax-review
+s057,5,History,The Boy Who Rang the Wrong Bell,240,9,26.67,5.616,10.59,0.42,15.68,1,,no,within-guardrails
+s058,8,History,Map Made of Sticks,235,9,26.11,5.271,11.64,2.16,25.43,2,,no,within-guardrails
+s059,8,History,Winter the River Became a Road,284,6,47.33,5.163,12.32,1.06,31.34,0,,yes,syntax-review
+s060,8,History,The Queen Who Never Left Her Room,285,7,40.71,5.353,7.75,0.0,34.86,1,,no,within-guardrails
+s061,7,History,Clerk Who Saved a City's Records,343,8,42.88,5.254,12.13,1.48,36.98,1,long-words,yes,vocabulary-review
+s062,8,History,Expedition That Got the Math Wrong,337,7,48.14,5.203,18.99,2.37,43.32,0,long-words,yes,vocabulary-review
+s063,8,History,The Diplomat Who Negotiated in Silence,362,7,51.71,5.084,19.61,2.76,50.0,0,long-words,yes,vocabulary-review
+s064,8,History,Census That Counted the Wrong Century,339,7,48.43,5.145,17.11,2.95,45.72,0,long-words,yes,vocabulary-review
+s065,8,Science,Why Onions Make You Cry,249,9,27.67,5.559,11.24,0.4,16.06,0,,no,within-guardrails
+s066,8,Science,How Spiders Build Without a Plan,263,7,37.57,5.482,9.51,0.76,17.49,0,,no,within-guardrails
+s067,6,Science,Ice That Doesn't Melt Evenly,266,7,38.0,5.25,18.42,2.26,22.56,0,low-frequency,yes,vocabulary-review
+s068,6,Science,Why Some Metals Remember Their Shape,267,8,33.38,5.28,14.98,2.62,30.71,0,long-words,yes,vocabulary-review
+s069,7,Science,The Bacteria That Eat Plastic,342,7,48.86,5.169,13.45,1.17,41.23,0,long-words,yes,vocabulary-review
+s070,8,Science,Question of Whether Plants Feel Pain,350,7,50.0,5.08,15.71,2.0,44.29,0,long-words,yes,vocabulary-review
+s071,8,Science,Particle That Barely Exists,382,8,47.75,5.076,19.37,5.5,45.81,0,very-low-frequency|long-words,yes,priority-review
+s072,8,Science,The Clock That Runs Slower on a Mountain,395,8,49.38,5.034,22.37,4.37,41.39,2,low-frequency,yes,vocabulary-review
+s073,5,Famous books,Scrooge Sees His Past,213,18,11.83,5.964,0.0,0.0,5.53,5,,no,within-guardrails
+s074,5,Famous books,Scrooge Meets the Second Spirit,201,17,11.82,5.813,3.41,0.0,11.36,8,,no,within-guardrails
+s075,6,Famous books,Elizabeth Meets Mr Darcy,194,20,9.7,5.757,5.62,0.0,15.17,4,,no,within-guardrails
+s076,6,Famous books,Darcy's First Proposal,203,21,9.67,5.81,3.66,0.0,15.71,4,,no,within-guardrails
+s077,7,Famous books,Pip Meets the Convict,195,17,11.47,5.845,3.21,0.0,13.37,3,,no,within-guardrails
+s078,7,Famous books,Pip Visits Miss Havisham,191,16,11.94,5.732,4.62,0.0,10.4,6,,no,within-guardrails
+s079,8,Famous books,A Tale of Two Cities Begins,200,15,13.33,5.704,6.08,0.55,16.02,10,,no,within-guardrails
+s080,8,Famous books,Doctor Manette Returns to Life,201,17,11.82,5.763,5.32,0.53,16.49,7,,no,within-guardrails
+s081,5,Fantasy/stories,The Lantern That Only Lights for Honest People,251,15,16.73,5.719,9.56,1.59,15.54,0,,no,within-guardrails
+s082,6,Fantasy/stories,Weaver Who Sold Dreams by the Yard,261,9,29.0,5.391,12.74,3.47,22.39,1,very-low-frequency,no,vocabulary-review
+s083,7,Fantasy/stories,Apprentice Who Inherited a Debt of Silence,305,7,43.57,5.387,12.5,2.08,28.82,4,,yes,syntax-review
+s084,8,Fantasy/stories,The Bridge That Charges a Different Toll to Everyone,344,7,49.14,5.234,14.91,1.17,38.3,2,,yes,syntax-review
+s085,5,Nature and animals,Octopus That Changes Color to Match Its Mood,258,8,32.25,5.261,12.4,3.1,28.68,0,very-low-frequency|long-words,yes,priority-review
+s086,6,Nature and animals,Ants That Build Living Bridges,282,7,40.29,5.432,10.99,0.71,23.4,0,,yes,syntax-review
+s087,8,Nature and animals,The Bat That Navigates by Borrowed Echoes,300,8,37.5,5.08,20.0,6.0,37.67,0,very-low-frequency,no,vocabulary-review
+s088,8,Nature and animals,Coral That Predicts the Weather,351,8,43.88,5.018,19.37,2.85,40.17,0,,yes,syntax-review
+s089,6,World affairs,Village That Grows Its Own Electricity,257,7,36.71,5.355,12.06,1.95,30.35,0,long-words,yes,vocabulary-review
+s090,6,World affairs,The City That Banned Cars for a Day,277,7,39.57,5.302,9.82,0.36,37.45,2,long-words,yes,vocabulary-review
+s091,7,World affairs,Nation That Measures Progress by Happiness,301,8,37.62,5.121,14.95,1.66,49.83,0,long-words,yes,vocabulary-review
+s092,8,World affairs,Two Cities Sharing One Airport,349,7,49.86,5.16,9.74,1.43,44.13,0,long-words,yes,vocabulary-review
+s093,5,Everyday life,The Recipe Card With No Measurements,239,11,21.73,5.519,8.62,0.0,16.38,2,,no,within-guardrails
+s094,6,Everyday life,Commute That Became a Friendship,304,8,38.0,5.392,11.74,0.34,28.19,3,,yes,syntax-review
+s095,7,Everyday life,Year Without a Microwave,326,7,46.57,5.298,12.69,2.48,32.51,2,,yes,syntax-review
+s096,8,Everyday life,The Father's Silence and the Son's Questions,328,7,46.86,5.211,12.46,2.49,35.51,2,,yes,syntax-review
+s097,5,History,Drummer Who Warned a Village,272,9,30.22,5.503,9.4,1.5,21.43,2,,yes,syntax-review
+s098,7,History,Coin With Two Different Faces,295,6,49.17,5.265,12.54,2.71,37.29,0,long-words,yes,vocabulary-review
+s099,7,History,The Interpreter Who Refused to Translate,327,8,40.88,5.197,16.46,3.42,42.86,2,long-words,yes,vocabulary-review
+s100,8,History,Governor Who Ruled by Letter Only,359,8,44.88,5.134,16.99,2.51,49.03,0,long-words,yes,vocabulary-review
+s101,5,Science,Why Cats Always Land on Their Feet,250,6,41.67,5.512,10.4,1.6,20.0,0,,yes,syntax-review
+s102,6,Science,The Salt That Preserves Without Cold,281,7,40.14,5.284,9.96,2.49,31.32,0,long-words,yes,vocabulary-review
+s103,7,Science,Fungus That Glows in the Dark,318,7,45.43,4.975,19.81,3.14,42.14,0,low-frequency|long-words,yes,priority-review
+s104,8,Science,Star That Refuses to Die Quietly,352,7,50.29,5.16,16.48,1.42,42.61,0,long-words,yes,vocabulary-review
+s105,5,Famous books,Scrooge Wakes on Christmas Morning,213,19,11.21,5.953,3.06,0.0,11.22,6,,no,within-guardrails
+s106,6,Famous books,The Crisis Caused by Lydia,199,17,11.71,5.851,5.62,0.56,14.04,9,,no,within-guardrails
+s107,7,Famous books,Pip Learns Who Helped Him,208,19,10.95,5.814,7.25,0.52,15.54,7,,no,within-guardrails
+s108,8,Famous books,Carton and Darnay Look Alike,201,19,10.58,5.728,7.57,0.0,17.84,7,,no,within-guardrails
+s109,9,Fantasy/stories,Cartomancer's Final Reading,480,10,48.0,5.395,13.5,3.38,26.79,2,,yes,syntax-review
+s110,9,Fantasy/stories,Puppeteer Who Lost the Strings,455,8,56.88,5.194,20.67,3.82,36.18,2,,yes,syntax-review
+s111,10,Fantasy/stories,The Alchemist's Unfinished Equation,543,9,60.33,5.041,19.74,4.51,43.98,4,,yes,syntax-review
+s112,10,Fantasy/stories,Keeper of Names No One Speaks,527,9,58.56,5.155,18.01,3.45,38.12,3,,yes,syntax-review
+s113,9,Nature and animals,Migratory Instinct That Skipped a Generation,438,9,48.67,4.985,22.76,5.29,48.28,3,low-frequency|long-words,yes,priority-review
+s114,9,Nature and animals,The Symbiosis No One Predicted,434,8,54.25,5.147,18.43,2.53,43.78,0,,yes,syntax-review
+s115,10,Nature and animals,Ecosystem Hidden Beneath the Ice,487,8,60.88,5.001,16.32,3.56,47.28,5,,yes,syntax-review
+s116,10,Nature and animals,Species That Domesticated Itself,491,13,37.77,5.05,22.2,4.07,43.38,0,,no,within-guardrails
+s117,9,World affairs,The Currency Backed by Trust Alone,462,8,57.75,5.151,13.85,0.65,45.45,0,,yes,syntax-review
+s118,9,World affairs,Parliament That Meets Underwater,510,9,56.67,5.067,13.92,1.57,43.14,0,,yes,syntax-review
+s119,10,World affairs,Diplomatic Immunity That Outlived Its Purpose,530,8,66.25,5.063,13.96,1.51,49.06,0,,yes,syntax-review
+s120,10,World affairs,The Federation That Never Formally Existed,465,11,42.27,5.087,14.62,1.29,50.75,0,,no,within-guardrails
+s121,9,Everyday life,Grief That Arrived Years Late,515,8,64.38,5.306,10.04,1.77,34.06,2,,yes,syntax-review
+s122,9,Everyday life,Language Two Siblings Invented,450,8,56.25,5.177,14.64,2.93,42.57,3,,yes,syntax-review
+s123,10,Everyday life,The Inheritance of an Unfinished Argument,558,8,69.75,5.314,12.48,1.1,36.15,2,,yes,syntax-review
+s124,10,Everyday life,Correspondence That Outlasted the Marriage,557,8,69.62,5.305,14.52,2.9,35.03,1,,yes,syntax-review
+s125,9,History,Cartographer Who Erased a Kingdom,530,9,58.89,5.085,17.62,3.64,46.55,2,long-words,yes,vocabulary-review
+s126,9,History,The Famine That Rewrote a Legal Code,528,10,52.8,4.982,17.05,3.22,41.48,0,,yes,syntax-review
+s127,10,History,Empire That Governed by Rumor,563,8,70.38,5.008,18.47,3.55,50.44,0,,yes,syntax-review
+s128,10,History,Scribe Who Forged His Own Death,577,12,48.08,5.231,10.92,1.58,43.49,2,,no,within-guardrails
+s129,9,Science,The Enzyme That Rewired a Food Chain,495,8,61.88,4.972,21.01,3.84,38.79,0,,yes,syntax-review
+s130,9,Science,Memory That Exists Outside the Brain,478,12,39.83,4.955,19.67,2.93,44.35,0,,no,within-guardrails
+s131,10,Science,Symmetry That Physics Cannot Explain,595,10,59.5,5.049,17.06,4.9,47.13,1,,yes,syntax-review
+s132,10,Science,The Organism That Predates Death Itself,527,12,43.92,5.075,15.18,2.85,44.4,0,,no,within-guardrails
+s133,9,Famous books,Elizabeth Reconsiders Mr Darcy,220,16,13.75,5.641,8.29,0.49,20.49,8,,no,within-guardrails
+s134,9,Famous books,The Creature Argues for Justice,215,18,11.94,5.577,9.13,0.96,22.6,4,,no,within-guardrails
+s135,10,Famous books,Gulliver's Travels as Political Satire,242,16,15.12,5.486,15.45,2.15,24.46,7,,no,within-guardrails
+s136,10,Famous books,Frankenstein and the Creator's Responsibility,257,19,13.53,5.647,7.14,0.79,24.21,2,,no,within-guardrails
+s137,5,Fantasy/stories,Chair That Remembers Who Sat In It,280,14,20.0,5.714,7.14,0.0,14.29,0,,no,within-guardrails
+s138,6,Fantasy/stories,The Miller Who Ground Silence Into Flour,278,7,39.71,5.361,12.73,1.12,19.85,4,,yes,syntax-review
+s139,7,Fantasy/stories,Locksmith Who Sold Second Chances,366,9,40.67,5.44,5.59,1.4,27.37,2,,yes,syntax-review
+s140,8,Fantasy/stories,Shepherd Who Herded Forgotten Wishes,442,13,34.0,5.281,15.01,2.54,30.02,2,,no,within-guardrails
+s141,9,Fantasy/stories,The Glassblower Who Trapped a Single Regret,427,7,61.0,5.277,16.63,2.38,33.97,1,,yes,syntax-review
+s142,10,Fantasy/stories,Astronomer Who Charted a Sky That Wasn't There,441,7,63.0,4.95,24.59,3.71,47.1,3,,yes,syntax-review
+s143,5,Nature and animals,Squirrel That Plants a Forest by Accident,294,8,36.75,5.453,10.88,2.04,19.39,0,,yes,syntax-review
+s144,6,Nature and animals,The Frog That Freezes Solid and Survives,326,6,54.33,5.265,13.5,3.37,30.06,0,very-low-frequency|long-words,yes,priority-review
+s145,7,Nature and animals,Spider That Fishes With Silk Lines,351,9,39.0,5.103,17.09,3.99,29.91,0,,yes,syntax-review
+s146,8,Nature and animals,Tree That Poisons Its Rivals Slowly,410,8,51.25,5.009,13.41,3.66,38.78,0,,yes,syntax-review
+s147,9,Nature and animals,The Fish That Changes Sex to Save the Group,407,9,45.22,5.299,14.25,1.72,35.38,0,,no,within-guardrails
+s148,10,Nature and animals,Genome That Contains an Ancient Virus's Instructions,479,8,59.88,5.041,19.21,2.71,40.71,0,,yes,syntax-review
+s149,5,World affairs,Town That Pays Its Bus Fares in Books,296,7,42.29,5.503,8.45,1.01,25.34,0,long-words,yes,vocabulary-review
+s150,8,World affairs,The Country That Sends Its Trash to Make Electricity,363,8,45.38,5.258,9.92,1.38,38.29,0,,yes,syntax-review
+s151,7,World affairs,City That Elected a Committee of Children,368,7,52.57,5.142,10.87,0.82,44.84,0,long-words,yes,vocabulary-review
+s152,8,World affairs,Nation That Rents Its Army to the United Nations,437,8,54.62,5.085,18.08,1.41,50.0,2,long-words,yes,vocabulary-review
+s153,9,World affairs,The Region That Prints Its Own Local Currency Alongside the National One,440,11,40.0,5.288,8.64,0.45,41.14,0,,no,within-guardrails
+s154,10,World affairs,Court That Has No Country to Enforce Its Rulings,513,9,57.0,5.185,10.14,0.58,43.86,0,,yes,syntax-review
+s155,5,Everyday life,Jar of Coins Saved for Nothing in Particular,278,10,27.8,5.623,8.39,0.73,16.06,2,,yes,syntax-review
+s156,6,Everyday life,The Neighbor Who Waters Plants While You're Away,315,7,45.0,5.472,9.77,0.98,22.15,2,,yes,syntax-review
+s157,7,Everyday life,Apartment That Echoes Differently at Night,423,8,52.88,5.34,16.55,1.2,30.7,2,,yes,syntax-review
+s158,8,Everyday life,Promise Kept Long After It Was Forgotten,425,8,53.12,5.395,11.54,1.44,30.53,1,,yes,syntax-review
+s159,9,Everyday life,The Silence That Followed a Retirement,477,8,59.62,5.342,8.49,1.27,32.91,1,,yes,syntax-review
+s160,10,Everyday life,House That Two Siblings Could Not Agree to Sell,454,7,64.86,5.26,12.16,1.13,39.19,4,,yes,syntax-review
+s161,6,History,Well That Never Ran Dry,343,8,42.88,5.398,9.62,2.33,30.03,0,long-words,yes,vocabulary-review
+s162,8,History,The Merchant Who Paid His Taxes in Salt,359,9,39.89,5.06,14.04,3.65,44.66,2,long-words,no,vocabulary-review
+s163,7,History,Bridge Built to Be Destroyed,397,9,44.11,5.163,12.72,2.04,41.48,2,long-words,yes,vocabulary-review
+s164,8,History,Treaty Signed by Two Men Who Never Met,394,9,43.78,5.12,19.29,1.78,43.91,0,long-words,yes,vocabulary-review
+s165,9,History,The Regent Who Ruled for a Single Afternoon,421,10,42.1,5.139,17.66,2.39,40.81,1,,no,within-guardrails
+s166,10,History,Archive That Survived by Being Ignored,493,10,49.3,5.095,11.76,1.62,52.54,0,long-words,no,vocabulary-review
+s167,5,Science,Why Bananas Turn Brown So Quickly,309,7,44.14,5.352,12.94,6.15,16.83,0,very-low-frequency,yes,vocabulary-review
+s168,6,Science,How Bread Mold Grows Even in the Fridge,338,8,42.25,5.19,15.73,0.89,28.49,1,low-frequency,yes,vocabulary-review
+s169,7,Science,Reason Metal Feels Colder Than Wood,374,9,41.56,5.259,13.37,1.6,33.42,0,,yes,syntax-review
+s170,8,Science,Gas That Makes Deep Divers Talk Strangely,410,10,41.0,4.978,21.95,1.95,39.02,0,low-frequency,no,vocabulary-review
+s171,9,Science,The Protein That Folds a Trillion Ways,449,7,64.14,5.102,15.18,1.79,39.96,1,,yes,syntax-review
+s172,10,Science,Vacuum That Isn't Actually Empty,458,8,57.25,4.967,14.95,3.52,43.74,2,,yes,syntax-review
+s173,5,Famous books,The Mutiny Begins,209,22,9.5,5.874,4.26,0.0,8.51,10,,no,within-guardrails
+s174,6,Famous books,Victor Brings the Creature to Life,202,18,11.22,5.884,4.1,0.0,18.97,2,,no,within-guardrails
+s175,7,Famous books,The Bishop and the Candlesticks,205,18,11.39,5.753,4.55,1.01,10.61,2,,no,within-guardrails
+s176,8,Famous books,Sydney Carton's Final Choice,199,18,11.06,5.775,6.56,1.64,13.66,7,,no,within-guardrails
+s177,9,Famous books,Valjean Faces an Impossible Choice,228,16,14.25,5.747,6.33,0.0,15.38,2,,no,within-guardrails
+s178,10,Famous books,"Moby-Dick: Fate, Freedom, and Obsession",253,21,12.05,5.563,10.88,1.67,20.08,4,,no,within-guardrails
+s179,5,Fantasy/stories,Baker's Daughter Who Could Taste Lies,314,13,24.15,5.724,5.86,0.0,13.03,2,,no,within-guardrails
+s180,5,Fantasy/stories,The Scarecrow That Learned to Whistle,300,11,27.27,5.51,13.61,2.38,15.99,2,low-frequency,yes,vocabulary-review
+s181,6,Fantasy/stories,Cobbler Who Mended Broken Promises,350,13,26.92,5.521,7.6,1.75,21.93,3,,no,within-guardrails
+s182,6,Fantasy/stories,Ferryman Who Only Crossed at Midnight,331,9,36.78,5.324,11.69,3.08,33.85,2,very-low-frequency|long-words,yes,priority-review
+s183,7,Fantasy/stories,The Beekeeper Who Traded Honey for Memories,343,7,49.0,5.471,8.93,1.49,24.7,2,,yes,syntax-review
+s184,7,Fantasy/stories,Mapmaker's Daughter Who Drew What Wasn't There Yet,340,10,34.0,5.417,9.34,1.81,27.71,2,,no,within-guardrails
+s185,8,Fantasy/stories,Potter Who Shaped Silence Into Bowls,393,7,56.14,5.383,8.03,1.3,25.65,2,,yes,syntax-review
+s186,8,Fantasy/stories,The Watchmaker Who Sold Borrowed Mornings,428,8,53.5,5.347,9.93,1.65,31.91,2,,yes,syntax-review
+s187,5,Nature and animals,Why Woodpeckers Don't Get Headaches,280,8,35.0,5.22,13.21,4.29,25.0,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s188,5,Nature and animals,Owl That Hunts by Sound Alone,299,10,29.9,5.355,13.38,2.34,21.07,0,low-frequency,yes,vocabulary-review
+s189,6,Nature and animals,The Turtle That Breathes Through Its Skin,298,8,37.25,5.422,11.07,0.67,22.15,0,,yes,syntax-review
+s190,6,Nature and animals,Plant That Traps Insects for Dinner,313,7,44.71,5.206,17.36,3.86,25.08,1,low-frequency|very-low-frequency,yes,priority-review
+s191,7,Nature and animals,Bird That Builds a Different Nest Every Year to Test Mates,347,8,43.38,5.035,18.73,4.03,35.45,0,low-frequency|very-low-frequency,yes,priority-review
+s192,7,Nature and animals,The Shrimp That Sees Colors Humans Cannot,348,8,43.5,5.108,16.95,1.72,28.74,0,,yes,syntax-review
+s193,8,Nature and animals,Tardigrade That Survives the Vacuum of Space,372,6,62.0,5.136,12.4,4.31,42.86,1,long-words,yes,vocabulary-review
+s194,8,Nature and animals,Fungus That Turns a Forest Into One Organism,398,7,56.86,5.126,15.83,2.76,39.45,0,,yes,syntax-review
+s195,5,World affairs,The Town Where Everyone Owns a Piece of the Bakery,325,7,46.43,5.522,6.46,0.0,27.38,0,long-words,yes,vocabulary-review
+s196,6,World affairs,School Bus That Doubles as a Mobile Library,341,9,37.89,5.4,6.16,1.76,26.69,0,,yes,syntax-review
+s197,6,World affairs,City That Turned Its Empty Lots Into Gardens,357,9,39.67,5.199,7.84,0.28,41.18,0,long-words,yes,vocabulary-review
+s198,7,World affairs,The Country That Requires Every Law to Expire,413,7,59.0,5.12,16.46,2.18,38.26,0,long-words,yes,vocabulary-review
+s199,7,World affairs,Village That Votes by Placing Stones in Jars,399,8,49.88,5.143,14.29,0.25,40.35,0,long-words,yes,vocabulary-review
+s200,8,World affairs,Nation That Shares Its Border Guards With a Neighbor,427,7,61.0,5.152,7.96,0.47,41.69,0,,yes,syntax-review
+s201,8,World affairs,The City-State That Outsources Its Own Foreign Policy,499,9,55.44,5.262,10.02,0.8,43.49,0,long-words,yes,vocabulary-review
+s202,8,World affairs,Country Whose Constitution Fits on a Single Page,462,8,57.75,5.092,16.45,2.81,45.67,0,long-words,yes,vocabulary-review
+s203,5,Everyday life,Sweater That Outlived Three Winters,295,8,36.88,5.379,13.15,2.08,23.53,2,low-frequency,yes,vocabulary-review
+s204,5,Everyday life,The Morning Walk That Became a Habit,301,7,43.0,5.579,4.79,1.71,18.49,3,,yes,syntax-review
+s205,6,Everyday life,Potluck Dinner That Started By Accident,317,8,39.62,5.369,10.61,1.61,25.72,2,,yes,syntax-review
+s206,6,Everyday life,Spare Key Under the Wrong Mat,369,9,41.0,5.412,8.86,2.22,24.65,3,,yes,syntax-review
+s207,7,Everyday life,The Garden Plot Shared by Strangers,319,7,45.57,5.258,13.31,0.97,35.06,2,,yes,syntax-review
+s208,7,Everyday life,Voicemail Never Deleted,329,7,47.0,5.226,12.96,4.01,30.25,1,very-low-frequency,yes,vocabulary-review
+s209,8,Everyday life,Chair at the Table No One Sits In,378,7,54.0,5.382,11.86,1.89,28.03,2,,yes,syntax-review
+s210,8,Everyday life,The Photographs Nobody Could Agree to Divide,414,9,46.0,5.424,6.39,0.74,36.61,2,,yes,syntax-review
+s211,5,History,Baker Who Fed a Whole Army by Accident,325,9,36.11,5.375,12.19,1.56,27.5,2,long-words,yes,vocabulary-review
+s212,5,History,Lighthouse Keeper Who Refused to Leave,327,8,40.88,5.378,11.88,2.19,22.19,2,,yes,syntax-review
+s213,6,History,The Village That Traded Places With Its Neighbor,385,9,42.78,5.237,15.14,1.62,43.51,3,low-frequency|long-words,yes,priority-review
+s214,6,History,Soldier Who Delivered Peace Instead of War,400,8,50.0,5.28,9.14,1.27,35.03,2,long-words,yes,vocabulary-review
+s215,7,History,Judge Who Ruled Against His Own King,448,11,40.73,5.269,9.32,1.36,35.0,2,,yes,syntax-review
+s216,7,History,The Harbor Built by Mistake,360,10,36.0,5.266,13.61,3.33,43.61,0,long-words,no,vocabulary-review
+s217,8,History,Minister Who Governed From Exile,392,9,43.56,5.171,16.58,1.53,45.66,0,long-words,yes,vocabulary-review
+s218,8,History,Law That Was Never Actually Repealed,449,9,49.89,5.15,15.59,2.0,44.1,0,long-words,yes,vocabulary-review
+s219,5,Science,Why Popcorn Pops,314,10,31.4,5.182,19.17,4.47,20.77,1,low-frequency|very-low-frequency,yes,priority-review
+s220,5,Science,How Soap Actually Cleans Your Hands,326,8,40.75,5.309,12.58,1.53,20.86,0,,yes,syntax-review
+s221,6,Science,Why the Sky Turns Red at Sunset,322,9,35.78,5.447,11.21,1.87,23.68,1,,yes,syntax-review
+s222,6,Science,How Bicycles Balance Themselves While Moving,345,9,38.33,5.312,15.65,2.61,31.01,0,low-frequency|long-words,yes,priority-review
+s223,7,Science,Reason Glass Is Technically a Liquid Myth,398,8,49.75,5.135,15.58,3.27,36.43,0,long-words,yes,vocabulary-review
+s224,7,Science,Why Some Painkillers Take Longer to Work Than Others,363,7,51.86,5.295,11.57,1.38,33.61,0,,yes,syntax-review
+s225,8,Science,The Chemistry Behind Why Chili Peppers Burn,394,8,49.25,5.118,18.93,2.81,32.23,2,,yes,syntax-review
+s226,8,Science,Physics of Why Rainbows Are Always Curved,416,10,41.6,5.275,18.51,2.88,30.29,0,,no,within-guardrails
+s227,5,Famous books,Jim Meets Ben Gunn,211,20,10.55,5.853,3.14,0.0,9.95,7,,no,within-guardrails
+s228,5,Famous books,Phileas Fogg Makes a Strange Bet,208,19,10.95,5.781,6.53,0.5,8.54,3,,no,within-guardrails
+s229,6,Famous books,The Creature Watches a Family,198,19,10.42,5.768,2.03,0.0,17.26,1,,no,within-guardrails
+s230,6,Famous books,The Creature Demands an Answer,202,21,9.62,5.843,4.64,0.52,19.07,1,,no,within-guardrails
+s231,7,Famous books,Fantine and Jean Valjean,194,18,10.78,5.839,3.93,1.12,12.92,5,,no,within-guardrails
+s232,7,Famous books,The Barricade in Paris,198,18,11.0,5.726,8.65,0.54,9.73,4,,no,within-guardrails
+s233,8,Famous books,Gulliver in Lilliput,191,17,11.24,5.63,7.1,0.55,22.4,5,,no,within-guardrails
+s234,8,Famous books,Gulliver Among the Giants,194,19,10.21,5.654,6.42,0.53,20.32,4,,no,within-guardrails
+s235,5,Science,Why Your Stomach Growls When You're Hungry,286,10,28.6,5.61,11.89,3.15,18.18,0,very-low-frequency,yes,vocabulary-review
+s236,5,History,Town Clock That Ran Backward for a Week,279,9,31.0,5.464,8.24,3.23,23.3,0,very-low-frequency,yes,vocabulary-review
+s237,6,Fantasy/stories,The Innkeeper Who Never Forgot a Face,316,9,35.11,5.438,7.52,0.65,18.95,2,,yes,syntax-review
+s238,6,Everyday life,Borrowed Ladder That Started a Friendship,336,9,37.33,5.597,8.44,0.94,19.38,2,,yes,syntax-review
+s239,7,Nature and animals,Ant That Farms Its Own Food,324,8,40.5,5.259,16.98,1.54,29.01,0,,yes,syntax-review
+s240,7,World affairs,The Town That Shares One Ambulance With Three Villages,390,8,48.75,5.296,7.95,0.77,40.77,0,long-words,yes,vocabulary-review
+s241,8,Famous books,Gulliver and the Houyhnhnms,185,16,11.56,5.491,12.0,1.71,18.29,4,,no,within-guardrails
+s242,8,Science,Reason Your Voice Sounds Different on Recordings,383,7,54.71,5.506,13.05,1.31,25.59,0,,yes,syntax-review
+s243,9,Fantasy/stories,The Cartographer Who Mapped Only What He'd Lost,395,7,56.43,5.373,11.05,1.29,33.42,2,,yes,syntax-review
+s244,9,History,Envoy Who Negotiated With an Empire That No Longer Existed,445,10,44.5,5.34,13.71,1.8,37.75,0,,no,within-guardrails
+s245,10,Nature and animals,Bacteria That Communicate Across a Continent,418,7,59.71,4.97,19.62,2.15,51.2,0,,yes,syntax-review
+s246,10,Everyday life,The Diary Two Strangers Kept Without Knowing Each Other,430,8,53.75,5.44,9.48,2.13,29.15,1,,no,within-guardrails
+s247,5,Fantasy/stories,Kite That Carried Wishes to the Wind,308,12,25.67,5.649,7.52,2.94,14.71,1,very-low-frequency,no,vocabulary-review
+s248,5,Fantasy/stories,Blacksmith Who Forged Second Chances,291,10,29.1,5.552,7.8,1.77,15.6,2,,yes,syntax-review
+s249,5,Fantasy/stories,The Girl Who Collected Fallen Stars,288,12,24.0,5.505,8.9,0.36,18.51,1,,no,within-guardrails
+s250,6,Fantasy/stories,Librarian Who Lent Books to Ghosts,355,11,32.27,5.529,8.29,0.57,22.0,1,,yes,syntax-review
+s251,6,Fantasy/stories,Tinker Who Repaired Broken Hearts,337,11,30.64,5.585,4.55,0.91,19.7,1,,no,within-guardrails
+s252,6,Fantasy/stories,The Gardener Who Grew Silence Into Roses,309,8,38.62,5.316,12.0,1.33,26.0,3,,yes,syntax-review
+s253,7,Fantasy/stories,Weaver Who Stitched Together Torn Fates,359,7,51.29,5.218,14.16,2.27,37.11,2,long-words,yes,vocabulary-review
+s254,7,Fantasy/stories,Innkeeper's Wife Who Dreamed Other People's Dreams,360,7,51.43,5.446,8.76,1.69,20.34,2,,yes,syntax-review
+s255,7,Fantasy/stories,The Cooper Who Barreled Up Bad Luck,334,7,47.71,5.272,15.34,1.23,32.52,2,,yes,syntax-review
+s256,8,Fantasy/stories,Silversmith Who Melted Down Old Grudges,405,7,57.86,5.329,15.0,3.25,29.5,1,,yes,syntax-review
+s257,8,Fantasy/stories,Midwife Who Delivered More Than Babies,403,8,50.38,5.209,15.99,2.28,37.06,2,,yes,syntax-review
+s258,8,Fantasy/stories,The Ropemaker Who Braided Fortune and Misfortune Together,383,7,54.71,5.175,13.94,2.95,30.03,2,,yes,syntax-review
+s259,5,Nature and animals,Why Giraffes Rarely Get Dizzy,315,9,35.0,5.315,10.16,2.86,26.98,0,very-low-frequency|long-words,yes,priority-review
+s260,5,Nature and animals,Beetle That Rolls Its Dinner Uphill,296,7,42.29,5.233,14.53,1.69,23.99,0,low-frequency,yes,vocabulary-review
+s261,5,Nature and animals,How Chameleons Really Change Color,301,9,33.44,5.273,15.28,2.99,29.9,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s262,6,Nature and animals,Fish That Lives Out of Water for Days,307,9,34.11,5.304,14.01,3.26,24.76,0,very-low-frequency,yes,vocabulary-review
+s263,6,Nature and animals,Bird That Steals Nests Instead of Building Them,316,8,39.5,5.193,16.14,1.9,24.05,0,low-frequency,yes,vocabulary-review
+s264,6,Nature and animals,The Ant That Explodes to Protect Its Colony,336,7,48.0,5.157,15.48,2.38,32.74,0,low-frequency|long-words,yes,priority-review
+s265,7,Nature and animals,Mammal That Lays Eggs Instead of Giving Birth,340,6,56.67,5.146,20.59,6.18,28.53,0,low-frequency|very-low-frequency,yes,priority-review
+s266,7,Nature and animals,Fish That Uses Tools to Crack Shells,362,9,40.22,5.256,11.88,1.66,30.11,0,,yes,syntax-review
+s267,7,Nature and animals,The Bird That Remembers Thousands of Hiding Spots,352,8,44.0,5.187,13.14,4.29,32.0,1,very-low-frequency,yes,vocabulary-review
+s268,8,Nature and animals,Deep-Sea Creature That Makes Its Own Light,368,9,40.89,5.135,17.66,4.62,34.78,0,,no,within-guardrails
+s269,8,Nature and animals,Insect That Mimics a Leaf to Survive,364,7,52.0,4.978,25.0,2.47,40.11,0,low-frequency,yes,vocabulary-review
+s270,8,Nature and animals,The Mammal That Can Regrow Its Own Heart Tissue,414,7,59.14,5.174,10.87,0.97,33.33,0,,yes,syntax-review
+s271,5,World affairs,Town That Built a Playground Out of Old Boats,302,7,43.14,5.433,8.61,0.66,24.83,0,long-words,yes,vocabulary-review
+s272,5,World affairs,Village That Shares a Single Tractor,299,8,37.38,5.363,8.03,1.0,31.1,0,long-words,yes,vocabulary-review
+s273,6,World affairs,The City That Paints Its Crosswalks Like Rainbows,315,9,35.0,5.231,16.19,3.49,31.43,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s274,6,World affairs,Country That Grows Its Own National Forest,346,8,43.25,5.107,15.03,2.89,39.88,0,low-frequency|long-words,yes,priority-review
+s275,6,World affairs,Town That Turned Its Water Tower Into a Museum,301,7,43.0,5.32,12.96,1.0,36.54,0,long-words,yes,vocabulary-review
+s276,6,World affairs,The City That Lets Citizens Design Their Own Parks,365,10,36.5,5.232,10.96,0.55,40.55,0,long-words,yes,vocabulary-review
+s277,7,World affairs,Nation That Trains Farmers to Become Diplomats,367,8,45.88,5.078,12.53,0.82,50.95,0,long-words,yes,vocabulary-review
+s278,8,World affairs,Region That Shares a Single Power Grid Across Three Countries,403,8,50.38,5.176,8.68,0.74,47.89,0,long-words,yes,vocabulary-review
+s279,8,World affairs,The Nation That Negotiates Its Fishing Rights Every Season,414,7,59.14,5.098,15.22,2.42,39.37,0,,yes,syntax-review
+s280,8,World affairs,Union of Towns That Shares One Fire Department,371,8,46.38,5.159,11.86,0.81,43.4,0,long-words,yes,vocabulary-review
+s281,8,World affairs,Nation That Publishes Its Government Budget as a Children's Book,389,9,43.22,5.225,9.77,0.51,47.04,0,long-words,yes,vocabulary-review
+s282,5,Everyday life,The Umbrella Stand That Became a Neighborhood Tradition,290,9,32.22,5.632,5.96,0.7,28.07,2,long-words,yes,vocabulary-review
+s283,5,Everyday life,Recipe Passed Down Through a Single Photograph,318,7,45.43,5.386,11.5,0.64,25.56,2,long-words,yes,vocabulary-review
+s284,5,Everyday life,Bench Where Strangers Became Regulars,300,7,42.86,5.508,6.85,0.34,22.26,2,,yes,syntax-review
+s285,6,Everyday life,The Shared Toolbox in the Apartment Basement,324,8,40.5,5.372,7.55,1.89,32.39,1,long-words,yes,vocabulary-review
+s286,6,Everyday life,Coat Left at a Party for Years,336,8,42.0,5.501,10.64,2.43,19.45,2,,yes,syntax-review
+s287,7,Everyday life,Piano No One in the Family Could Play,356,7,50.86,5.504,9.14,0.86,31.43,2,,yes,syntax-review
+s288,7,Everyday life,The Attic Box Neither Sibling Wanted to Open,374,7,53.43,5.35,9.97,0.54,30.19,3,,yes,syntax-review
+s289,7,Everyday life,Sunday Ritual That Survived a Divorce,349,8,43.62,5.283,8.58,1.18,36.09,3,long-words,yes,vocabulary-review
+s290,8,Everyday life,Handwriting That Outlived the Letter Writer,414,9,46.0,5.297,11.63,0.99,34.9,2,,yes,syntax-review
+s291,8,Everyday life,The Garden Left Exactly as the Owner Had Planted It,408,7,58.29,5.319,10.47,1.25,35.91,2,,yes,syntax-review
+s292,8,Everyday life,Silence Between Two Old Friends Who Never Apologized,416,9,46.22,5.379,10.86,1.23,30.62,3,,yes,syntax-review
+s293,5,History,Fisherman Who Warned of a Coming Storm,315,8,39.38,5.302,11.65,0.97,26.86,2,long-words,yes,vocabulary-review
+s294,5,History,The Child Who Carried a Kingdom's Only Seed,350,7,50.0,5.311,9.83,2.31,30.35,1,long-words,yes,vocabulary-review
+s295,5,History,Innkeeper Who Hid a Fugitive Prince,350,11,31.82,5.359,11.56,2.31,22.25,2,,yes,syntax-review
+s296,6,History,Toll Collector Who Refused a King's Coin,380,9,42.22,5.276,11.29,2.96,34.68,2,long-words,yes,vocabulary-review
+s297,6,History,The Widow Who Ran a Trading Post Alone,371,9,41.22,5.171,12.64,1.92,41.76,2,long-words,yes,vocabulary-review
+s298,6,History,Carpenter Who Built a Bridge in a Single Night,363,9,40.33,5.296,7.61,0.56,41.97,2,long-words,yes,vocabulary-review
+s299,7,History,Scholar Who Hid a Library in Plain Sight,369,9,41.0,5.124,15.6,2.79,45.68,2,long-words,yes,vocabulary-review
+s300,7,History,The Messenger Who Delivered News a Century Late,419,8,52.38,5.169,14.56,2.86,43.68,0,long-words,yes,vocabulary-review
+s301,7,History,Farmer Who Fed Both Sides of a War,383,8,47.88,5.225,14.13,1.87,41.6,2,long-words,yes,vocabulary-review
+s302,8,History,Ambassador Who Negotiated Peace With No Authority to Do So,436,8,54.5,5.166,16.43,3.52,41.08,2,,yes,syntax-review
+s303,8,History,The Cartographer Who Mapped a Border That Kept Moving,423,10,42.3,5.025,18.94,3.36,48.92,2,long-words,yes,vocabulary-review
+s304,8,History,Scribe Who Recorded a History No One Wanted Told,402,8,50.25,5.208,12.47,1.02,43.77,2,long-words,yes,vocabulary-review
+s305,6,Everyday life,Umbrella Rack That Never Stayed the Same,332,7,47.43,5.478,12.54,0.31,30.58,1,long-words,yes,vocabulary-review
+s306,7,World affairs,The District That Elects Representatives by Random Selection,382,8,47.75,5.165,9.69,1.05,45.55,0,long-words,yes,vocabulary-review
+s307,5,Science,Why Ice Floats Instead of Sinking,306,9,34.0,5.48,11.15,1.31,15.41,1,,yes,syntax-review
+s308,5,Science,How Your Body Knows When to Sleep,315,9,35.0,5.46,7.01,2.23,25.16,1,long-words,yes,vocabulary-review
+s309,6,Science,Why Some Fruits Have Seeds and Others Don't,298,6,49.67,5.217,12.42,2.68,30.87,0,long-words,yes,vocabulary-review
+s310,6,Science,How Vaccines Teach the Body to Fight Back,336,7,48.0,5.441,8.33,0.3,29.46,0,,yes,syntax-review
+s311,6,Science,Why Deserts Get So Cold at Night,304,8,38.0,5.235,14.52,0.99,28.05,1,,yes,syntax-review
+s312,6,Science,How Fireflies Make Light Without Heat,323,7,46.14,5.058,14.55,4.64,36.22,0,very-low-frequency|long-words,yes,priority-review
+s313,7,Science,Reason Muscles Get Sore After Exercise,397,8,49.62,5.211,13.6,0.25,37.53,0,long-words,yes,vocabulary-review
+s314,7,Science,Why Some Languages Are Harder for Certain Brains to Learn,363,8,45.38,5.222,13.93,0.84,46.52,2,long-words,yes,vocabulary-review
+s315,7,Science,The Science Behind Why We Yawn When Others Do,390,7,55.71,5.053,16.92,2.31,39.49,0,long-words,yes,vocabulary-review
+s316,8,Science,Chemistry of Why Old Books Smell the Way They Do,371,9,41.22,5.113,17.52,2.96,39.08,0,,no,within-guardrails
+s317,8,Science,Physics Behind Why Mirrors Reverse Left and Right But Not Up and Down,427,10,42.7,5.407,12.65,2.11,28.1,0,,yes,syntax-review
+s318,8,Science,The Biology of Why Some People Never Forget a Face,429,10,42.9,5.109,9.09,1.86,41.72,0,,yes,syntax-review
+s319,5,Famous books,A Rescue During the Journey,203,18,11.28,5.893,3.66,0.52,8.38,5,,no,within-guardrails
+s320,5,Famous books,The Journey Down the Volcano,203,20,10.15,5.817,5.67,0.0,13.4,5,,no,within-guardrails
+s321,5,Famous books,The Underground Sea,202,22,9.18,5.651,6.0,0.0,11.5,2,,no,within-guardrails
+s322,6,Famous books,Oliver Asks for More,210,18,11.67,5.827,3.96,0.0,10.89,2,,no,within-guardrails
+s323,6,Famous books,Oliver Enters Fagin's London,194,20,9.7,5.799,5.62,0.0,11.24,5,,no,within-guardrails
+s324,6,Famous books,Nancy Makes Her Choice,204,18,11.33,5.796,4.23,0.53,11.64,7,,no,within-guardrails
+s325,7,Famous books,Ishmael Meets Queequeg,191,16,11.94,5.779,9.6,0.56,14.69,5,,no,within-guardrails
+s326,8,Famous books,Hester Stands on the Scaffold,189,17,11.12,5.583,10.73,1.13,20.34,6,,no,within-guardrails
+s327,7,Famous books,Captain Ahab and the White Whale,199,18,11.06,5.756,6.52,0.0,11.41,6,,no,within-guardrails
+s328,8,Famous books,Dimmesdale Keeps His Secret,187,19,9.84,5.557,9.77,0.57,23.56,7,,no,within-guardrails
+s329,8,Famous books,The Final Confession,190,16,11.88,5.754,10.38,0.55,15.3,3,,no,within-guardrails
+s330,8,Famous books,The Count Returns to Paris,203,19,10.68,5.594,7.25,2.07,18.65,6,,no,within-guardrails
+s331,1,Fantasy/stories,A Small Dog and a Big Star,73,14,5.21,6.079,2.74,0.0,0.0,0,,no,within-guardrails
+s332,1,Fantasy/stories,Little Boat,82,17,4.82,6.03,2.44,0.0,0.0,0,,no,within-guardrails
+s333,1,Fantasy/stories,A Girl and Her Cat,72,13,5.54,6.079,2.82,0.0,0.0,1,,no,within-guardrails
+s334,2,Fantasy/stories,Magic Hat,175,25,7.0,5.92,2.41,0.0,5.42,3,,no,within-guardrails
+s335,2,Fantasy/stories,A Friend in the Tree,154,22,7.0,5.901,3.57,0.0,5.71,2,,no,within-guardrails
+s336,2,Fantasy/stories,The Little King,157,18,8.72,6.02,0.0,0.0,1.36,3,,no,within-guardrails
+s337,3,Fantasy/stories,Boy and the Talking Fish,170,22,7.73,5.739,3.59,0.0,5.99,2,,no,within-guardrails
+s338,3,Fantasy/stories,A New Friend at the Lake,168,17,9.88,5.795,4.43,1.27,5.7,2,,no,within-guardrails
+s339,3,Fantasy/stories,The Small Dragon,170,18,9.44,5.632,7.32,1.83,3.05,1,very-low-frequency,no,vocabulary-review
+s340,4,Fantasy/stories,Girl Who Found a Map,213,12,17.75,5.622,6.22,0.96,11.48,1,,no,within-guardrails
+s341,4,Fantasy/stories,Old Wizard's Garden,201,12,16.75,5.654,8.21,1.03,9.74,2,,no,within-guardrails
+s342,4,Fantasy/stories,A Night in the Forest,203,11,18.45,5.56,10.1,2.02,19.19,2,very-low-frequency|long-words,no,priority-review
+s343,1,Nature and animals,Cat Sleeps,55,12,4.58,5.881,10.91,0.0,0.0,0,low-frequency,no,vocabulary-review
+s344,1,Nature and animals,A Big Fish,63,12,5.25,5.855,7.94,0.0,0.0,0,low-frequency,no,vocabulary-review
+s345,1,Nature and animals,Birds in the Sky,53,12,4.42,5.93,0.0,0.0,0.0,0,,no,within-guardrails
+s346,2,Nature and animals,Dog and the Ball,175,17,10.29,5.896,3.59,0.0,2.99,2,,no,within-guardrails
+s347,2,Nature and animals,Ants Work Together,183,13,14.08,5.69,7.3,0.56,10.11,1,low-frequency|long-words,no,priority-review
+s348,2,Nature and animals,A Bee and a Flower,178,11,16.18,5.595,8.72,0.58,9.88,1,low-frequency|long-words,yes,priority-review
+s349,3,Nature and animals,How Birds Build Nests,203,10,20.3,5.437,7.39,0.49,12.81,0,,yes,syntax-review
+s350,3,Nature and animals,Fast Rabbit,196,12,16.33,5.626,6.35,1.59,7.94,2,very-low-frequency,no,vocabulary-review
+s351,3,Nature and animals,A Day at the Farm,190,11,17.27,5.472,14.75,3.83,13.11,3,low-frequency|very-low-frequency,no,priority-review
+s352,4,Nature and animals,Why Owls Hunt at Night,226,9,25.11,5.281,12.39,0.88,23.89,0,low-frequency|long-words,yes,priority-review
+s353,4,Nature and animals,Bear and the River,213,10,21.3,5.466,8.61,2.87,18.18,1,very-low-frequency,no,vocabulary-review
+s354,4,Nature and animals,How Fish Breathe,239,7,34.14,5.379,9.21,0.42,18.41,0,,yes,syntax-review
+s355,1,World affairs,A New School,60,12,5.0,6.29,0.0,0.0,11.67,0,long-words,no,vocabulary-review
+s356,1,World affairs,Big City,56,11,5.09,6.176,1.79,0.0,3.57,0,,no,within-guardrails
+s357,1,World affairs,People Help Each Other,52,9,5.78,5.912,3.85,0.0,9.62,0,long-words,no,vocabulary-review
+s358,2,World affairs,A Town by the Sea,190,11,17.27,5.753,4.21,0.0,14.74,0,long-words,yes,vocabulary-review
+s359,2,World affairs,Market Day,185,13,14.23,5.661,7.26,0.56,6.15,2,low-frequency,no,vocabulary-review
+s360,2,World affairs,New Neighbors,202,12,16.83,5.778,2.58,0.0,12.89,2,long-words,yes,vocabulary-review
+s361,3,World affairs,A School for Everyone,222,11,20.18,5.743,2.76,0.0,18.43,2,long-words,yes,vocabulary-review
+s362,3,World affairs,Clean River Project,206,12,17.17,5.588,7.28,0.97,22.33,0,long-words,no,vocabulary-review
+s363,3,World affairs,A Small Farm Grows Big,218,10,21.8,5.492,4.72,0.0,22.17,2,long-words,yes,vocabulary-review
+s364,4,World affairs,How a Town Built a Park,231,9,25.67,5.467,8.66,0.43,27.27,0,long-words,yes,vocabulary-review
+s365,4,World affairs,Bridge Between Two Villages,239,7,34.14,5.379,6.69,1.67,34.31,0,long-words,yes,vocabulary-review
+s366,4,World affairs,A Country Learns to Share,261,9,29.0,5.333,8.05,0.77,28.74,0,long-words,yes,vocabulary-review
+s367,1,Everyday life,My Day,43,10,4.3,5.949,0.0,0.0,5.71,1,long-words,no,vocabulary-review
+s368,1,Everyday life,A Cup of Tea,48,10,4.8,5.881,0.0,0.0,4.17,0,,no,within-guardrails
+s369,1,Everyday life,The Red Umbrella,50,10,5.0,5.864,12.0,0.0,12.0,0,low-frequency|long-words,no,priority-review
+s370,2,Everyday life,A Walk in the Park,180,19,9.47,5.669,8.72,0.58,6.98,2,low-frequency,no,vocabulary-review
+s371,2,Everyday life,Making Dinner,174,20,8.7,5.554,8.43,0.0,9.04,2,low-frequency|long-words,no,priority-review
+s372,2,Everyday life,The Lost Key,191,13,14.69,5.793,4.84,1.08,12.9,1,very-low-frequency|long-words,no,priority-review
+s373,3,Everyday life,A Trip to the Store,183,14,13.07,5.635,8.62,1.15,9.77,3,,no,within-guardrails
+s374,3,Everyday life,New Neighbor,197,19,10.37,5.534,10.75,1.08,16.67,2,low-frequency|long-words,no,priority-review
+s375,3,Everyday life,A Rainy Day at Home,189,10,18.9,5.388,10.27,1.08,14.59,2,low-frequency|long-words,yes,priority-review
+s376,4,Everyday life,Old Photo Album,204,11,18.55,5.59,5.61,1.02,21.94,3,long-words,no,vocabulary-review
+s377,4,Everyday life,A Birthday Surprise,222,12,18.5,5.653,5.39,0.0,21.57,4,long-words,no,vocabulary-review
+s378,4,Everyday life,Learning to Cook,216,10,21.6,5.522,5.74,0.0,16.75,2,,no,within-guardrails
+s379,1,History,An Old House,54,10,5.4,6.152,0.0,0.0,3.7,0,,no,within-guardrails
+s380,1,History,First King,55,9,6.11,6.121,0.0,0.0,3.64,0,,no,within-guardrails
+s381,1,History,A Long Trip,50,9,5.56,5.952,0.0,0.0,2.0,0,,no,within-guardrails
+s382,2,History,Old Bridge,208,13,16.0,5.706,4.88,0.98,12.2,2,long-words,yes,vocabulary-review
+s383,2,History,A Small Village Long Ago,189,10,18.9,5.403,7.94,0.53,20.63,0,low-frequency|long-words,yes,priority-review
+s384,2,History,The First Train,192,10,19.2,5.523,5.21,1.56,16.15,0,very-low-frequency|long-words,yes,priority-review
+s385,4,History,Girl Who Built a Boat,218,8,27.25,5.354,9.86,0.94,26.76,2,long-words,yes,vocabulary-review
+s386,3,History,A King and His People,210,10,21.0,5.299,8.91,1.49,28.22,2,long-words,yes,vocabulary-review
+s387,4,History,The Old Market Town,207,7,29.57,5.238,11.59,1.45,32.85,0,low-frequency|long-words,yes,priority-review
+s388,5,History,Village by the River,232,7,33.14,5.108,15.95,0.86,42.67,0,low-frequency|long-words,yes,priority-review
+s389,4,History,How the Town Got Its Name,238,8,29.75,5.284,12.18,0.42,34.87,0,low-frequency|long-words,yes,priority-review
+s390,5,History,A Letter From Long Ago,230,7,32.86,5.465,7.83,0.87,23.04,0,,yes,syntax-review
+s391,1,Science,Water and Ice,51,9,5.67,5.837,0.0,0.0,1.96,0,,no,within-guardrails
+s392,1,Science,Sun Is Hot,45,8,5.62,5.961,2.22,0.0,0.0,0,,no,within-guardrails
+s393,1,Science,Plants Need Water,40,8,5.0,5.604,0.0,0.0,0.0,0,,no,within-guardrails
+s394,2,Science,Why We Sleep,183,13,14.08,5.637,4.92,1.09,11.48,0,very-low-frequency|long-words,no,priority-review
+s395,2,Science,How Rain Falls,193,12,16.08,5.403,13.54,1.04,15.62,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s396,2,Science,Why Leaves Fall,187,12,15.58,5.329,9.63,2.14,12.83,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s397,3,Science,How Plants Grow,212,10,21.2,5.437,10.85,2.36,18.87,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s398,3,Science,Why the Moon Changes,210,9,23.33,5.616,10.19,1.94,16.5,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s399,3,Science,How We Hear Sounds,204,7,29.14,5.394,9.8,2.94,19.61,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s400,4,Science,Why the Sky Is Blue,222,8,27.75,5.526,10.0,1.36,21.36,1,long-words,yes,vocabulary-review
+s401,4,Science,How Bees Make Honey,224,11,20.36,5.192,18.75,2.68,19.2,0,low-frequency|very-low-frequency|long-words,no,priority-review
+s402,4,Science,Why We Need to Eat,210,9,23.33,5.364,11.43,0.0,23.33,0,low-frequency|long-words,yes,priority-review
+s403,1,Famous books,The Lion and the Mouse,112,16,7.0,5.909,2.7,0.0,0.9,1,,no,within-guardrails
+s404,1,Famous books,The Tortoise and the Hare,103,15,6.87,5.928,9.8,0.0,6.86,1,low-frequency|long-words,no,priority-review
+s405,1,Famous books,The Boy Who Cried Wolf,98,21,4.67,5.947,2.17,0.0,2.17,1,,no,within-guardrails
+s406,2,Famous books,The Ant and the Grasshopper,130,21,6.19,5.841,7.87,0.0,6.3,1,low-frequency,no,vocabulary-review
+s407,3,Famous books,Cinderella Goes to the Ball,158,18,8.78,5.963,2.65,0.66,8.61,1,,no,within-guardrails
+s408,2,Famous books,The Town Mouse and the Country Mouse,135,19,7.11,5.88,0.0,0.0,3.01,1,,no,within-guardrails
+s409,3,Famous books,Rapunzel in the Tower,159,17,9.35,5.981,1.97,0.0,5.26,1,,no,within-guardrails
+s410,3,Famous books,Snow White Finds a Small House,167,18,9.28,5.852,3.18,0.0,3.82,2,,no,within-guardrails
+s411,3,Famous books,Alice Follows the White Rabbit,155,19,8.16,5.726,1.94,0.0,5.16,0,,no,within-guardrails
+s412,4,Famous books,Alice at the Mad Tea Party,206,21,9.81,5.903,4.04,0.0,7.07,2,,no,within-guardrails
+s413,4,Famous books,Alice Plays Croquet with the Queen,207,20,10.35,5.967,3.63,1.55,9.33,4,,no,within-guardrails
+s414,4,Famous books,Alice Meets the Cheshire Cat,196,23,8.52,5.921,2.15,0.0,5.91,3,,no,within-guardrails
+s415,1,Fantasy/stories,A Small Light in the Dark,91,14,6.5,5.94,2.33,1.16,0.0,1,very-low-frequency,no,vocabulary-review
+s416,2,Fantasy/stories,Singing Well,106,9,11.78,5.855,3.81,0.0,7.62,1,,no,within-guardrails
+s417,3,Fantasy/stories,A Cloud That Followed a Boy,115,9,12.78,5.569,7.21,0.9,6.31,1,,no,within-guardrails
+s418,4,Fantasy/stories,Painter Who Used Real Colors,118,7,16.86,5.526,6.9,0.86,14.66,1,,no,within-guardrails
+s419,5,Fantasy/stories,Clockwork Sparrow,115,4,28.75,5.277,16.22,2.7,23.42,1,low-frequency|very-low-frequency,yes,priority-review
+s420,6,Fantasy/stories,The Baker's Invisible Cat,118,4,29.5,5.307,10.62,1.77,16.81,3,,no,within-guardrails
+s421,7,Fantasy/stories,Violinist Who Played for Trees,125,4,31.25,5.309,12.4,1.65,27.27,1,,no,within-guardrails
+s422,8,Fantasy/stories,Cartographer's Missing Street,125,4,31.25,5.187,13.93,4.1,36.07,2,,no,within-guardrails
+s423,9,Fantasy/stories,The Alchemist's Borrowed Shadow,128,4,32.0,5.303,12.9,1.61,33.87,1,,no,within-guardrails
+s424,10,Fantasy/stories,Loom That Wove Forgotten Names,137,4,34.25,5.178,18.98,3.65,31.39,0,,no,within-guardrails
+s425,1,Nature and animals,A Frog in the Pond,64,15,4.27,5.639,26.56,0.0,0.0,0,low-frequency,no,vocabulary-review
+s426,2,Nature and animals,The Busy Squirrel,111,7,15.86,5.483,8.33,4.63,10.19,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s427,3,Nature and animals,How Snails Move,105,6,17.5,5.236,13.33,0.0,13.33,0,low-frequency,no,vocabulary-review
+s428,4,Nature and animals,Why Peacocks Show Their Feathers,112,7,16.0,5.069,18.75,7.14,30.36,0,low-frequency|very-low-frequency|long-words,no,priority-review
+s429,5,Nature and animals,The Octopus That Hides in a Shell,115,4,28.75,5.127,20.87,3.48,21.74,0,low-frequency|very-low-frequency,yes,priority-review
+s430,6,Nature and animals,Bird That Flies Without Landing,110,4,27.5,5.307,9.09,2.73,25.45,0,,no,within-guardrails
+s431,7,Nature and animals,Fish That Changes Color at Night,105,4,26.25,4.944,20.95,1.9,27.62,0,low-frequency,no,vocabulary-review
+s432,8,Nature and animals,The Insect That Looks Like a Twig,107,4,26.75,4.955,23.36,2.8,34.58,0,low-frequency,no,vocabulary-review
+s433,9,Nature and animals,Coral That Builds an Entire Reef,120,4,30.0,5.015,22.69,3.36,26.05,1,low-frequency,no,vocabulary-review
+s434,10,Nature and animals,Microbe That Lives in Boiling Water,125,4,31.25,5.107,15.2,1.6,38.4,0,,no,within-guardrails
+s435,1,World affairs,A New Road,60,11,5.45,5.861,3.33,0.0,5.0,0,,no,within-guardrails
+s436,2,World affairs,Town Meeting,113,6,18.83,5.617,6.19,0.88,23.89,0,long-words,yes,vocabulary-review
+s437,3,World affairs,A Well for the Village,105,5,21.0,5.691,5.71,0.95,20.95,0,long-words,yes,vocabulary-review
+s438,4,World affairs,The Shared Garden,102,6,17.0,5.232,9.8,0.0,35.29,0,long-words,no,vocabulary-review
+s439,5,World affairs,City That Recycles Everything,115,4,28.75,5.305,8.7,1.74,32.17,0,long-words,yes,vocabulary-review
+s440,6,World affairs,Village That Trades Skills Instead of Money,109,4,27.25,5.263,11.93,1.83,34.86,0,long-words,no,vocabulary-review
+s441,7,World affairs,The Town With Free Bicycles,116,4,29.0,5.346,11.21,0.86,29.31,0,,no,within-guardrails
+s442,8,World affairs,Region That Shares a Language School,113,4,28.25,5.078,15.04,0.88,44.25,0,long-words,no,vocabulary-review
+s443,9,World affairs,Nation That Funds Small Inventions,123,4,30.75,5.069,9.76,0.81,46.34,0,long-words,no,vocabulary-review
+s444,10,World affairs,The Council That Meets in Every Village Once a Year,125,4,31.25,5.167,8.0,1.6,44.8,0,,no,within-guardrails
+s445,1,Everyday life,A Quiet Morning,52,11,4.73,5.765,4.35,0.0,4.35,1,,no,within-guardrails
+s446,2,Everyday life,Missing Sock,84,6,14.0,5.592,4.82,0.0,7.23,1,,no,within-guardrails
+s447,3,Everyday life,A Trip to Grandma's,97,5,19.4,5.577,9.68,0.0,15.05,2,low-frequency|long-words,yes,priority-review
+s448,4,Everyday life,Broken Umbrella,103,6,17.17,5.301,17.82,4.95,22.77,2,low-frequency|very-low-frequency|long-words,no,priority-review
+s449,5,Everyday life,Note on the Fridge,118,7,16.86,5.628,5.22,0.87,18.26,2,,no,within-guardrails
+s450,6,Everyday life,The Borrowed Book,128,5,25.6,5.649,7.2,0.8,16.8,1,,no,within-guardrails
+s451,7,Everyday life,Empty Chair at Dinner,134,4,33.5,5.538,6.82,0.0,20.45,1,,no,within-guardrails
+s452,8,Everyday life,Recipe Written in the Margins,156,4,39.0,5.403,11.69,1.3,26.62,1,,no,within-guardrails
+s453,9,Everyday life,The Silence After the Kids Left Home,152,4,38.0,5.285,14.57,3.31,32.45,1,,no,within-guardrails
+s454,10,Everyday life,Letter Kept in a Drawer for Years,154,4,38.5,5.309,9.87,1.32,25.66,1,,no,within-guardrails
+s455,1,History,Old Well,51,9,5.67,6.086,1.96,0.0,5.88,0,long-words,no,vocabulary-review
+s456,2,History,A Village Fire,96,5,19.2,5.424,6.25,0.0,25.0,0,long-words,yes,vocabulary-review
+s457,4,History,First Map,114,4,28.5,5.294,13.39,1.79,31.25,1,low-frequency|long-words,yes,priority-review
+s458,4,History,Long Winter,118,4,29.5,5.211,7.63,0.0,33.05,0,long-words,yes,vocabulary-review
+s459,5,History,The Messenger's Horse,132,4,33.0,5.196,13.18,0.0,37.98,2,low-frequency|long-words,yes,priority-review
+s460,6,History,Coin From a Lost Kingdom,123,4,30.75,5.243,14.63,1.63,35.77,0,long-words,no,vocabulary-review
+s461,7,History,Scholar's Hidden Notes,126,4,31.5,5.071,14.63,1.63,49.59,1,long-words,no,vocabulary-review
+s462,8,History,The Treaty Signed in the Rain,143,4,35.75,5.084,16.78,1.4,40.56,0,,no,within-guardrails
+s463,9,History,General Who Refused to Fight,154,4,38.5,5.189,13.91,1.32,41.72,2,,no,within-guardrails
+s464,10,History,City Buried Under Sand,160,4,40.0,4.95,16.88,3.12,50.0,0,,no,within-guardrails
+s465,1,Science,Why We Blink,48,9,5.33,5.449,14.58,0.0,8.33,0,low-frequency|long-words,no,priority-review
+s466,2,Science,How Soap Bubbles Form,112,6,18.67,5.25,13.39,2.68,14.29,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s467,3,Science,Why Metal Feels Cold,124,6,20.67,5.402,11.29,0.81,11.29,0,low-frequency,yes,vocabulary-review
+s468,4,Science,How Volcanoes Erupt,136,5,27.2,5.148,18.66,2.24,24.63,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s469,5,Science,Why the Ocean Is Salty,145,5,29.0,5.264,15.86,0.69,24.83,0,low-frequency|long-words,yes,priority-review
+s470,6,Science,How Bats See in the Dark,134,5,26.8,5.114,16.42,2.24,29.1,0,low-frequency,no,vocabulary-review
+s471,7,Science,The Chemistry of Rust,134,4,33.5,5.101,20.9,1.49,31.34,0,low-frequency,no,vocabulary-review
+s472,8,Science,Why Some Stars Twinkle,144,4,36.0,5.18,20.0,4.29,27.86,2,,no,within-guardrails
+s473,9,Science,Physics of a Soap Bubble's Colors,152,4,38.0,5.142,15.79,4.61,26.97,0,,no,within-guardrails
+s474,10,Science,The Biology of Why Wounds Heal,174,5,34.8,4.97,12.64,2.87,33.91,0,,no,within-guardrails
+s475,1,Famous books,The Fox and the Grapes,104,13,8.0,5.985,4.85,0.0,1.94,1,,no,within-guardrails
+s476,2,Famous books,Hansel and Gretel,136,17,8.0,5.966,0.76,0.0,3.05,2,,no,within-guardrails
+s477,3,Famous books,Alice Drinks from the Little Bottle,164,20,8.2,5.934,1.27,0.0,5.1,1,,no,within-guardrails
+s478,4,Famous books,Jim Finds the Treasure Map,201,20,10.05,5.792,6.25,0.0,3.65,4,,no,within-guardrails
+s479,5,Famous books,Jo Sells Her First Stories,197,21,9.38,5.805,3.17,0.0,12.17,2,,no,within-guardrails
+s480,6,Famous books,Edmond Dantès Is Betrayed,206,21,9.81,5.696,6.25,2.08,18.75,6,,no,within-guardrails
+s481,7,Famous books,The Final Chase,200,22,9.09,5.584,13.37,2.14,14.44,5,,no,within-guardrails
+s482,8,Famous books,The Count Begins His Revenge,196,18,10.89,5.634,9.68,1.08,16.67,8,,no,within-guardrails
+s483,9,Famous books,Ahab's Obsession Takes Command,205,18,11.39,5.507,12.12,1.01,26.26,5,,no,within-guardrails
+s484,10,Famous books,"Pride and Prejudice: Judgment, Marriage, and Class",249,19,13.11,5.504,10.17,0.85,29.24,8,,no,within-guardrails
+s485,1,Fantasy/stories,Sleepy Moon,33,6,5.5,5.767,9.09,0.0,0.0,0,low-frequency,no,vocabulary-review
+s486,2,Fantasy/stories,The Garden That Grew at Night,144,10,14.4,5.507,10.0,2.86,10.71,1,low-frequency|very-low-frequency|long-words,no,priority-review
+s487,3,Fantasy/stories,Door With No Handle,117,8,14.62,5.674,7.96,0.88,9.73,2,,no,within-guardrails
+s488,4,Fantasy/stories,Umbrella That Changed the Weather,149,6,24.83,5.277,15.07,1.37,24.66,1,low-frequency|long-words,yes,priority-review
+s489,5,Fantasy/stories,The Tailor's Thread of Patience,132,4,33.0,5.424,13.18,1.55,18.6,1,low-frequency,yes,vocabulary-review
+s490,6,Fantasy/stories,Postman Who Delivered Dreams,185,5,37.0,5.242,10.99,1.1,28.02,1,,yes,syntax-review
+s491,7,Fantasy/stories,Cartographer Who Drew Feelings Instead of Land,165,4,41.25,5.17,15.43,3.7,36.42,1,long-words,yes,vocabulary-review
+s492,8,Fantasy/stories,The Glassblower's Frozen Moments,228,5,45.6,5.348,13.39,2.68,32.59,1,,yes,syntax-review
+s493,9,Fantasy/stories,Bookbinder Who Sewed Together Broken Time,219,5,43.8,5.099,18.14,1.86,40.0,1,,no,within-guardrails
+s494,10,Fantasy/stories,Cartomancer Who Read the Future in Reverse,253,5,50.6,5.214,13.31,1.61,32.26,2,,no,within-guardrails
+s495,1,Nature and animals,A Duck on the Pond,32,7,4.57,5.635,15.62,0.0,3.12,0,low-frequency,no,vocabulary-review
+s496,2,Nature and animals,Spider's Web,108,6,18.0,5.257,17.65,0.98,23.53,3,low-frequency|long-words,yes,priority-review
+s497,3,Nature and animals,Why Cats Purr,125,5,25.0,5.206,14.4,6.4,20.8,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s498,6,Nature and animals,The Migration of Monarch Butterflies,151,4,37.75,5.284,13.61,2.04,36.73,4,long-words,yes,vocabulary-review
+s499,5,Nature and animals,Hedgehog's Winter Sleep,163,5,32.6,5.213,12.35,4.94,30.86,1,very-low-frequency|long-words,yes,priority-review
+s500,6,Nature and animals,Elephant's Remarkable Trunk,168,5,33.6,5.074,18.45,1.79,36.9,0,low-frequency|long-words,yes,priority-review
+s501,7,Nature and animals,The Termite Mound's Natural Air Conditioning,182,5,36.4,4.872,24.73,4.4,47.25,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s502,8,Nature and animals,Cuttlefish's Remarkable Camouflage,203,5,40.6,4.909,20.69,8.37,38.92,0,low-frequency|very-low-frequency,no,priority-review
+s503,9,Nature and animals,Naked Mole Rat's Unusual Biology,216,5,43.2,5.096,18.52,1.39,31.94,0,,no,within-guardrails
+s504,10,Nature and animals,The Deep-Sea Anglerfish's Unusual Reproduction,216,5,43.2,5.069,19.44,4.17,37.96,0,,no,within-guardrails
+s505,1,World affairs,A Free Meal,27,6,4.5,5.898,3.7,0.0,11.11,0,long-words,no,vocabulary-review
+s506,2,World affairs,Free Bus Ride,121,6,20.17,5.703,0.85,0.0,16.1,2,long-words,yes,vocabulary-review
+s507,3,World affairs,The Neighborhood Watch,116,6,19.33,5.444,5.17,0.0,26.72,0,long-words,yes,vocabulary-review
+s508,4,World affairs,City's Free Repair Café,137,5,27.4,5.3,8.03,1.46,30.66,0,long-words,yes,vocabulary-review
+s509,5,World affairs,Village That Adopted a River,145,5,29.0,5.127,15.86,3.45,38.62,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s510,6,World affairs,The Town That Banned Single-Use Plastic,151,5,30.2,5.096,11.92,0.66,39.74,0,long-words,no,vocabulary-review
+s511,7,World affairs,Region That Built Affordable Housing Together,188,5,37.6,5.06,14.36,0.53,48.4,0,long-words,yes,vocabulary-review
+s512,8,World affairs,Nation That Requires Environmental Impact Voting,219,5,43.8,5.103,11.42,1.83,47.49,0,long-words,yes,vocabulary-review
+s513,9,World affairs,The Federation That Shares Disaster Response Equipment,224,5,44.8,5.115,13.84,0.89,52.23,0,long-words,no,vocabulary-review
+s514,10,World affairs,Confederation That Rotates Its Capital City,248,5,49.6,5.02,14.92,1.61,54.44,0,long-words,no,vocabulary-review
+s515,1,Everyday life,Breakfast Together,29,6,4.83,5.651,6.9,0.0,6.9,0,low-frequency|long-words,no,priority-review
+s516,2,Everyday life,The Family Recipe Box,102,5,20.4,5.399,9.0,1.0,22.0,2,low-frequency|long-words,yes,priority-review
+s517,3,Everyday life,Overgrown Backyard,123,5,24.6,5.408,10.74,0.83,22.31,1,low-frequency|long-words,yes,priority-review
+s518,4,Everyday life,Neighborhood Book Exchange,137,5,27.4,5.354,4.48,2.24,31.34,1,very-low-frequency|long-words,yes,priority-review
+s519,5,Everyday life,The Stranger Who Returned a Wallet,162,5,32.4,5.522,7.05,0.0,21.15,2,,yes,syntax-review
+s520,6,Everyday life,Retirement Party That Almost Didn't Happen,200,6,33.33,5.345,10.26,0.51,32.82,2,long-words,yes,vocabulary-review
+s521,7,Everyday life,Apartment Building's Unofficial Historian,195,5,39.0,5.268,13.76,0.53,37.57,3,long-words,yes,vocabulary-review
+s522,8,Everyday life,The Widower's New Sunday Ritual,225,5,45.0,5.331,11.21,0.47,34.11,3,,yes,syntax-review
+s523,9,Everyday life,House That Held Three Generations of Arguments,239,5,47.8,5.388,10.68,0.85,32.48,2,,yes,syntax-review
+s524,10,Everyday life,Correspondence That Spanned a War and Outlasted It,289,6,48.17,5.38,10.56,2.11,33.1,1,,no,within-guardrails
+s525,1,History,The Old Wagon,34,6,5.67,5.869,11.76,0.0,5.88,0,low-frequency|long-words,no,priority-review
+s526,2,History,Village Blacksmith,115,5,23.0,5.473,9.01,0.9,16.22,2,low-frequency|long-words,yes,priority-review
+s527,4,History,Traveling Storyteller,127,5,25.4,5.198,10.48,2.42,29.84,1,very-low-frequency|long-words,yes,priority-review
+s528,4,History,The Winter Market,184,6,30.67,5.345,8.7,0.0,23.91,0,long-words,yes,vocabulary-review
+s529,5,History,Apprentice Who Became a Master,186,5,37.2,5.225,12.64,1.65,36.26,1,long-words,yes,vocabulary-review
+s530,6,History,Plague Doctor's Notebook,243,5,48.6,5.225,10.08,0.42,43.28,2,long-words,yes,vocabulary-review
+s531,8,History,The Merchant Fleet That Sailed Without Maps,252,5,50.4,4.992,17.53,5.18,43.03,1,very-low-frequency|long-words,yes,priority-review
+s532,8,History,Court Painter Who Recorded Dissent,290,6,48.33,5.085,16.38,2.09,46.69,2,long-words,yes,vocabulary-review
+s533,9,History,Cartographer Who Refused to Finish His Final Map,274,6,45.67,5.155,13.01,1.49,44.61,2,,no,within-guardrails
+s534,10,History,The Diplomat Whose Silence Ended a War,289,5,57.8,4.927,20.7,2.46,51.93,2,,yes,syntax-review
+s535,1,Science,Why Fire Is Hot,29,6,4.83,5.631,0.0,0.0,3.45,0,,no,within-guardrails
+s536,2,Science,Why Bread Gets Hard,122,7,17.43,5.326,13.11,2.46,18.03,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s537,3,Science,How Our Skin Protects Us,125,5,25.0,5.359,7.2,1.6,27.2,0,very-low-frequency|long-words,yes,priority-review
+s538,4,Science,How Airplanes Stay in the Air,149,6,24.83,5.415,11.41,1.34,26.85,0,low-frequency|long-words,yes,priority-review
+s539,5,Science,Science of Why We Get Goosebumps,182,6,30.33,5.187,17.58,2.2,29.12,0,low-frequency|long-words,yes,priority-review
+s540,6,Science,How Antibiotics Fight Bacteria,185,6,30.83,5.037,22.16,1.62,49.73,0,low-frequency|long-words,no,priority-review
+s541,7,Science,Physics of Why We Feel Weightless in Free Fall,235,5,47.0,5.355,14.03,1.81,27.6,5,,yes,syntax-review
+s542,8,Science,Chemistry Behind Why Certain Foods Taste Better Together,241,5,48.2,5.079,16.6,0.41,47.72,0,long-words,yes,vocabulary-review
+s543,9,Science,The Neuroscience of Why Music Gives Us Chills,234,5,46.8,5.037,14.1,1.71,41.88,0,,yes,syntax-review
+s544,10,Science,Quantum Mechanics of Why Certain Materials Become Superconductors,279,5,55.8,4.898,20.22,5.15,50.37,4,,yes,syntax-review
+s545,1,Famous books,Little Red Riding Hood,111,15,7.4,6.071,0.0,0.0,1.85,2,,no,within-guardrails
+s546,2,Famous books,The Emperor's New Clothes,142,18,7.89,6.001,2.14,0.0,4.29,1,,no,within-guardrails
+s547,3,Famous books,Pinocchio Runs Away from Home,158,18,8.78,6.024,1.36,0.0,6.8,2,,no,within-guardrails
+s548,4,Famous books,Jim Meets Long John Silver,203,19,10.68,5.848,6.56,0.0,9.84,7,,no,within-guardrails
+s549,5,Famous books,Beth and the Quiet Piano,202,19,10.63,5.907,4.3,1.08,10.75,4,,no,within-guardrails
+s550,6,Famous books,Escape from the Château d'If,209,20,10.45,5.785,6.25,1.56,8.85,8,,no,within-guardrails
+s551,7,Famous books,The Portrait Begins to Change,194,18,10.78,5.757,7.57,0.54,15.14,4,,no,within-guardrails
+s552,8,Famous books,The Count Learns to Show Mercy,201,17,11.82,5.82,4.08,0.51,12.76,3,,no,within-guardrails
+s553,9,Famous books,Pip Reconsiders What Makes a Gentleman,209,15,13.93,5.471,12.44,1.04,20.73,7,,no,within-guardrails
+s554,10,Famous books,"Les Misérables: Law, Mercy, and Moral Change",256,18,14.22,5.53,6.94,1.22,21.63,5,,no,within-guardrails
+s555,1,Fantasy/stories,The Fox With Two Tails,35,6,5.83,5.747,14.29,0.0,0.0,0,low-frequency,no,vocabulary-review
+s556,1,Fantasy/stories,Talking Rock,45,11,4.09,5.935,2.22,0.0,2.22,0,,no,within-guardrails
+s557,2,Fantasy/stories,Shoemaker's Extra Pair,128,6,21.33,5.682,4.84,0.81,10.48,1,long-words,yes,vocabulary-review
+s558,2,Fantasy/stories,The Cloud Shepherd,128,5,25.6,5.37,12.0,0.0,13.6,1,low-frequency|long-words,yes,priority-review
+s559,3,Fantasy/stories,Wishing Bench,134,5,26.8,5.499,8.27,3.76,16.54,1,very-low-frequency|long-words,yes,priority-review
+s560,3,Fantasy/stories,Painter's Missing Color,137,5,27.4,5.288,7.41,0.0,22.96,1,long-words,yes,vocabulary-review
+s561,4,Fantasy/stories,The Locksmith's Final Key,169,5,33.8,5.365,10.91,1.82,24.24,1,long-words,yes,vocabulary-review
+s562,4,Fantasy/stories,Weathervane That Remembered,180,5,36.0,5.167,19.55,3.91,28.49,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s563,5,Fantasy/stories,Cobbler Who Mended Time,177,5,35.4,5.31,7.51,1.16,29.48,1,long-words,yes,vocabulary-review
+s564,5,Fantasy/stories,The Baker Who Kneaded Memories,178,5,35.6,5.098,17.24,2.3,26.44,2,low-frequency|long-words,yes,priority-review
+s565,6,Fantasy/stories,Cartwright Who Built Roads to Nowhere,173,5,34.6,5.092,19.53,0.59,36.69,2,low-frequency|long-words,yes,priority-review
+s566,6,Fantasy/stories,Weaver's Loom of Quiet Places,171,5,34.2,5.194,11.38,1.2,31.14,2,long-words,yes,vocabulary-review
+s567,7,Fantasy/stories,The Apothecary Who Bottled Courage,201,5,40.2,5.265,9.64,1.02,36.55,2,long-words,yes,vocabulary-review
+s568,7,Fantasy/stories,Chandler Who Sold Borrowed Light,181,5,36.2,4.968,23.46,1.12,34.08,1,low-frequency,yes,vocabulary-review
+s569,8,Fantasy/stories,Instrument Maker Who Tuned Grief,222,5,44.4,5.338,9.22,0.92,33.18,1,,yes,syntax-review
+s570,8,Fantasy/stories,The Mapmaker Who Charted Regret,225,5,45.0,5.237,9.46,1.35,39.19,1,,yes,syntax-review
+s571,9,Fantasy/stories,Glazier Who Trapped Sunsets,246,5,49.2,5.416,9.96,2.49,26.97,2,,yes,syntax-review
+s572,9,Fantasy/stories,Silversmith Who Forged Second Voices,223,5,44.6,5.195,14.55,2.73,30.0,1,,no,within-guardrails
+s573,10,Fantasy/stories,The Bell Founder Who Cast Forgiveness,279,5,55.8,5.149,16.49,2.15,39.07,0,,yes,syntax-review
+s574,10,Fantasy/stories,Archivist Who Catalogued Unspoken Apologies,257,5,51.4,5.163,15.02,5.14,39.92,1,,no,within-guardrails
+s575,1,Nature and animals,A Rabbit in the Grass,31,7,4.43,5.789,9.68,0.0,0.0,0,low-frequency,no,vocabulary-review
+s576,1,Nature and animals,The Little Ant,33,7,4.71,5.916,12.12,0.0,0.0,0,low-frequency,no,vocabulary-review
+s577,2,Nature and animals,Woodpecker's Loud Knock,119,5,23.8,5.275,12.39,2.65,24.78,4,low-frequency|very-low-frequency|long-words,yes,priority-review
+s578,2,Nature and animals,Turtle's Slow Journey,131,5,26.2,5.383,7.69,1.54,20.77,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s579,3,Nature and animals,The Clever Crow's Trick,153,5,30.6,5.36,11.76,1.96,30.72,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s580,3,Nature and animals,Bat's Nighttime Feast,144,5,28.8,5.014,21.53,1.39,30.56,0,low-frequency|long-words,yes,priority-review
+s581,4,Nature and animals,How Salmon Find Their Way Home,174,5,34.8,5.132,13.79,4.02,32.76,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s582,4,Nature and animals,The Chameleon's Sticky Tongue,175,5,35.0,5.201,13.71,3.43,28.0,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s583,5,Nature and animals,Remarkable Homing Ability of Pigeons,170,5,34.0,5.182,11.83,2.96,39.64,1,very-low-frequency|long-words,yes,priority-review
+s584,5,Nature and animals,Praying Mantis's Patient Hunting Strategy,172,5,34.4,4.995,21.51,3.49,33.14,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s585,6,Nature and animals,The Symbiotic Relationship Between Clownfish and Sea Anemones,185,5,37.0,5.003,18.92,6.49,36.76,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s586,6,Nature and animals,Complex Communication System of Prairie Dogs,197,5,39.4,5.014,14.36,3.08,37.44,2,very-low-frequency|long-words,yes,priority-review
+s587,7,Nature and animals,Remarkable Regenerative Abilities of Starfish,214,5,42.8,5.057,14.49,1.87,43.46,0,long-words,yes,vocabulary-review
+s588,7,Nature and animals,The Unusual Hunting Technique of Archer Fish,205,5,41.0,5.136,15.61,2.93,27.8,0,,yes,syntax-review
+s589,8,Nature and animals,Extraordinary Migration of Arctic Terns,228,5,45.6,5.16,15.53,2.74,37.44,3,,yes,syntax-review
+s590,8,Nature and animals,Complex Social Structure of Orca Pods,210,5,42.0,5.03,16.19,3.33,36.19,0,,no,within-guardrails
+s591,9,Nature and animals,The Fungal Networks That Connect Forest Ecosystems,206,5,41.2,5.088,14.08,2.43,40.29,0,,no,within-guardrails
+s592,9,Nature and animals,Sophisticated Tool Use of New Caledonian Crows,224,5,44.8,5.057,17.49,0.45,38.57,1,,no,within-guardrails
+s593,10,Nature and animals,Extremophile Organisms Redefining the Boundaries of Life,271,5,54.2,4.995,16.73,2.23,46.1,2,,no,within-guardrails
+s594,10,Nature and animals,The Epigenetic Inheritance of Environmental Memory,279,5,55.8,5.007,17.33,2.89,51.99,1,,yes,syntax-review
+s595,1,World affairs,A New Bridge,27,6,4.5,5.911,3.7,0.0,7.41,0,long-words,no,vocabulary-review
+s596,1,World affairs,Sharing Food,27,6,4.5,5.722,3.7,0.0,22.22,0,long-words,no,vocabulary-review
+s597,2,World affairs,The Community Clean-Up Day,123,5,24.6,5.541,4.88,0.0,22.76,0,long-words,yes,vocabulary-review
+s598,3,World affairs,School Supply Drive,123,5,24.6,5.343,5.69,0.0,39.84,0,long-words,yes,vocabulary-review
+s599,3,World affairs,Town's First Community Center,159,5,31.8,5.335,10.69,0.63,32.7,0,low-frequency|long-words,yes,priority-review
+s600,3,World affairs,The Volunteer Tutoring Program,162,5,32.4,5.428,8.07,0.0,32.92,1,long-words,yes,vocabulary-review
+s601,4,World affairs,City's Bike Lane Expansion,184,5,36.8,5.279,8.15,0.0,37.5,0,long-words,yes,vocabulary-review
+s602,6,World affairs,Rural Internet Access Initiative,176,5,35.2,5.038,11.36,0.57,50.0,0,long-words,yes,vocabulary-review
+s603,6,World affairs,The Cooperative Housing Model,217,5,43.4,5.122,12.44,0.92,45.62,0,long-words,yes,vocabulary-review
+s604,8,World affairs,Municipal Composting Program,204,5,40.8,5.154,10.78,3.43,46.08,0,long-words,no,vocabulary-review
+s605,8,World affairs,Cross-Border Water Management Agreement,227,5,45.4,5.111,14.54,0.44,46.26,0,long-words,yes,vocabulary-review
+s606,6,World affairs,The Regional Renewable Energy Cooperative,198,5,39.6,5.064,15.15,1.01,48.48,0,low-frequency|long-words,yes,priority-review
+s607,8,World affairs,National Apprenticeship Modernization Program,206,5,41.2,4.861,16.02,1.94,57.28,0,long-words,no,vocabulary-review
+s608,7,World affairs,Multi-Municipal Emergency Medical Service,206,5,41.2,5.01,16.02,1.94,50.49,0,long-words,yes,vocabulary-review
+s609,8,World affairs,The National Community Land Trust Initiative,259,5,51.8,5.128,9.27,0.77,39.0,0,,yes,syntax-review
+s610,8,World affairs,Regional Circular Economy Partnership,218,5,43.6,5.115,10.09,0.92,51.38,0,long-words,yes,vocabulary-review
+s611,9,World affairs,International Knowledge-Sharing Network for Sustainable Agriculture,260,5,52.0,5.01,13.08,0.77,51.92,0,long-words,yes,vocabulary-review
+s612,9,World affairs,The Federated Approach to Regional Refugee Resettlement,235,5,47.0,4.957,20.0,3.83,57.02,0,long-words,yes,vocabulary-review
+s613,10,World affairs,Polycentric Governance Model for Transboundary Environmental Management,333,5,66.6,4.914,16.52,4.8,54.65,0,long-words,yes,vocabulary-review
+s614,10,World affairs,Deliberative Mini-Public Model for Contested Infrastructure Decisions,307,5,61.4,4.944,13.03,5.86,53.42,0,long-words,yes,vocabulary-review
+s615,1,Everyday life,A Cup of Coffee,28,6,4.67,5.888,0.0,0.0,0.0,0,,no,within-guardrails
+s616,1,Everyday life,Cleaning My Room,30,6,5.0,5.997,3.33,0.0,0.0,0,,no,within-guardrails
+s617,2,Everyday life,Forgotten Birthday Card,98,5,19.6,5.532,8.42,0.0,17.89,1,low-frequency|long-words,yes,priority-review
+s618,2,Everyday life,The New Kitchen Gadget,106,5,21.2,5.418,9.62,0.96,20.19,1,low-frequency|long-words,yes,priority-review
+s619,3,Everyday life,Surprise Visit,132,5,26.4,5.572,6.25,0.78,20.31,2,long-words,yes,vocabulary-review
+s620,3,Everyday life,Community Garden Plot,132,5,26.4,5.343,14.73,0.78,31.01,2,low-frequency|long-words,yes,priority-review
+s621,4,Everyday life,The Unexpected Career Change,180,5,36.0,5.425,9.09,0.57,28.41,2,long-words,yes,vocabulary-review
+s622,4,Everyday life,Long-Distance Friendship,165,5,33.0,5.459,4.29,0.0,31.29,2,long-words,yes,vocabulary-review
+s623,5,Everyday life,Inherited Responsibility,194,5,38.8,5.388,8.95,1.58,33.16,1,long-words,yes,vocabulary-review
+s624,5,Everyday life,The Roommate Situation,170,5,34.0,5.246,13.66,1.24,39.75,4,low-frequency|long-words,yes,priority-review
+s625,6,Everyday life,Family Business Succession,210,5,42.0,5.5,4.9,0.0,31.86,2,long-words,yes,vocabulary-review
+s626,6,Everyday life,Blended Family Adjustment,185,5,37.0,5.405,11.05,1.1,32.6,2,long-words,yes,vocabulary-review
+s627,7,Everyday life,The Caregiver's Difficult Balance,199,5,39.8,5.238,10.82,2.58,38.66,2,long-words,yes,vocabulary-review
+s628,7,Everyday life,Empty Nest Transition,224,5,44.8,5.464,10.41,1.36,28.96,1,,yes,syntax-review
+s629,8,Everyday life,Reconciliation After Decades of Silence,233,5,46.6,5.317,12.66,2.18,32.75,2,,yes,syntax-review
+s630,8,Everyday life,The Late-Life Career Reinvention,239,5,47.8,5.354,10.68,0.85,38.03,1,,yes,syntax-review
+s631,9,Everyday life,Multigenerational Household Experiment,266,5,53.2,5.374,8.46,1.92,37.31,1,,yes,syntax-review
+s632,9,Everyday life,Friendship Tested by Financial Success,249,5,49.8,5.274,10.04,2.09,40.59,3,,yes,syntax-review
+s633,10,Everyday life,The Inheritance That Revealed a Hidden Family History,299,5,59.8,5.433,8.22,0.68,33.9,2,,yes,syntax-review
+s634,10,Everyday life,Decades-Long Correspondence With a Childhood Pen Pal,288,5,57.6,5.332,11.19,1.05,31.12,1,,yes,syntax-review
+s635,1,History,Old Tower,32,6,5.33,5.654,3.12,0.0,9.38,0,long-words,no,vocabulary-review
+s636,1,History,The First Trade,31,6,5.17,5.751,0.0,0.0,6.45,0,long-words,no,vocabulary-review
+s637,2,History,Town Crier,131,5,26.2,5.401,11.72,2.34,25.0,2,low-frequency|very-low-frequency|long-words,yes,priority-review
+s638,4,History,Traveling Peddler,146,5,29.2,5.148,13.29,3.5,34.27,1,low-frequency|very-low-frequency|long-words,yes,priority-review
+s639,3,History,The Lighthouse Keeper's Daughter,179,5,35.8,5.271,8.57,1.14,30.86,2,long-words,yes,vocabulary-review
+s640,5,History,Orphan Clockmaker,190,5,38.0,5.142,16.22,3.24,40.54,2,low-frequency|very-low-frequency|long-words,yes,priority-review
+s641,4,History,Printer Who Risked Everything,209,5,41.8,5.329,12.25,0.49,39.71,2,low-frequency|long-words,yes,priority-review
+s642,5,History,The Midwife's Secret Knowledge,225,5,45.0,5.218,9.91,0.45,40.99,2,long-words,yes,vocabulary-review
+s643,5,History,Interpreter Who Prevented a War,225,5,45.0,5.153,19.73,1.35,43.5,1,low-frequency|long-words,yes,priority-review
+s644,8,History,Astronomer Who Corrected an Ancient Error,224,5,44.8,5.153,16.51,0.46,47.71,2,long-words,yes,vocabulary-review
+s645,8,History,The Diplomat's Unconventional Peace Proposal,231,5,46.2,5.074,16.3,0.88,51.98,2,long-words,yes,vocabulary-review
+s646,6,History,Merchant Who Funded a Library,228,5,45.6,5.283,8.04,0.0,41.96,2,long-words,yes,vocabulary-review
+s647,7,History,Regent Who Governed by Committee,247,5,49.4,5.119,14.98,0.81,42.91,0,long-words,yes,vocabulary-review
+s648,7,History,The Cartographer's Deliberate Error,220,5,44.0,5.026,13.95,7.44,43.26,2,very-low-frequency|long-words,yes,priority-review
+s649,8,History,Translator Who Preserved a Dying Language,231,5,46.2,5.129,16.37,3.1,39.82,2,,yes,syntax-review
+s650,8,History,Engineer Who Refused to Certify an Unsafe Bridge,254,5,50.8,5.262,12.05,2.01,40.96,2,,yes,syntax-review
+s651,9,History,The Archivist Who Smuggled a Nation's Memory,282,5,56.4,5.186,14.64,3.21,43.21,1,,yes,syntax-review
+s652,9,History,Economist Whose Warnings Went Unheeded,274,5,54.8,5.133,15.24,1.49,47.58,2,long-words,yes,vocabulary-review
+s653,10,History,Historian Who Documented Her Own Erasure,345,5,69.0,5.094,17.89,2.35,51.32,2,,yes,syntax-review
+s654,10,History,The Cryptographer Whose Code Remained Unbroken for a Century,325,5,65.0,4.817,23.12,8.44,54.69,2,very-low-frequency|long-words,yes,priority-review
+s655,1,Science,Why We Sneeze,31,6,5.17,5.463,12.9,0.0,3.23,0,low-frequency,no,vocabulary-review
+s656,1,Science,Magnets Stick Together,28,6,4.67,5.415,14.29,0.0,10.71,0,low-frequency|long-words,no,priority-review
+s657,2,Science,Why Ice Cream Melts,127,5,25.4,5.428,7.09,0.0,17.32,0,low-frequency|long-words,yes,priority-review
+s658,2,Science,How Plants Drink Water,138,5,27.6,5.327,18.12,2.9,17.39,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s659,3,Science,Why Some Objects Float and Others Sink,196,7,28.0,5.397,6.63,0.0,17.86,0,long-words,yes,vocabulary-review
+s660,3,Science,The Science of Static Electricity,195,7,27.86,5.416,10.77,1.54,26.67,0,low-frequency|very-low-frequency|long-words,yes,priority-review
+s661,4,Science,How Vaccines Prevent Disease Outbreaks,200,5,40.0,5.299,12.0,0.5,39.0,0,low-frequency|long-words,yes,priority-review
+s662,4,Science,Physics of Why Sound Travels Differently Through Different Materials,194,5,38.8,5.394,10.31,0.52,29.38,0,long-words,yes,vocabulary-review
+s663,5,Science,The Biology of Why Yawning Might Be Contagious,212,5,42.4,5.115,15.09,0.94,38.21,0,low-frequency|long-words,yes,priority-review
+s664,5,Science,How Our Bodies Convert Food Into Usable Energy,195,5,39.0,5.178,13.4,0.52,32.47,1,low-frequency|long-words,yes,priority-review
+s665,6,Science,Neuroscience of Habit Formation,227,5,45.4,5.117,15.86,2.2,39.21,0,low-frequency|long-words,yes,priority-review
+s666,6,Science,How Coral Bleaching Threatens Ocean Ecosystems,223,5,44.6,4.902,26.46,2.24,32.74,0,low-frequency|long-words,yes,priority-review
+s667,7,Science,Chemistry of Why Certain Metals Corrode Faster Than Others,184,5,36.8,5.068,20.65,3.8,38.59,0,low-frequency|long-words,yes,priority-review
+s668,7,Science,Physiology of Altitude Sickness,196,5,39.2,5.124,16.84,1.53,39.29,0,long-words,yes,vocabulary-review
+s669,8,Science,The Genetics of Why Identical Twins Aren't Perfectly Identical,226,5,45.2,5.063,11.06,1.77,42.92,0,long-words,yes,vocabulary-review
+s670,8,Science,Physics of Why GPS Requires Correcting for Relativity,254,5,50.8,5.207,17.48,2.03,37.8,3,,yes,syntax-review
+s671,9,Science,Microbiome's Influence on Human Health and Behavior,263,5,52.6,5.084,15.21,3.8,42.97,0,,yes,syntax-review
+s672,9,Science,The Astrophysics of Gravitational Waves,276,5,55.2,5.201,17.88,3.28,36.5,2,,yes,syntax-review
+s673,10,Science,Theoretical Physics of Quantum Entanglement and Its Implications,315,5,63.0,5.104,14.06,4.47,44.09,2,,yes,syntax-review
+s674,10,Science,Molecular Biology of CRISPR Gene Editing Technology,323,5,64.6,5.054,12.23,1.88,47.34,2,,yes,syntax-review
+s675,1,Famous books,The Ugly Duckling,104,14,7.43,5.988,2.88,0.96,4.81,0,very-low-frequency,no,vocabulary-review
+s676,1,Famous books,The Princess and the Pea,104,15,6.93,5.965,3.88,0.0,3.88,1,,no,within-guardrails
+s677,2,Famous books,The Bremen Town Musicians,141,16,8.81,5.931,7.86,0.0,2.86,1,low-frequency,no,vocabulary-review
+s678,2,Famous books,Pinocchio Meets the Talking Cricket,131,18,7.28,5.918,2.4,1.6,4.8,1,very-low-frequency,no,vocabulary-review
+s679,3,Famous books,Pinocchio Meets the Fox and the Cat,165,15,11.0,5.946,1.89,0.0,6.92,1,,no,within-guardrails
+s680,3,Famous books,Thumbelina Leaves Her Home,164,17,9.65,5.907,7.59,0.0,2.53,1,,no,within-guardrails
+s681,4,Famous books,Marley's Ghost Visits Scrooge,197,20,9.85,5.929,1.67,0.56,6.67,6,,no,within-guardrails
+s682,6,Famous books,The Treasure of Monte Cristo,207,18,11.5,5.759,5.03,0.0,15.58,4,,no,within-guardrails
+s683,5,Famous books,Robinson Crusoe Is Shipwrecked,202,19,10.63,5.817,3.02,0.5,7.54,1,,no,within-guardrails
+s684,5,Famous books,The Footprint in the Sand,204,22,9.27,5.72,8.37,1.48,12.32,1,,no,within-guardrails
+s685,6,Famous books,D'Artagnan Arrives in Paris,160,14,11.43,5.726,7.89,5.92,20.39,7,very-low-frequency,no,vocabulary-review
+s686,6,Famous books,The Queen's Diamonds,192,18,10.67,5.746,6.08,3.31,16.02,6,very-low-frequency,no,vocabulary-review
+s687,7,Famous books,Dorian's Double Life,193,20,9.65,5.531,9.09,0.0,22.46,2,,no,within-guardrails
+s688,7,Famous books,Dorian Faces the Portrait,197,20,9.85,5.778,3.66,0.52,18.32,2,,no,within-guardrails
+s689,8,Famous books,Captain Nemo's Hidden World,201,19,10.58,5.706,7.65,1.09,20.22,7,,no,within-guardrails
+s690,8,Famous books,The Attack of the Giant Squid,201,18,11.17,5.722,6.67,0.51,13.33,5,,no,within-guardrails
+s691,9,Famous books,Revolution and Justice in Paris,202,16,12.62,5.421,16.41,1.54,24.1,6,,no,within-guardrails
+s692,9,Famous books,Dorian Gray and the Cost of Beauty,210,17,12.35,5.588,7.39,0.99,21.67,3,,no,within-guardrails
+s693,10,Famous books,A Tale of Two Cities: Sacrifice and Political Violence,243,20,12.15,5.575,7.89,2.19,23.68,11,,no,within-guardrails
+s694,10,Famous books,"The Scarlet Letter: Guilt, Identity, and Public Morality",256,22,11.64,5.37,12.76,1.23,25.1,6,,no,within-guardrails
+s695,1,Fantasy/stories,The Blue Kite,83,11,7.55,6.04,7.59,0.0,0.0,2,low-frequency,no,vocabulary-review
+s696,1,Fantasy/stories,The Little Red Boat,93,12,7.75,5.981,4.35,0.0,1.09,1,,no,within-guardrails
+s697,1,Nature and animals,A Bird at My Window,93,12,7.75,5.886,1.09,0.0,1.09,1,,no,within-guardrails
+s698,1,Nature and animals,The Busy Ant Trail,91,12,7.58,5.752,10.99,0.0,4.4,0,low-frequency,no,vocabulary-review
+s699,1,World affairs,A New Well for the Village,90,9,10.0,6.104,0.0,0.0,2.22,0,,no,within-guardrails
+s700,1,World affairs,The Market Gets a Roof,89,9,9.89,5.933,1.14,0.0,2.27,1,,no,within-guardrails
+s701,1,Everyday life,The Key Under the Chair,91,13,7.0,5.932,4.44,3.33,0.0,1,very-low-frequency,no,vocabulary-review
+s702,1,Everyday life,My Quiet Morning,80,12,6.67,5.995,1.25,0.0,3.75,0,,no,within-guardrails
+s703,1,History,Bread in Ancient Egypt,94,12,7.83,5.674,6.67,0.0,3.33,3,low-frequency,no,vocabulary-review
+s704,1,History,A Roman Road,86,10,8.6,5.65,4.82,0.0,7.23,2,long-words,no,vocabulary-review
+s705,1,Science,Why Ice Melts,87,10,8.7,5.854,6.9,0.0,3.45,0,low-frequency,no,vocabulary-review
+s706,1,Science,A Shadow Moves,81,10,8.1,5.847,2.53,1.27,5.06,2,very-low-frequency|long-words,no,priority-review
+s707,1,Famous books,The Dog and His Reflection,83,12,6.92,5.921,1.2,0.0,3.61,0,,no,within-guardrails
+s708,1,Famous books,The Golden Goose,94,11,8.55,5.881,4.26,0.0,6.38,0,long-words,no,vocabulary-review
+s709,2,Fantasy/stories,The Door in the Tree,118,12,9.83,5.948,0.85,0.0,0.85,1,,no,within-guardrails
+s710,2,Fantasy/stories,Mina and the Moon Bell,110,13,8.46,5.798,7.55,0.94,5.66,1,low-frequency,no,vocabulary-review
+s711,2,Nature and animals,The Frog in the Garden,113,12,9.42,5.823,6.42,0.0,3.67,1,,no,within-guardrails
+s712,2,Nature and animals,Why Cats Move Their Ears,103,12,8.58,5.776,1.94,0.0,5.83,0,,no,within-guardrails
+s713,2,World affairs,A Town Shares Its Water,109,12,9.08,5.756,3.67,0.0,5.5,0,,no,within-guardrails
+s714,2,World affairs,When the Market Moved Indoors,113,13,8.69,5.856,4.42,0.0,11.5,0,long-words,no,vocabulary-review
+s715,2,Everyday life,The Wrong Bus Home,115,13,8.85,5.975,1.79,0.0,0.89,1,,no,within-guardrails
+s716,2,Everyday life,Cooking Rice for Two,108,15,7.2,5.89,0.95,0.0,2.86,1,,no,within-guardrails
+s717,2,History,A Day in Ancient Pompeii,113,11,10.27,5.658,8.49,0.94,11.32,3,low-frequency|long-words,no,priority-review
+s718,2,History,How Vikings Used Longships,113,10,11.3,5.672,6.36,2.73,6.36,2,very-low-frequency,no,vocabulary-review
+s719,2,Science,How Soap Cleans Your Hands,102,12,8.5,5.62,4.9,0.0,5.88,0,,no,within-guardrails
+s720,2,Science,Why We See the Moon,107,10,10.7,5.956,3.06,0.0,6.12,3,,no,within-guardrails
+s721,2,Famous books,The Fisherman and His Wife,118,14,8.43,5.954,5.08,0.85,5.93,0,,no,within-guardrails
+s722,2,Famous books,The Little Match Girl,119,12,9.92,5.926,1.68,0.0,3.36,0,,no,within-guardrails
+s723,3,Fantasy/stories,The House That Moved at Night,152,19,8.0,5.939,0.68,0.0,6.8,1,,no,within-guardrails
+s724,3,Fantasy/stories,The Boy Who Borrowed a Cloud,158,19,8.32,5.916,1.32,0.0,1.97,1,,no,within-guardrails
+s725,3,Nature and animals,The Night of the Fireflies,154,17,9.06,5.534,8.05,2.68,16.11,1,very-low-frequency|long-words,no,priority-review
+s726,3,Nature and animals,How a Young Seal Learns to Swim,147,14,10.5,5.729,5.44,0.68,10.88,0,,no,within-guardrails
+s727,3,World affairs,Why Cities Plant More Trees,152,15,10.13,5.685,5.26,0.0,7.24,0,,no,within-guardrails
+s728,3,World affairs,A Small Island Builds Higher Roads,147,16,9.19,5.778,3.4,0.0,10.2,0,,no,within-guardrails
+s729,3,Everyday life,A Phone Call from an Old Friend,144,15,9.6,5.822,2.16,0.0,10.79,2,,no,within-guardrails
+s730,3,Everyday life,The Umbrella Left at the Cafe,147,17,8.65,5.884,8.22,2.74,6.85,1,very-low-frequency,no,vocabulary-review
+s731,3,History,A Messenger on the Inca Roads,143,13,11.0,5.516,7.97,1.45,13.77,3,,no,within-guardrails
+s732,3,History,Printing Changes Europe,143,12,11.92,5.635,5.07,0.0,11.59,3,,no,within-guardrails
+s733,3,Science,What Makes Thunder,144,14,10.29,5.766,3.47,0.69,11.81,0,,no,within-guardrails
+s734,3,Science,How Seeds Know Which Way to Grow,139,14,9.93,5.684,2.88,0.0,11.51,0,,no,within-guardrails
+s735,3,Famous books,Dorothy Meets the Scarecrow,142,14,10.14,5.883,7.3,0.0,14.6,4,long-words,no,vocabulary-review
+s736,3,Famous books,Tom Sawyer Paints the Fence,158,16,9.88,5.965,2.68,0.0,10.07,3,,no,within-guardrails
+s737,4,Fantasy/stories,The Clockmaker's Secret Room,204,21,9.71,5.789,3.02,0.0,5.53,1,,no,within-guardrails
+s738,4,Fantasy/stories,The Village Under the Lake,193,19,10.16,5.886,3.8,1.09,6.52,4,,no,within-guardrails
+s739,4,Nature and animals,The Trees That Share Water,180,15,12.0,5.792,3.89,0.0,10.0,0,,no,within-guardrails
+s740,4,Nature and animals,The Bee That Finds the Flowers,160,14,11.43,5.784,7.55,1.26,12.58,1,,no,within-guardrails
+s741,4,World affairs,How Food Aid Reaches a Community,181,15,12.07,5.642,2.21,0.0,13.81,0,,no,within-guardrails
+s742,4,World affairs,The Town That Changed Its Waste Rules,167,15,11.13,5.693,7.19,0.6,17.37,0,,no,within-guardrails
+s743,4,Everyday life,The Flat Above the Bakery,178,18,9.89,5.769,3.43,0.0,5.14,1,,no,within-guardrails
+s744,4,Everyday life,A Saturday Without a Phone,181,16,11.31,5.948,0.57,0.0,4.57,3,,no,within-guardrails
+s745,4,History,How the Compass Changed Sea Travel,174,13,13.38,5.524,11.63,1.74,18.02,2,low-frequency,no,vocabulary-review
+s746,4,History,The First Public Clocks,165,15,11.0,5.675,6.17,0.0,17.28,3,,no,within-guardrails
+s747,4,Science,Why Metal Feels Colder Than Wood,165,15,11.0,5.747,5.45,0.61,8.48,0,,no,within-guardrails
+s748,4,Science,How Vaccines Train the Immune System,166,14,11.86,5.692,7.83,1.2,13.86,0,,no,within-guardrails
+s749,4,Famous books,Dorothy Meets the Cowardly Lion,182,18,10.11,5.896,4.19,0.0,10.18,9,,no,within-guardrails
+s750,4,Famous books,Tom and Huck in the Graveyard,164,19,8.63,5.751,5.16,0.0,14.84,5,,no,within-guardrails
+s751,5,Fantasy/stories,The Library at the End of the Road,209,25,8.36,5.94,2.96,0.0,7.88,1,,no,within-guardrails
+s752,5,Fantasy/stories,The Girl Who Could Hear Old Walls,221,21,10.52,5.892,3.77,0.0,7.55,2,,no,within-guardrails
+s753,5,Nature and animals,When Wolves Return to a Valley,187,15,12.47,5.542,10.16,1.07,11.76,0,,no,within-guardrails
+s754,5,Nature and animals,The Secret Life of Tide Pools,196,17,11.53,5.597,6.67,1.03,8.72,1,,no,within-guardrails
+s755,5,World affairs,Why Some Cities Limit Short-Term Rentals,183,13,14.08,5.58,6.01,0.0,16.94,0,,no,within-guardrails
+s756,5,World affairs,A Region Rebuilds After a Major Flood,190,15,12.67,5.627,7.37,0.0,21.05,0,,no,within-guardrails
+s757,5,Everyday life,Learning to Say No Politely,187,20,9.35,5.812,5.08,0.56,9.6,5,,no,within-guardrails
+s758,5,Everyday life,The Neighbor Who Watered the Plants,196,21,9.33,5.858,4.76,0.0,10.05,2,,no,within-guardrails
+s759,5,History,The Opening of the Suez Canal,182,14,13.0,5.807,4.43,1.9,19.62,13,,no,within-guardrails
+s760,5,History,The First Railway Between Tokyo and Yokohama,171,13,13.15,5.825,3.66,0.0,21.34,6,,no,within-guardrails
+s761,5,Science,Why Sleep Helps Memory,172,14,12.29,5.729,0.58,0.0,20.35,0,,no,within-guardrails
+s762,5,Science,How GPS Finds Your Position,171,14,12.21,5.624,7.98,0.61,23.31,6,,no,within-guardrails
+s763,5,Famous books,David Copperfield Leaves the Factory,183,15,12.2,5.944,2.29,0.0,9.71,5,,no,within-guardrails
+s764,5,Famous books,Jane Eyre at Lowood,172,15,11.47,5.683,7.01,0.64,15.92,6,,no,within-guardrails
+s765,6,Fantasy/stories,The City That Forgot the Sun,203,22,9.23,5.549,6.93,0.0,15.35,1,,no,within-guardrails
+s766,6,Fantasy/stories,The Messenger from the Empty Kingdom,216,21,10.29,5.897,3.81,0.0,13.33,3,,no,within-guardrails
+s767,6,Nature and animals,How Elephants Remember Dry Seasons,195,15,13.0,5.584,6.15,1.54,17.95,0,,no,within-guardrails
+s768,6,Nature and animals,The Long Journey of a Monarch Butterfly,189,17,11.12,5.49,11.41,2.17,24.46,4,,no,within-guardrails
+s769,6,World affairs,The Debate Over a New Dam,189,16,11.81,5.513,5.82,0.0,24.34,0,,no,within-guardrails
+s770,6,World affairs,How Communities Share a River,189,17,11.12,5.614,7.41,0.53,20.63,0,,no,within-guardrails
+s771,6,Everyday life,Why We Put Off Small Tasks,187,17,11.0,5.749,5.88,1.07,15.51,0,,no,within-guardrails
+s772,6,Everyday life,The Dinner Where Nobody Checked a Phone,179,17,10.53,5.789,2.79,0.56,11.73,0,,no,within-guardrails
+s773,6,History,The Haitian Revolution and the End of Slavery,187,13,14.38,5.506,10.59,1.18,26.47,12,,no,within-guardrails
+s774,6,History,How Cholera Changed City Sanitation,189,14,13.5,5.535,10.87,1.09,20.11,5,,no,within-guardrails
+s775,6,Science,What Happens Inside a Battery,167,14,11.93,5.54,8.38,1.8,27.54,0,,no,within-guardrails
+s776,6,Science,Why Antibiotic Resistance Evolves,181,16,11.31,5.615,8.84,0.55,26.52,0,,no,within-guardrails
+s777,6,Famous books,Jane Eyre Meets Mr Rochester,193,17,11.35,5.738,7.47,0.57,12.07,8,,no,within-guardrails
+s778,6,Famous books,David Copperfield Meets Mr Micawber,195,16,12.19,5.691,11.11,1.67,18.89,6,,no,within-guardrails
+s779,7,Fantasy/stories,The Painter of Tomorrow's Sky,218,30,7.27,5.733,4.74,0.0,10.43,2,,no,within-guardrails
+s780,7,Fantasy/stories,The Forest That Remembered Names,230,23,10.0,5.776,6.17,0.44,12.33,1,,no,within-guardrails
+s781,7,Nature and animals,The Coral Reef After the Heat,203,17,11.94,5.419,14.29,1.48,18.72,0,,no,within-guardrails
+s782,7,Nature and animals,How Crows Learn from Each Other,197,17,11.59,5.595,9.64,0.0,22.84,0,,no,within-guardrails
+s783,7,World affairs,When a Country Changes Its Energy Mix,205,15,13.67,5.533,2.93,0.49,20.98,0,,no,within-guardrails
+s784,7,World affairs,The Difficult Work of Resettling Refugees,195,15,13.0,5.726,6.67,1.03,18.97,0,,no,within-guardrails
+s785,7,Everyday life,The Invisible Work of Keeping a Home,201,16,12.56,5.688,9.0,0.0,17.5,1,,no,within-guardrails
+s786,7,Everyday life,What We Learn from Repeated Routines,195,16,12.19,5.739,5.26,0.0,17.89,3,,no,within-guardrails
+s787,7,History,The Berlin Airlift,191,16,11.94,5.704,5.52,0.0,25.77,15,,no,within-guardrails
+s788,7,History,The Green Revolution and Its Mixed Legacy,199,13,15.31,5.534,9.9,0.52,24.48,5,,no,within-guardrails
+s789,7,Science,How CRISPR Edits DNA,202,15,13.47,5.605,5.1,1.53,19.39,3,,no,within-guardrails
+s790,7,Science,Why Quantum Computers Are Different,187,13,14.38,5.461,8.56,2.67,26.74,0,,no,within-guardrails
+s791,7,Famous books,Silas Marner and the Stolen Gold,190,16,11.88,5.742,5.43,0.54,11.96,3,,no,within-guardrails
+s792,7,Famous books,Quasimodo and the Bells of Notre-Dame,185,15,12.33,5.718,7.83,0.6,13.25,10,,no,within-guardrails
+s793,8,Fantasy/stories,The Museum of Unfinished Lives,237,24,9.88,5.728,4.0,0.44,16.44,4,,no,within-guardrails
+s794,8,Fantasy/stories,The Island That Appeared Once a Century,225,22,10.23,5.66,5.33,0.0,16.0,0,,no,within-guardrails
+s795,8,Nature and animals,The Hidden Network Beneath a Forest,214,13,16.46,5.524,12.15,0.93,21.96,0,,no,within-guardrails
+s796,8,Nature and animals,Why Whales Change Their Songs,205,16,12.81,5.467,9.76,0.49,20.0,0,,no,within-guardrails
+s797,8,World affairs,Why Global Supply Chains Break,193,16,12.06,5.418,9.84,0.52,31.09,0,,no,within-guardrails
+s798,8,World affairs,How Cities Adapt to Extreme Heat,197,16,12.31,5.313,11.17,0.0,23.86,0,,no,within-guardrails
+s799,8,Everyday life,The Cost of Always Being Available,207,17,12.18,5.676,4.83,0.97,20.29,0,,no,within-guardrails
+s800,8,Everyday life,How Small Habits Change a Week,209,18,11.61,5.658,4.37,0.0,15.53,2,,no,within-guardrails
+s801,8,History,The Partition of India,193,12,16.08,5.627,6.18,0.0,28.09,11,,no,within-guardrails
+s802,8,History,The Oil Crisis of 1973,199,16,12.44,5.493,7.69,0.0,28.72,3,,no,within-guardrails
+s803,8,Science,How Gravitational Waves Are Detected,188,15,12.53,5.522,12.37,2.15,19.35,2,,no,within-guardrails
+s804,8,Science,The Physics of a Greenhouse Planet,199,15,13.27,5.452,17.95,0.51,20.0,3,,no,within-guardrails
+s805,8,Famous books,Wuthering Heights: Catherine and Heathcliff,199,15,13.27,5.716,6.42,0.0,18.18,8,,no,within-guardrails
+s806,8,Famous books,Raskolnikov's Terrible Idea,193,15,12.87,5.76,5.43,1.09,16.85,6,,no,within-guardrails
+s807,9,Fantasy/stories,The Memory Merchant,259,21,12.33,5.843,3.49,0.0,15.5,1,,no,within-guardrails
+s808,9,Fantasy/stories,The Last Interpreter of Dreams,230,22,10.45,5.592,8.11,0.0,22.07,2,,no,within-guardrails
+s809,9,Nature and animals,The Ecology of a Vanishing Wetland,220,20,11.0,5.36,16.36,0.0,25.91,0,,no,within-guardrails
+s810,9,Nature and animals,The Evolution of Cooperation in Animals,209,22,9.5,5.389,11.96,0.48,28.23,0,,no,within-guardrails
+s811,9,World affairs,The Politics of Water Across Borders,223,19,11.74,5.426,10.76,0.9,30.04,0,,no,within-guardrails
+s812,9,World affairs,Why International Agreements Need Trust,214,18,11.89,5.509,6.07,0.0,29.91,0,,no,within-guardrails
+s813,9,Everyday life,The Social Rules of Shared Spaces,211,19,11.11,5.559,9.48,0.47,23.7,0,,no,within-guardrails
+s814,9,Everyday life,Why Modern Convenience Can Create New Stress,206,15,13.73,5.564,5.83,0.97,17.96,0,,no,within-guardrails
+s815,9,History,The Congress of Vienna and the Balance of Power,215,16,13.44,5.555,9.85,1.97,29.56,9,,no,within-guardrails
+s816,9,History,Decolonization After the Second World War,208,16,13.0,5.292,12.11,2.11,38.95,14,,no,within-guardrails
+s817,9,Science,Why Complex Systems Become Unpredictable,216,19,11.37,5.486,10.65,0.46,25.0,0,,no,within-guardrails
+s818,9,Science,How Scientists Estimate the Age of the Universe,216,15,14.4,5.653,6.48,2.31,25.0,0,,no,within-guardrails
+s819,9,Famous books,Middlemarch: Dorothea's Idealism,209,16,13.06,5.573,10.61,1.01,23.23,5,,no,within-guardrails
+s820,9,Famous books,The Brothers Karamazov: A Family in Conflict,208,18,11.56,5.516,10.89,1.49,22.28,5,,no,within-guardrails
+s821,10,Fantasy/stories,The Republic of Forgotten Things,273,25,10.92,5.495,10.45,1.12,25.75,2,,no,within-guardrails
+s822,10,Fantasy/stories,The Astronomer Who Mapped Impossible Stars,243,24,10.12,5.439,13.75,1.25,25.83,3,,no,within-guardrails
+s823,10,Nature and animals,When Ecosystems Cross a Tipping Point,231,17,13.59,5.338,16.88,3.03,29.0,0,,no,within-guardrails
+s824,10,Nature and animals,What Animal Intelligence Means for Us,231,17,13.59,5.334,12.99,0.43,28.14,0,,no,within-guardrails
+s825,10,World affairs,The Limits of Economic Sanctions,217,16,13.56,5.367,13.36,0.46,35.94,0,,no,within-guardrails
+s826,10,World affairs,How Demographic Change Reshapes Public Policy,214,17,12.59,5.236,10.75,0.47,32.71,0,,no,within-guardrails
+s827,10,Everyday life,The Architecture of Attention in Daily Life,217,19,11.42,5.63,7.83,0.0,24.42,0,,no,within-guardrails
+s828,10,Everyday life,What Ordinary Rituals Do for Identity,213,19,11.21,5.544,8.49,0.0,26.89,1,,no,within-guardrails
+s829,10,History,How Industrialization Reorganized Time,206,20,10.3,5.326,16.59,3.41,30.73,1,,no,within-guardrails
+s830,10,History,Why Empires Collapse in Different Ways,225,21,10.71,5.428,11.47,0.92,33.49,5,,no,within-guardrails
+s831,10,Science,What Entropy Really Means,218,15,14.53,5.456,17.89,1.38,28.44,0,,no,within-guardrails
+s832,10,Science,The Measurement Problem in Quantum Mechanics,227,17,13.35,5.371,13.66,2.64,31.72,0,,no,within-guardrails
+s833,10,Famous books,Crime and Punishment: Guilt and Moral Freedom,221,16,13.81,5.466,13.76,2.29,25.23,1,,no,within-guardrails
+s834,10,Famous books,Madame Bovary: Desire and Disillusionment,225,17,13.24,5.408,12.9,1.38,27.65,3,,no,within-guardrails
+s835,1,Fantasy/stories,The Blue Door,61,8,7.62,5.856,1.69,0.0,0.0,1,,no,within-guardrails
+s836,1,Fantasy/stories,A Star in a Cup,60,8,7.5,5.861,3.33,0.0,0.0,0,,no,within-guardrails
+s837,1,Fantasy/stories,The Talking Hat,60,9,6.67,5.945,3.64,0.0,3.64,2,,no,within-guardrails
+s838,1,Fantasy/stories,Ben and the Cloud,61,8,7.62,5.856,5.26,0.0,0.0,1,low-frequency,no,vocabulary-review
+s839,1,Famous books,Heidi Finds a Home,64,7,9.14,5.84,6.25,0.0,4.69,0,low-frequency,no,vocabulary-review
+s840,1,Famous books,The Secret Garden Wakes,60,7,8.57,5.804,3.51,0.0,3.51,1,,no,within-guardrails
+s841,1,Famous books,Pinocchio Tells the Truth,61,8,7.62,5.966,1.79,0.0,1.79,2,,no,within-guardrails
+s842,1,Famous books,Dorothy Follows the Road,62,6,10.33,6.025,3.39,0.0,3.39,2,,no,within-guardrails
+s843,1,Famous books,Black Beauty Finds Rest,63,6,10.5,5.922,3.23,0.0,0.0,1,,no,within-guardrails
+s844,1,Nature and animals,A Duck in the Rain,61,6,10.17,5.77,3.28,0.0,0.0,0,,no,within-guardrails
+s845,1,Nature and animals,The Fox at Dawn,60,6,10.0,5.93,3.33,0.0,0.0,0,,no,within-guardrails
+s846,1,Nature and animals,Turtle on the Road,58,7,8.29,5.83,6.9,0.0,0.0,0,low-frequency,no,vocabulary-review
+s847,1,Nature and animals,The Bee's Map,59,7,8.43,5.806,6.78,0.0,0.0,0,low-frequency,no,vocabulary-review
+s848,1,World affairs,Two Schools Share a Field,59,7,8.43,6.073,1.72,0.0,8.62,1,long-words,no,vocabulary-review
+s849,1,World affairs,Water for Three Streets,59,7,8.43,5.86,0.0,0.0,6.78,0,long-words,no,vocabulary-review
+s850,1,World affairs,The New Bus Route,63,5,12.6,6.128,1.59,0.0,4.76,0,,yes,syntax-review
+s851,1,World affairs,A Market on Both Sides,62,7,8.86,5.824,1.61,0.0,1.61,0,,no,within-guardrails
+s852,1,Everyday life,The Extra Lunch,57,7,8.14,5.797,7.02,3.51,7.02,0,low-frequency|very-low-frequency|long-words,no,priority-review
+s853,1,Everyday life,Morning at the Bakery,60,7,8.57,5.789,5.0,0.0,5.0,0,,no,within-guardrails
+s854,1,Everyday life,The Lost Glove,59,7,8.43,5.843,6.78,0.0,1.69,0,low-frequency,no,vocabulary-review
+s855,1,Everyday life,A Quiet Birthday,60,6,10.0,5.868,1.72,0.0,3.45,1,,no,within-guardrails
+s856,1,History,A Message on Clay,58,6,9.67,5.894,0.0,0.0,0.0,0,,no,within-guardrails
+s857,1,History,The Road to the Old Market,59,5,11.8,5.861,3.39,0.0,0.0,0,,no,within-guardrails
+s858,1,History,A Sailor Reads the Stars,59,6,9.83,5.981,3.39,0.0,1.69,0,,no,within-guardrails
+s859,1,Science,Why Ice Floats,57,6,9.5,5.939,3.51,0.0,0.0,0,,no,within-guardrails
+s860,1,Science,The Moving Tree Shadow,59,6,9.83,6.107,1.69,1.69,1.69,0,very-low-frequency,no,vocabulary-review
+s861,1,Science,Seeds Need Air,59,6,9.83,5.929,6.78,0.0,0.0,0,low-frequency,no,vocabulary-review
+s862,2,Fantasy/stories,The Moon Boat,106,11,9.64,5.998,1.96,0.0,0.98,1,,no,within-guardrails
+s863,2,Fantasy/stories,The Sleepy Dragon,106,13,8.15,5.86,2.94,0.0,0.98,1,,no,within-guardrails
+s864,2,Fantasy/stories,The Pocket Forest,99,11,9.0,5.818,0.0,0.0,0.0,1,,no,within-guardrails
+s865,2,Famous books,Peter Pan's Invitation,101,11,9.18,5.852,8.42,0.0,6.32,3,low-frequency,no,vocabulary-review
+s866,2,Famous books,The Prince and the Pauper Trade Places,102,10,10.2,5.784,4.08,0.0,3.06,2,,no,within-guardrails
+s867,2,Famous books,Anne's First Friend,98,9,10.89,5.932,0.0,0.0,4.49,4,,no,within-guardrails
+s868,2,Famous books,Pollyanna's Window,97,10,9.7,5.82,4.26,1.06,4.26,1,very-low-frequency,no,vocabulary-review
+s869,2,Nature and animals,Otters at Play,87,9,9.67,5.553,11.49,0.0,1.15,0,low-frequency,no,vocabulary-review
+s870,2,Nature and animals,Seeds on the Wind,94,10,9.4,5.781,2.13,1.06,3.19,0,very-low-frequency,no,vocabulary-review
+s871,2,Nature and animals,The Patient Heron,90,11,8.18,5.632,8.89,2.22,5.56,0,low-frequency|very-low-frequency,no,priority-review
+s872,2,World affairs,The Library in Two Languages,96,11,8.73,5.859,4.26,0.0,14.89,2,long-words,no,vocabulary-review
+s873,2,World affairs,Rice After the Flood,89,10,8.9,5.735,0.0,0.0,5.62,0,,no,within-guardrails
+s874,2,World affairs,The Island's Power Cable,93,8,11.62,5.846,3.23,0.0,6.45,0,,no,within-guardrails
+s875,2,World affairs,A Vote from Far Away,93,9,10.33,5.913,1.1,0.0,9.89,1,long-words,no,vocabulary-review
+s876,2,Everyday life,The Wrong Umbrella,90,12,7.5,5.802,7.14,0.0,4.76,3,low-frequency,no,vocabulary-review
+s877,2,Everyday life,Saturday Repair,93,11,8.45,5.629,10.87,0.0,9.78,1,low-frequency|long-words,no,priority-review
+s878,2,Everyday life,A Seat Near the Window,91,8,11.38,5.837,3.41,0.0,3.41,1,,no,within-guardrails
+s879,2,Everyday life,Dinner Without a Recipe,90,10,9.0,5.877,7.78,0.0,2.22,0,low-frequency,no,vocabulary-review
+s880,2,History,Bread in a Medieval Town,85,8,10.62,5.654,8.24,2.35,9.41,0,low-frequency|very-low-frequency|long-words,no,priority-review
+s881,2,History,The Ink Maker's Work,90,8,11.25,5.596,4.44,0.0,3.33,0,,no,within-guardrails
+s882,2,History,A Bell for the Harbor,92,9,10.22,5.771,6.52,1.09,2.17,0,very-low-frequency,no,vocabulary-review
+s883,2,History,The Village Keeps Its Well,91,9,10.11,5.967,1.11,0.0,3.33,1,,no,within-guardrails
+s884,2,Science,Soap and Pepper,92,10,9.2,5.823,3.26,0.0,1.09,0,,no,within-guardrails
+s885,2,Science,The Slow Banana,89,9,9.89,5.743,7.87,2.25,2.25,0,low-frequency|very-low-frequency,no,priority-review
+s886,2,Science,Sound Through a String,94,9,10.44,5.835,1.14,0.0,4.55,3,,no,within-guardrails
+s887,3,Fantasy/stories,The Clock That Paused,130,13,10.0,5.756,4.03,0.0,3.23,3,,no,within-guardrails
+s888,3,Fantasy/stories,The Bridge of Feathers,109,12,9.08,5.638,11.93,0.92,8.26,0,low-frequency,no,vocabulary-review
+s889,3,Fantasy/stories,A Map Made of Song,130,12,10.83,5.807,3.08,1.54,6.92,0,very-low-frequency,no,vocabulary-review
+s890,3,Fantasy/stories,The Baker of Dreams,123,12,10.25,5.666,6.72,0.0,2.52,1,,no,within-guardrails
+s891,3,Famous books,The Railway Children Wait,117,10,11.7,5.852,3.54,0.0,9.73,3,,no,within-guardrails
+s892,3,Famous books,Alice Questions the Court,117,12,9.75,5.837,2.73,0.0,10.0,3,,no,within-guardrails
+s893,3,Famous books,Mowgli Chooses His Path,124,10,12.4,5.93,0.83,0.0,2.48,1,,no,within-guardrails
+s894,3,Famous books,The Little Prince and the Rose,115,11,10.45,5.969,0.0,0.0,8.11,3,,no,within-guardrails
+s895,3,Nature and animals,Elephants at the Dry River,109,11,9.91,5.687,8.26,1.83,10.09,0,very-low-frequency,no,vocabulary-review
+s896,3,Nature and animals,The Night Garden,107,9,11.89,5.599,7.48,0.93,8.41,0,,no,within-guardrails
+s897,3,Nature and animals,Coral's Quiet Partnership,116,10,11.6,5.659,12.93,0.0,6.03,0,low-frequency,no,vocabulary-review
+s898,3,Nature and animals,Wolves Change a Valley,117,11,10.64,5.517,5.13,0.85,9.4,0,,no,within-guardrails
+s899,3,World affairs,The Shared Mountain,109,10,10.9,5.608,3.67,0.0,15.6,0,long-words,no,vocabulary-review
+s900,3,World affairs,Phones for the Public Clinic,110,10,11.0,5.715,0.0,0.0,11.82,0,,no,within-guardrails
+s901,3,World affairs,A City Welcomes New Neighbors,110,9,12.22,5.685,4.63,0.0,13.89,2,,no,within-guardrails
+s902,3,World affairs,The Fishing Season Agreement,108,9,12.0,5.621,7.41,1.85,10.19,0,very-low-frequency,no,vocabulary-review
+s903,3,Everyday life,The Ten-Minute Walk,120,10,12.0,5.814,4.17,0.0,0.0,0,,no,within-guardrails
+s904,3,Everyday life,Boxes in the Hall,109,11,9.91,5.823,3.81,0.95,11.43,3,,no,within-guardrails
+s905,3,Everyday life,The First Community Class,120,10,12.0,5.863,5.17,0.0,5.17,1,,no,within-guardrails
+s906,3,History,News by Coffeehouse,107,9,11.89,5.618,6.6,1.89,16.98,1,very-low-frequency|long-words,no,priority-review
+s907,3,History,A Petition from the Mill,112,9,12.44,5.774,4.46,0.0,9.82,0,,no,within-guardrails
+s908,3,History,The First Public Museum Day,109,8,13.62,5.627,3.67,0.0,14.68,0,long-words,no,vocabulary-review
+s909,3,Science,The Moon's Changing Face,104,9,11.56,5.974,2.15,0.0,3.23,3,,no,within-guardrails
+s910,3,Science,A Magnet Under Paper,104,9,11.56,5.747,7.69,0.0,5.77,0,,no,within-guardrails
+s911,3,Science,Cooling by Evaporation,108,10,10.8,5.849,5.56,0.93,4.63,0,,no,within-guardrails
+s912,4,Fantasy/stories,The River Under the Library,152,11,13.82,5.79,5.33,0.67,7.33,1,,no,within-guardrails
+s913,4,Fantasy/stories,The Garden Behind Winter,141,12,11.75,5.714,5.76,0.0,5.04,1,,no,within-guardrails
+s914,4,Fantasy/stories,The Last Giant's Bell,146,16,9.12,5.697,7.14,0.0,7.86,3,,no,within-guardrails
+s915,4,Famous books,Jane Eyre Keeps Her Voice,138,12,11.5,5.715,6.45,0.81,12.9,8,,no,within-guardrails
+s916,4,Famous books,Pip Reconsiders Great Expectations,143,9,15.89,5.818,5.88,0.0,10.29,5,,no,within-guardrails
+s917,4,Famous books,Odysseus Hears the Sirens,131,10,13.1,5.726,8.53,2.33,7.75,1,very-low-frequency,no,vocabulary-review
+s918,4,Famous books,Elizabeth Revises Her Judgment,140,13,10.77,5.601,10.16,2.34,12.5,5,very-low-frequency,no,vocabulary-review
+s919,4,Nature and animals,The Long Flight North,127,10,12.7,5.68,5.6,0.8,8.8,2,,no,within-guardrails
+s920,4,Nature and animals,Mangroves Before the Storm,134,10,13.4,5.545,8.21,2.24,7.46,0,very-low-frequency,no,vocabulary-review
+s921,4,Nature and animals,The Language of Ravens,133,11,12.09,5.708,8.27,0.75,9.02,0,,no,within-guardrails
+s922,4,World affairs,Cooling the Hottest Blocks,126,9,14.0,5.56,8.0,0.0,12.0,1,,no,within-guardrails
+s923,4,World affairs,A Passport for Skills,126,9,14.0,5.728,3.97,0.0,11.9,0,,no,within-guardrails
+s924,4,World affairs,The Price of an Open Port,131,9,14.56,5.754,1.55,0.0,11.63,2,,no,within-guardrails
+s925,4,Everyday life,A Phone-Free Table,120,12,10.0,5.948,3.36,0.0,9.24,1,,no,within-guardrails
+s926,4,Everyday life,The Favor That Became a Routine,124,11,11.27,5.811,2.46,0.82,10.66,2,,no,within-guardrails
+s927,4,Everyday life,The Apartment Garden Committee,129,10,12.9,5.594,4.72,0.79,16.54,2,,no,within-guardrails
+s928,4,History,Women Carry the Mail,132,9,14.67,5.709,5.51,0.0,10.24,4,,no,within-guardrails
+s929,4,History,The Ledger of a Port City,121,9,13.44,5.57,9.09,1.65,13.22,0,,no,within-guardrails
+s930,4,History,A Constitution Read Aloud,124,10,12.4,5.699,3.23,0.0,16.94,0,,no,within-guardrails
+s931,4,Science,The Bacteria in Yogurt,112,10,11.2,5.517,11.61,0.89,15.18,0,low-frequency,no,vocabulary-review
+s932,4,Science,Reading Rings in a Tree,123,9,13.67,5.591,5.69,0.0,11.38,0,,no,within-guardrails
+s933,4,Science,A Vaccine Trains Memory,116,8,14.5,5.727,4.31,0.0,12.07,0,,no,within-guardrails
+s934,4,Science,The Error Bar Matters,121,10,12.1,5.8,2.52,0.0,14.29,2,,no,within-guardrails
+s935,9,Fantasy/stories,The City That Borrowed Shadows,278,24,11.58,5.584,9.78,2.54,13.41,1,,no,within-guardrails
+s936,9,Fantasy/stories,The Orchard of Possible Lives,261,20,13.05,5.611,8.95,1.17,15.18,1,,no,within-guardrails
+s937,9,Fantasy/stories,The Museum of Lost Hours,263,20,13.15,5.604,9.24,1.68,16.81,11,,no,within-guardrails
+s938,9,Fantasy/stories,The Translator of Storms,253,20,12.65,5.563,10.4,1.6,16.8,3,,no,within-guardrails
+s939,9,Fantasy/stories,The Archive Beneath the Sea,268,22,12.18,5.485,9.89,1.14,24.33,3,,no,within-guardrails
+s940,9,Famous books,Victor and the Abandoned Creation,268,18,14.89,5.647,9.51,0.76,21.67,3,,no,within-guardrails
+s941,9,Famous books,Ahab's Narrow Horizon,262,19,13.79,5.402,16.21,2.77,21.74,5,,no,within-guardrails
+s942,9,Famous books,Hester's Public Meaning,261,18,14.5,5.675,8.76,0.8,17.53,5,,no,within-guardrails
+s943,9,Famous books,Raskolnikov Tests an Idea,258,17,15.18,5.596,8.33,0.79,20.24,4,,no,within-guardrails
+s944,9,Famous books,Ishmael Watches the Pequod,252,19,13.26,5.573,15.35,0.83,21.58,6,,no,within-guardrails
+s945,9,Nature and animals,Fire in the Pine Forest,246,15,16.4,5.361,9.35,0.41,19.11,0,,no,within-guardrails
+s946,9,Nature and animals,The Architecture of a Beaver Wetland,245,16,15.31,5.425,12.24,1.22,16.33,0,,no,within-guardrails
+s947,9,Nature and animals,When Whales Feed the Surface,240,16,15.0,5.544,13.75,1.25,20.0,0,,no,within-guardrails
+s948,9,Nature and animals,The Hidden Economy of Fungi,236,18,13.11,5.292,13.56,2.54,25.42,0,,no,within-guardrails
+s949,9,Nature and animals,A Reef After Bleaching,240,19,12.63,5.318,17.08,0.83,19.58,0,,no,within-guardrails
+s950,9,World affairs,Drought Across a Federal System,241,16,15.06,5.386,10.83,1.67,25.0,1,,no,within-guardrails
+s951,9,World affairs,When Sanctions Reach the Pharmacy,245,17,14.41,5.373,14.29,0.41,33.88,0,,no,within-guardrails
+s952,9,World affairs,The Politics of a Digital Identity,236,16,14.75,5.445,9.32,0.0,27.97,0,,no,within-guardrails
+s953,9,World affairs,Small States at the Climate Table,247,15,16.47,5.459,9.31,0.0,27.13,0,,no,within-guardrails
+s954,9,Everyday life,A Name Corrected Kindly,219,16,13.69,5.686,8.74,0.97,17.96,6,,no,within-guardrails
+s955,9,Everyday life,Caring from Another City,227,18,12.61,5.434,10.67,0.0,20.0,1,,no,within-guardrails
+s956,9,Everyday life,The Promotion Nobody Discussed,222,16,13.88,5.636,8.64,0.45,22.73,1,,no,within-guardrails
+s957,9,Everyday life,When the Group Chat Never Sleeps,236,19,12.42,5.499,9.32,0.85,22.46,0,,no,within-guardrails
+s958,9,Everyday life,The Inheritance Conversation,231,18,12.83,5.563,8.66,0.0,19.48,0,,no,within-guardrails
+s959,9,History,The Archive and the Missing Workers,225,18,12.5,5.295,13.36,0.92,27.65,5,,no,within-guardrails
+s960,9,History,The Quarantine Island Debate,230,16,14.38,5.357,13.48,1.3,29.13,0,,no,within-guardrails
+s961,9,History,Printing the Reformation,236,18,13.11,5.458,9.36,0.0,24.68,1,,no,within-guardrails
+s962,9,History,The Haitian Revolution in Atlantic History,243,16,15.19,5.447,14.29,3.69,30.41,15,,no,within-guardrails
+s963,9,Science,Mapping an Exoplanet's Air,233,16,14.56,5.401,12.02,0.43,26.18,0,,no,within-guardrails
+s964,9,Science,The Plastic-Eating Enzyme,242,17,14.24,5.457,8.71,0.41,23.24,1,,no,within-guardrails
+s965,9,Science,A Forest Model Meets a Drought,224,16,14.0,5.383,9.38,0.45,21.43,0,,no,within-guardrails
+s966,9,Science,The Replication Conversation,230,15,15.33,5.565,10.0,0.43,28.26,0,,no,within-guardrails
+s967,9,Science,Gene Drives and Ecological Consent,247,17,14.53,5.419,10.12,0.0,25.51,0,,no,within-guardrails
+s968,10,Fantasy/stories,The House That Edited Its Guests,324,25,12.96,5.533,13.74,1.6,19.17,5,,no,within-guardrails
+s969,10,Fantasy/stories,A Parliament of Ghosts,306,23,13.3,5.458,15.23,1.32,26.16,2,,no,within-guardrails
+s970,10,Fantasy/stories,The Cartographer's Doubt,297,25,11.88,5.371,14.33,2.39,24.23,1,,no,within-guardrails
+s971,10,Fantasy/stories,The Library at the End of Probability,300,24,12.5,5.514,12.54,1.69,27.12,2,,no,within-guardrails
+s972,10,Famous books,Anna Karenina and the Social Gaze,293,18,16.28,5.455,15.44,1.75,23.16,5,,no,within-guardrails
+s973,10,Famous books,Gulliver Among Perfect Planners,276,20,13.8,5.301,18.96,1.49,31.6,4,,no,within-guardrails
+s974,10,Famous books,The Count Builds a Second Life,268,19,14.11,5.624,8.98,1.56,20.31,8,,no,within-guardrails
+s975,10,Famous books,Don Quixote Reads the World,276,19,14.53,5.358,15.47,1.89,23.02,5,,no,within-guardrails
+s976,10,Famous books,Middlemarch and the Web of Consequence,270,21,12.86,5.267,16.73,4.94,28.9,5,,no,within-guardrails
+s977,10,Nature and animals,Urban Leopards at the Boundary,272,18,15.11,5.258,13.97,2.94,28.31,0,,no,within-guardrails
+s978,10,Nature and animals,The Salmon's Inherited Compass,254,17,14.94,5.332,13.04,2.77,28.46,1,,no,within-guardrails
+s979,10,Nature and animals,Grasslands Without a Single Balance,266,18,14.78,5.36,15.41,3.01,23.31,0,,no,within-guardrails
+s980,10,Nature and animals,The Moral Distance of Rewilding,266,19,14.0,5.379,13.58,2.26,29.81,1,,no,within-guardrails
+s981,10,World affairs,A Currency Crisis in Daily Life,264,20,13.2,5.369,12.12,1.52,28.03,0,,no,within-guardrails
+s982,10,World affairs,The Border as an Ecosystem,253,19,13.32,5.233,13.83,0.79,28.85,0,,no,within-guardrails
+s983,10,World affairs,Who Governs the Algorithm,275,17,16.18,5.613,9.82,0.0,24.73,0,,no,within-guardrails
+s984,10,World affairs,Debt After Disaster,265,17,15.59,5.178,16.98,0.0,33.58,0,,no,within-guardrails
+s985,10,World affairs,The Diplomacy of Semiconductor Supply,260,19,13.68,5.211,14.23,3.46,35.77,0,,no,within-guardrails
+s986,10,Everyday life,The Commute That Defined the Job,263,19,13.84,5.581,8.11,0.77,21.24,2,,no,within-guardrails
+s987,10,Everyday life,A Friendship After Disagreement,248,19,13.05,5.616,9.5,1.24,21.9,2,,no,within-guardrails
+s988,10,Everyday life,The Family Archive in a Drawer,246,21,11.71,5.486,11.93,1.23,23.87,1,,no,within-guardrails
+s989,10,Everyday life,Rest as a Shared Obligation,267,19,14.05,5.446,9.74,0.75,25.84,0,,no,within-guardrails
+s990,10,History,Counting a Colonial Population,262,18,14.56,5.467,11.83,1.15,31.68,0,,no,within-guardrails
+s991,10,History,Railways and Standard Time,249,19,13.11,5.402,10.04,0.8,28.11,0,,no,within-guardrails
+s992,10,History,The Grain Tax and Political Legitimacy,264,18,14.67,5.369,14.39,1.89,25.76,0,,no,within-guardrails
+s993,10,History,Memory After Civil War,263,18,14.61,5.396,11.79,0.76,28.14,0,,no,within-guardrails
+s994,10,History,The Non-Aligned Choice,264,16,16.5,5.421,15.57,2.05,31.56,13,,no,within-guardrails
+s995,10,History,The History Hidden in Household Accounts,266,19,14.0,5.484,6.39,0.0,24.81,0,,no,within-guardrails
+s996,10,Science,Quantum Sensors Outside the Laboratory,274,18,15.22,5.348,10.58,0.73,32.85,0,,no,within-guardrails
+s997,10,Science,The Causal Puzzle of Nutrition,268,18,14.89,5.328,13.06,0.0,26.87,0,,no,within-guardrails
+s998,10,Science,Artificial Intelligence Finds a Protein Shape,254,19,13.37,5.26,13.78,2.36,37.4,0,,no,within-guardrails
+s999,10,Science,The Dark Matter Inference,257,18,14.28,5.461,13.62,0.39,29.57,0,,no,within-guardrails
+s1000,10,Science,Editing Embryos and Future Persons,324,19,17.05,5.38,12.69,1.24,27.24,1,,no,within-guardrails
