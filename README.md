@@ -39,14 +39,14 @@ Extensive Reading (ER, 多読) の研究知見にもとづいて設計した PWA
 
 設定画面の「オフラインの文章バンクを使う」をオンにすると、Anthropic APIを一切呼ばずに、あらかじめ用意した文章から出題します。通信費・API利用料がかからず、完全オフラインでも使えます。
 
-- 現在収録：**834篇**（レベル1〜10 × 全7テーマ：Fantasy/stories・Famous books・Nature and animals・World affairs・Everyday life・History・Science）
+- 現在収録：**1,000篇**（ID `s001`〜`s1000`、レベル1〜10 × 全7テーマ：Fantasy/stories・Famous books・Nature and animals・World affairs・Everyday life・History・Science）
 - 文章バンクは文体品質監査済み。旧生成文に偏っていた定型副詞とタイトル形式を整理し、ID・レベル・テーマは維持しています。
 - 各テーマ・各レベルに複数篇を収録済み。今後も随時追加予定
 - `Famous books` は、十分古い古典作品の筋・人物・設定をもとに、多読用として新規に書き下ろしたリテリングです。原文や現代の翻訳文は転載していません。
 - 選んだテーマとレベルの組み合わせの中で、一度読んだ文章は他のストックがなくなるまで再表示されません。読み尽くすと記録をリセットして次の周からまた出題します（直前に読んだ1篇だけは連続を避けます）
 - レベル調整（読後の3択フィードバック）は文章バンクモードでも動作します
 
-文章を追加する場合は、`stories.json`に同じ形式（`id`・`level`・`topic`・`title`・`text`）でオブジェクトを追加するだけで反映されます。
+文章を追加する場合は、`stories.json`に同じ形式（`id`・`level`・`topic`・`title`・`text`・`wordCount`）でオブジェクトを追加すると反映されます。本文を変更した場合は、`wordCount`も本文から再計算してください。
 
 ## 中身
 
@@ -56,7 +56,7 @@ styles.css      見た目
 app.js          ロジック本体（レベル管理・生成・計測・記録）
 manifest.json   PWA設定
 sw.js           オフライン用 service worker
-stories.json    オフライン文章バンク（834篇、随時追加）
+stories.json    オフライン文章バンク（1,000篇）
 icons/          アプリアイコン
 ```
 
