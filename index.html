@@ -54,6 +54,72 @@
       </div>
     </div>
 
+    <section class="weekly-rhythm" aria-labelledby="weeklyRhythmTitle">
+      <div class="weekly-rhythm-header">
+        <div>
+          <p class="weekly-rhythm-kicker">休んでも、また戻れば大丈夫</p>
+          <h2 id="weeklyRhythmTitle">今週の読書リズム</h2>
+        </div>
+        <span id="weeklyRhythmCount" class="weekly-rhythm-count">0 / 3日</span>
+      </div>
+      <div id="weeklyRhythmDays" class="weekly-rhythm-days" role="list" aria-label="今週の読書日"></div>
+      <p id="weeklyRhythmMessage" class="weekly-rhythm-message" aria-live="polite"></p>
+    </section>
+
+    <section class="reward-home" aria-labelledby="rewardHomeTitle">
+      <div class="reward-home-icon" aria-hidden="true">✦</div>
+      <div class="reward-home-copy">
+        <h2 id="rewardHomeTitle">灯りのコレクション</h2>
+        <p id="rewardHomeStatus">リワードを確認しています…</p>
+      </div>
+      <button id="openRewardsBtn" class="reward-home-button" type="button" aria-haspopup="dialog" aria-controls="rewardsModal">見る</button>
+    </section>
+
+    <section id="pinnedRewardPanel" class="pinned-reward" aria-labelledby="pinnedRewardTitle" hidden>
+      <div class="pinned-reward-heading">
+        <span>選んだ目標</span>
+        <button id="unpinRewardBtn" class="btn-text-quiet" type="button">固定を外す</button>
+      </div>
+      <strong id="pinnedRewardTitle"></strong>
+      <span id="pinnedRewardDescription" class="pinned-reward-description"></span>
+      <span id="pinnedRewardProgress" class="pinned-reward-progress" role="progressbar" aria-label="選んだ目標の進捗" aria-valuemin="0" aria-valuemax="100"><span></span></span>
+      <span id="pinnedRewardValue" class="pinned-reward-value"></span>
+    </section>
+
+    <section id="rewardTargets" class="reward-targets" aria-labelledby="rewardTargetsTitle" hidden>
+      <div class="reward-targets-header">
+        <h2 id="rewardTargetsTitle">次の目標</h2>
+        <button id="openRewardsTargetsBtn" class="btn-text-quiet" type="button" aria-haspopup="dialog" aria-controls="rewardsModal">すべて見る</button>
+      </div>
+      <div id="rewardTargetList" class="reward-target-list" aria-live="polite"></div>
+    </section>
+
+    <section class="weekly-summary" aria-labelledby="weeklySummaryTitle">
+      <div class="weekly-summary-header">
+        <p class="weekly-summary-kicker">積み重ねを、ひと目で</p>
+        <h2 id="weeklySummaryTitle">今週のまとめ</h2>
+      </div>
+      <div class="weekly-summary-stats">
+        <div><strong id="weeklySummaryDays">0</strong><span>読書日</span></div>
+        <div><strong id="weeklySummaryStories">0</strong><span>篇</span></div>
+        <div><strong id="weeklySummaryWords">0</strong><span>語</span></div>
+        <div><strong id="weeklySummaryRewards">0</strong><span>リワード</span></div>
+      </div>
+      <p id="weeklySummaryMessage" class="weekly-summary-message"></p>
+      <p id="weeklySummaryComparison" class="weekly-summary-comparison"></p>
+    </section>
+
+    <details class="monthly-summary">
+      <summary><span id="monthlySummaryTitle">今月のまとめ</span><span>開く</span></summary>
+      <div class="monthly-summary-stats">
+        <div><strong id="monthlySummaryDays">0</strong><span>読書日</span></div>
+        <div><strong id="monthlySummaryStories">0</strong><span>篇</span></div>
+        <div><strong id="monthlySummaryWords">0</strong><span>語</span></div>
+        <div><strong id="monthlySummaryRewards">0</strong><span>リワード</span></div>
+      </div>
+      <p id="monthlySummaryMessage" class="monthly-summary-message"></p>
+    </details>
+
     <p class="level-note" id="levelNote"></p>
     <p class="mode-note" id="modeNote"></p>
 
@@ -79,6 +145,8 @@
     </div>
 
     <button id="startBtn" class="btn-primary btn-lg">読みはじめる</button>
+    <button id="quickStartBtn" class="btn-quick-start" type="button" aria-describedby="quickStartHint">短い一篇から始める</button>
+    <p id="quickStartHint" class="quick-start-hint">今のレベルとテーマから、短めの文章を選びます。</p>
 
     <section id="resumeReadingPanel" class="resume-reading-panel" aria-labelledby="resumeReadingHeading" hidden>
       <p class="resume-reading-kicker">読みかけの文章があります</p>
@@ -128,7 +196,7 @@
         <a href="privacy.html">プライバシーポリシー</a>
         <a href="terms.html">利用規約</a>
       </nav>
-      <span>Reading Lamp v1.3.0</span>
+      <span>Reading Lamp v1.7.0</span>
     </footer>
   </section>
 
@@ -214,6 +282,21 @@
   </div>
 </div>
 
+<div id="rewardToast" class="reward-toast" role="status" aria-live="polite" hidden>
+  <span id="rewardToastIcon" class="reward-toast-icon" aria-hidden="true">✦</span>
+  <div class="reward-toast-copy">
+    <span class="reward-toast-kicker">新しいリワード</span>
+    <strong id="rewardToastTitle"></strong>
+    <span id="rewardToastUnlock" class="reward-toast-unlock"></span>
+  </div>
+  <div class="reward-toast-actions">
+    <button id="rewardToastCollectionBtn" class="reward-toast-secondary" type="button">コレクション</button>
+    <button id="rewardToastLampBtn" class="reward-toast-secondary" type="button" hidden>灯りを変更</button>
+    <button id="rewardToastReadBtn" class="reward-toast-secondary" type="button">次の一篇</button>
+    <button id="rewardToastNextBtn" class="reward-toast-button" type="button">確認</button>
+  </div>
+</div>
+
 <!-- ============ SETTINGS ============ -->
 <div id="settingsModal" class="modal-backdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-describedby="settingsIntro">
@@ -261,6 +344,36 @@
     <input type="range" id="dailyGoalInput" min="500" max="5000" step="250" value="1500" aria-describedby="dailyGoalDescription" />
     <div id="dailyGoalDescription" class="range-value"><span id="dailyGoalValue">1500</span> 語/日</div>
 
+    <label class="modal-label" for="weeklyGoalDaysInput">1週間に読む日数</label>
+    <select id="weeklyGoalDaysInput" class="topic-select" aria-describedby="weeklyGoalDaysHint">
+      <option value="1">週1日</option>
+      <option value="2">週2日</option>
+      <option value="3" selected>週3日（おすすめ）</option>
+      <option value="4">週4日</option>
+      <option value="5">週5日</option>
+      <option value="6">週6日</option>
+      <option value="7">毎日</option>
+    </select>
+    <p id="weeklyGoalDaysHint" class="modal-hint">月曜から日曜までに読む日数です。連続していなくても達成になります。</p>
+
+    <fieldset class="continuity-settings">
+      <legend>継続支援の表示</legend>
+      <label class="toggle-row compact-toggle-row">
+        <span>
+          <span class="toggle-name">次の目標をホームに表示</span>
+          <span class="toggle-desc">固定した目標と3段階のおすすめを表示します</span>
+        </span>
+        <input type="checkbox" id="showRewardGoalsInput" />
+      </label>
+      <label class="toggle-row compact-toggle-row">
+        <span>
+          <span class="toggle-name">リワード獲得を通知</span>
+          <span class="toggle-desc">オフにしても獲得記録は残ります</span>
+        </span>
+        <input type="checkbox" id="rewardNotificationsInput" />
+      </label>
+    </fieldset>
+
     <fieldset class="reading-display-settings">
       <legend>読書画面の表示</legend>
 
@@ -297,8 +410,10 @@
 
     <div class="history-tools" aria-labelledby="historyToolsTitle">
       <h3 id="historyToolsTitle" class="history-tools-title">記録のバックアップ</h3>
-      <button id="exportBtn" class="btn-text-quiet" type="button">記録とお気に入りを書き出す (JSON)</button>
-      <label class="restore-label" for="restoreInput">記録とお気に入りを復元する (JSON)</label>
+      <button id="exportBtn" class="btn-text-quiet" type="button">記録・お気に入り・リワードを書き出す (JSON)</button>
+      <button id="exportRewardDiagnosticsBtn" class="btn-text-quiet" type="button">匿名のリワード診断を保存する</button>
+      <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名、読書日時、APIキーは含みません。</p>
+      <label class="restore-label" for="restoreInput">記録・お気に入り・リワードを復元する (JSON)</label>
       <input id="restoreInput" class="restore-input" type="file" accept="application/json,.json" aria-describedby="restoreHint" />
       <p id="restoreHint" class="modal-hint">現在のデータを残したまま、重複を除いて追加します。以前の履歴だけのファイルにも対応しています。</p>
       <p id="settingsStatus" class="settings-status" role="status" aria-live="polite"></p>
@@ -324,6 +439,62 @@
     <div class="modal-danger">
       <button id="resetHistoryBtn" class="btn-text-danger">記録をすべて消去する</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ REWARD COLLECTION ============ -->
+<div id="rewardsModal" class="modal-backdrop" hidden>
+  <div class="modal rewards-modal" role="dialog" aria-modal="true" aria-labelledby="rewardsTitle" aria-describedby="rewardsIntro">
+    <div class="modal-header">
+      <h2 id="rewardsTitle" class="modal-title">灯りのコレクション</h2>
+      <button id="closeRewardsIconBtn" class="modal-close" type="button" aria-label="リワードを閉じる">×</button>
+    </div>
+    <p id="rewardsIntro" class="modal-intro">読んだ量だけでなく、戻ってきた日や新しいジャンルとの出会いも記録します。獲得したリワードは失われません。</p>
+
+    <div class="reward-collection-summary">
+      <strong id="rewardCollectionCount">0 / 58</strong>
+      <span>獲得済み</span>
+    </div>
+
+    <section id="lampStyleSection" class="lamp-style-section" aria-labelledby="lampStyleTitle" hidden>
+      <h3 id="lampStyleTitle">灯りカラー</h3>
+      <div id="lampStyleChoices" class="lamp-style-choices"></div>
+    </section>
+
+    <details id="rewardChainsPanel" class="reward-chains">
+      <summary>段階別の達成を見る</summary>
+      <div id="rewardChainList" class="reward-chain-list"></div>
+    </details>
+
+    <div class="reward-controls">
+      <label for="rewardCategoryFilter">
+        <span>表示する種類</span>
+        <select id="rewardCategoryFilter" class="topic-select">
+          <option value="all">すべて</option>
+          <option value="words">累計語数</option>
+          <option value="stories">読了篇数</option>
+          <option value="rhythm">読書リズム</option>
+          <option value="exploration">ジャンル・レベル</option>
+          <option value="comeback">再開</option>
+          <option value="habits">読書スタイル</option>
+          <option value="collection">お気に入り</option>
+        </select>
+      </label>
+      <label for="rewardSort">
+        <span>並べ替え</span>
+        <select id="rewardSort" class="topic-select">
+          <option value="progress">達成に近い順</option>
+          <option value="unearned">未獲得を先に</option>
+          <option value="earned">獲得済みを先に</option>
+          <option value="newest">獲得日の新しい順</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="rewardGrid" class="reward-grid"></div>
+    <p id="rewardCollectionStatus" class="settings-status" role="status" aria-live="polite"></p>
+    <button id="closeRewardsBtn" class="btn-ghost" type="button">閉じる</button>
+    <button id="resetRewardsBtn" class="btn-text-danger reward-reset" type="button">リワード記録を消去する</button>
   </div>
 </div>
 

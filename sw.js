@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v47";
+const CACHE_NAME = "reading-lamp-v52";
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
 // the user's "更新する" action.
@@ -12,6 +12,7 @@ const SHELL_FILES = [
   "./privacy.html",
   "./terms.html",
   "./stories.json",
+  "./rewards.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-192.png",
