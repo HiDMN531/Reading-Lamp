@@ -1,4 +1,6 @@
 // =====================================================================
+
+const APP_VERSION = "1.3.0";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -41,6 +43,7 @@ window.addEventListener("resize", updateViewportHeight);
 // ---------------------- Storage ----------------------
 
 const LS = {
+  apiKey: "rl_api_key",
   wordCount: "rl_word_count",
   level: "rl_level",
   dailyGoal: "rl_daily_goal",
@@ -48,6 +51,15 @@ const LS = {
   offlineBank: "rl_offline_bank",
   seenStoryIds: "rl_seen_story_ids",
   levelSignals: "rl_level_signals",
+  readingFontSize: "rl_reading_font_size",
+  readingLineHeight: "rl_reading_line_height",
+  readingFontFamily: "rl_reading_font_family",
+  readingTheme: "rl_reading_theme",
+  onboardingDone: "rl_onboarding_done_v1",
+  preferredTopic: "rl_preferred_topic",
+  favoriteStoryIds: "rl_favorite_story_ids",
+  activeReading: "rl_active_reading_v1",
+  historyRecovery: "rl_history_recovery_v1",
 };
 const HISTORY_LIMIT = 2000;
 
@@ -59,33 +71,20 @@ const get = (k, d) => {
     return memoryFallback[k] !== undefined ? memoryFallback[k] : d;
   }
 };
-const getNum = (k, d) => parseInt(get(k, String(d)), 10);
-const getBool = (k, d) => get(k, d ? "1" : "0") === "1";
+const getNum = (k, d) => {
+  const parsed = Number(get(k, String(d)));
+  return Number.isFinite(parsed) ? parsed : d;
+};
+const getBool = (k, d) => {
+  const value = get(k, d ? "1" : "0");
+  return value === "1" ? true : value === "0" ? false : d;
+};
 
 // In-memory fallback used only if localStorage itself is unavailable
 // (e.g. "Block All Cookies" enabled in Safari, or private-mode quota issues).
 // Keeps the app usable for the current session even then.
 const memoryFallback = {};
 let storageBlocked = false;
-
-// API keys used to be stored in localStorage. Remove any legacy copy and keep
-// the current key in memory only. This prevents it from surviving reloads,
-// browser restarts, backups, or access by scripts running in a later session.
-const LEGACY_API_KEY_STORAGE_KEYS = ["rl_api_key", "rl_api_key_session"];
-let sessionApiKey = "";
-
-for (const key of LEGACY_API_KEY_STORAGE_KEYS) {
-  try { localStorage.removeItem(key); } catch {}
-  try { sessionStorage.removeItem(key); } catch {}
-  delete memoryFallback[key];
-}
-
-function getSessionApiKey() { return sessionApiKey; }
-function setSessionApiKey(value) { sessionApiKey = String(value || "").trim(); }
-function clearSessionApiKey() { sessionApiKey = ""; }
-
-// A page restored from the back-forward cache must not retain the key.
-window.addEventListener("pagehide", clearSessionApiKey);
 
 function set(k, v) {
   try {
@@ -99,18 +98,65 @@ function set(k, v) {
   }
 }
 
+function removeStored(k) {
+  let removed = true;
+  try { localStorage.removeItem(k); } catch { removed = false; }
+  delete memoryFallback[k];
+  return removed;
+}
+
+// The API key is intentionally kept on this device so AI mode works again
+// after a reload or app restart. localStorage is plain browser storage, not an
+// encrypted vault, so the settings screen also provides an explicit erase
+// action. If storage is blocked, the shared memory fallback lasts only until
+// this page is closed.
+function getSessionApiKey() {
+  return String(get(LS.apiKey, "") || "").trim();
+}
+function setSessionApiKey(value) {
+  const key = String(value || "").trim();
+  return key ? set(LS.apiKey, key) : true;
+}
+function clearSessionApiKey() {
+  let cleared = true;
+  try { localStorage.removeItem(LS.apiKey); } catch { cleared = false; }
+  try { sessionStorage.removeItem("rl_api_key_session"); } catch {}
+  delete memoryFallback[LS.apiKey];
+  delete memoryFallback.rl_api_key_session;
+  return cleared;
+}
+
+// Migrate the short-lived key used by an earlier build when possible.
+try {
+  if (!getSessionApiKey()) {
+    const legacySessionKey = sessionStorage.getItem("rl_api_key_session");
+    if (legacySessionKey) setSessionApiKey(legacySessionKey);
+  }
+  sessionStorage.removeItem("rl_api_key_session");
+} catch {}
+
 function getHistory() {
   try {
     if (storageBlocked && memoryFallback[LS.history]) {
-      return JSON.parse(memoryFallback[LS.history]);
+      const parsed = JSON.parse(memoryFallback[LS.history]);
+      return Array.isArray(parsed)
+        ? parsed.map(normalizeHistoryEntry).filter(Boolean).slice(0, HISTORY_LIMIT)
+        : [];
     }
     const stored = localStorage.getItem(LS.history);
-    return JSON.parse(stored === null ? (memoryFallback[LS.history] || "[]") : stored);
+    const parsed = JSON.parse(stored === null ? (memoryFallback[LS.history] || "[]") : stored);
+    return Array.isArray(parsed)
+      ? parsed.map(normalizeHistoryEntry).filter(Boolean).slice(0, HISTORY_LIMIT)
+      : [];
   }
   catch { return []; }
 }
 function writeHistory(entries) {
-  const payload = JSON.stringify(entries.slice(0, HISTORY_LIMIT));
+  const safeEntries = (Array.isArray(entries) ? entries : [])
+    .map(normalizeHistoryEntry)
+    .filter(Boolean)
+    .slice(0, HISTORY_LIMIT);
+  const payload = JSON.stringify(safeEntries);
   try {
     localStorage.setItem(LS.history, payload);
     return true;
@@ -259,6 +305,14 @@ const ABANDON_REASONS = {
   other: "その他・未記録",
 };
 
+const REPORT_REASONS = {
+  typo: "誤字・文法がおかしい",
+  level: "レベルが合っていない",
+  unnatural: "内容が不自然",
+  inappropriate: "不適切な内容がある",
+  other: "その他",
+};
+
 // ---------------------- Accessible modal handling ----------------------
 
 const appRoot = document.getElementById("app");
@@ -347,11 +401,68 @@ const clearApiKeyBtn = document.getElementById("clearApiKeyBtn");
 const closeSettingsIconBtn = document.getElementById("closeSettingsIconBtn");
 const restoreInput = document.getElementById("restoreInput");
 const settingsStatus = document.getElementById("settingsStatus");
+const historyRecoverySection = document.getElementById("historyRecoverySection");
+const historyRecoveryMessage = document.getElementById("historyRecoveryMessage");
+const downloadHistoryRecoveryBtn = document.getElementById("downloadHistoryRecoveryBtn");
+const dismissHistoryRecoveryBtn = document.getElementById("dismissHistoryRecoveryBtn");
+const readingFontSizeInput = document.getElementById("readingFontSizeInput");
+const readingFontSizeValue = document.getElementById("readingFontSizeValue");
+const readingLineHeightInput = document.getElementById("readingLineHeightInput");
+const readingLineHeightValue = document.getElementById("readingLineHeightValue");
+const readingFontFamilyInput = document.getElementById("readingFontFamilyInput");
+const readingThemeInput = document.getElementById("readingThemeInput");
+const readingDisplayPreview = document.getElementById("readingDisplayPreview");
+
+function clampDisplayNumber(value, min, max, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
+}
+
+function getReadingDisplaySettings() {
+  const fontFamily = get(LS.readingFontFamily, "serif");
+  const theme = get(LS.readingTheme, "night");
+  return {
+    fontSize: clampDisplayNumber(getNum(LS.readingFontSize, 18), 16, 26, 18),
+    lineHeight: clampDisplayNumber(getNum(LS.readingLineHeight, 185), 150, 220, 185),
+    fontFamily: ["serif", "sans"].includes(fontFamily) ? fontFamily : "serif",
+    theme: ["night", "sepia", "contrast"].includes(theme) ? theme : "night",
+  };
+}
+
+function displaySettingsFromControls() {
+  return {
+    fontSize: clampDisplayNumber(readingFontSizeInput.value, 16, 26, 18),
+    lineHeight: clampDisplayNumber(readingLineHeightInput.value, 150, 220, 185),
+    fontFamily: ["serif", "sans"].includes(readingFontFamilyInput.value) ? readingFontFamilyInput.value : "serif",
+    theme: ["night", "sepia", "contrast"].includes(readingThemeInput.value) ? readingThemeInput.value : "night",
+  };
+}
+
+function applyDisplayToElement(element, settings) {
+  element.style.setProperty("--reader-font-size", `${settings.fontSize}px`);
+  element.style.setProperty("--reader-line-height", String(settings.lineHeight / 100));
+  element.style.setProperty("--reader-font-family", settings.fontFamily === "sans" ? "var(--sans)" : "var(--serif)");
+  element.classList.remove("reading-theme-night", "reading-theme-sepia", "reading-theme-contrast");
+  element.classList.add(`reading-theme-${settings.theme}`);
+}
+
+function updateReadingDisplayPreview() {
+  const settings = displaySettingsFromControls();
+  readingFontSizeValue.textContent = String(settings.fontSize);
+  readingLineHeightValue.textContent = (settings.lineHeight / 100).toFixed(2).replace(/0$/, "");
+  readingFontSizeInput.setAttribute("aria-valuetext", `${settings.fontSize}ピクセル`);
+  readingLineHeightInput.setAttribute("aria-valuetext", `行間${settings.lineHeight / 100}`);
+  applyDisplayToElement(readingDisplayPreview, settings);
+}
+
+function applyReadingDisplay(settings = getReadingDisplaySettings()) {
+  applyDisplayToElement(views.reading, settings);
+}
 
 function renderApiKeyStatus() {
   const isSet = Boolean(getSessionApiKey());
   apiKeyStatus.textContent = isSet
-    ? "このページ内にAPIキーを設定済みです。"
+    ? "この端末にAPIキーを保存済みです。"
     : "APIキーは未設定です。";
   apiKeyStatus.classList.toggle("is-set", isSet);
   clearApiKeyBtn.hidden = !isSet;
@@ -367,7 +478,7 @@ function syncSettingsMode(useBank) {
   wordCountSection.hidden = useBank;
   modeDescription.textContent = useBank
     ? "通常はこちらをおすすめします。通信やAPI利用料なしで読めます。"
-    : "オフにするとAI生成モードになります。APIキーはこのページを開いている間だけ保持します。";
+    : "オフにするとAI生成モードになります。入力したAPIキーはこの端末に保存されます。";
 }
 
 function renderLevelDescription(n) {
@@ -396,10 +507,17 @@ function openSettings() {
   dailyGoalInput.value = getNum(LS.dailyGoal, 1500);
   dailyGoalValue.textContent = getNum(LS.dailyGoal, 1500);
   toggleOfflineBank.checked = usingOfflineBank();
+  const displaySettings = getReadingDisplaySettings();
+  readingFontSizeInput.value = String(displaySettings.fontSize);
+  readingLineHeightInput.value = String(displaySettings.lineHeight);
+  readingFontFamilyInput.value = displaySettings.fontFamily;
+  readingThemeInput.value = displaySettings.theme;
   syncSettingsMode(toggleOfflineBank.checked);
   renderApiKeyStatus();
+  renderHistoryRecovery();
   settingsStatus.textContent = "";
   updateRangeAccessibility();
+  updateReadingDisplayPreview();
   settingsButton.setAttribute("aria-expanded", "true");
   openAccessibleModal(settingsModal, closeSettingsIconBtn, closeSettings);
 }
@@ -418,6 +536,12 @@ dailyGoalInput.addEventListener("input", () => {
   dailyGoalValue.textContent = dailyGoalInput.value;
   updateRangeAccessibility();
 });
+[readingFontSizeInput, readingLineHeightInput].forEach((input) => {
+  input.addEventListener("input", updateReadingDisplayPreview);
+});
+[readingFontFamilyInput, readingThemeInput].forEach((input) => {
+  input.addEventListener("change", updateReadingDisplayPreview);
+});
 toggleOfflineBank.addEventListener("change", () => {
   syncSettingsMode(toggleOfflineBank.checked);
 });
@@ -426,17 +550,15 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
 
   const typedApiKey = apiKeyInput.value.trim();
-  if (!toggleOfflineBank.checked && typedApiKey) setSessionApiKey(typedApiKey);
+  const okApiKey = !typedApiKey || setSessionApiKey(typedApiKey);
   apiKeyInput.value = "";
 
   if (!toggleOfflineBank.checked && !getSessionApiKey()) {
     renderApiKeyStatus();
-    showError("AI生成モードでは、このページで使用するAnthropic APIキーを入力してください。");
+    showError("AI生成モードでは、Anthropic APIキーを入力してください。");
     apiKeyInput.focus();
     return;
   }
-
-  if (toggleOfflineBank.checked) clearSessionApiKey();
 
   const previousLevel = getLevel();
   const selectedLevel = Math.min(10, Math.max(1, parseInt(levelInput.value, 10)));
@@ -445,8 +567,15 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
   const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
   const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
+  const displaySettings = displaySettingsFromControls();
+  const ok9 = set(LS.readingFontSize, String(displaySettings.fontSize));
+  const ok10 = set(LS.readingLineHeight, String(displaySettings.lineHeight));
+  const ok11 = set(LS.readingFontFamily, displaySettings.fontFamily);
+  const ok12 = set(LS.readingTheme, displaySettings.theme);
 
-  if (ok2 && okSignals && ok3 && ok4 && ok8) {
+  applyReadingDisplay(displaySettings);
+
+  if (okApiKey && ok2 && okSignals && ok3 && ok4 && ok8 && ok9 && ok10 && ok11 && ok12) {
     closeSettings();
     renderHome();
   } else {
@@ -480,16 +609,23 @@ document.getElementById("resetHistoryBtn").addEventListener("click", () => {
   if (confirm("これまでの記録をすべて消去します。よろしいですか？")) {
     try { localStorage.removeItem(LS.history); } catch {}
     delete memoryFallback[LS.history];
+    removeStored(LS.historyRecovery);
     renderHome();
     closeSettings();
   }
 });
 
 document.getElementById("exportBtn").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(getHistory(), null, 2)], { type: "application/json" });
+  const backup = {
+    schemaVersion: 2,
+    exportedAt: new Date().toISOString(),
+    history: getHistory(),
+    favoriteStoryIds: getFavoriteIds(),
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `reading-lamp-history-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `reading-lamp-backup-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
 });
@@ -533,12 +669,130 @@ function normalizeHistoryEntry(entry) {
   if (abandoned && hasOwn(ABANDON_REASONS, entry.abandonReason)) {
     normalized.abandonReason = entry.abandonReason;
   }
+  if (typeof entry.storyId === "string" && /^s\d{3,}$/.test(entry.storyId)) {
+    normalized.storyId = entry.storyId;
+  }
   return normalized;
 }
 
 function historyFingerprint(entry) {
   return [entry.date, entry.topic, entry.title, entry.words, entry.level, entry.abandoned ? 1 : 0].join("|");
 }
+
+function readRawHistory() {
+  try {
+    const stored = localStorage.getItem(LS.history);
+    return stored === null ? (memoryFallback[LS.history] || "[]") : stored;
+  } catch {
+    return memoryFallback[LS.history] || "[]";
+  }
+}
+
+function getHistoryRecovery() {
+  try {
+    const recovery = JSON.parse(get(LS.historyRecovery, "null"));
+    if (!recovery || recovery.schemaVersion !== 1 || typeof recovery.originalHistory !== "string") return null;
+    const createdAt = new Date(recovery.createdAt);
+    if (!Number.isFinite(createdAt.getTime())) return null;
+    const allowedReasons = ["json-error", "not-array", "invalid-entries", "over-limit"];
+    return {
+      schemaVersion: 1,
+      createdAt: createdAt.toISOString(),
+      reason: allowedReasons.includes(recovery.reason) ? recovery.reason : "json-error",
+      originalCount: Number.isInteger(recovery.originalCount) && recovery.originalCount >= 0 ? recovery.originalCount : null,
+      retainedCount: Number.isInteger(recovery.retainedCount) && recovery.retainedCount >= 0 ? recovery.retainedCount : 0,
+      removedCount: Number.isInteger(recovery.removedCount) && recovery.removedCount >= 0 ? recovery.removedCount : null,
+      originalHistory: recovery.originalHistory,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function prepareHistoryRecovery() {
+  const raw = readRawHistory();
+  let parsed;
+  let reason = "";
+  let originalCount = null;
+  let validEntries = [];
+
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    reason = "json-error";
+  }
+
+  if (!reason && !Array.isArray(parsed)) {
+    reason = "not-array";
+  } else if (!reason) {
+    originalCount = parsed.length;
+    validEntries = parsed.map(normalizeHistoryEntry).filter(Boolean);
+    if (validEntries.length !== parsed.length) reason = "invalid-entries";
+    else if (parsed.length > HISTORY_LIMIT) reason = "over-limit";
+  }
+
+  if (!reason) return { repaired: false };
+
+  const retainedEntries = validEntries.slice(0, HISTORY_LIMIT);
+  const recovery = {
+    schemaVersion: 1,
+    createdAt: new Date().toISOString(),
+    reason,
+    originalCount,
+    retainedCount: retainedEntries.length,
+    removedCount: originalCount === null ? null : Math.max(0, originalCount - retainedEntries.length),
+    originalHistory: raw,
+  };
+  const backupSaved = set(LS.historyRecovery, JSON.stringify(recovery));
+  const historySaved = writeHistory(retainedEntries);
+
+  return {
+    repaired: true,
+    reason,
+    retainedCount: retainedEntries.length,
+    removedCount: recovery.removedCount,
+    backupSaved,
+    historySaved,
+  };
+}
+
+function historyRecoverySummary(recovery) {
+  if (recovery.reason === "invalid-entries") {
+    return `読み取れない記録を${fmt(recovery.removedCount || 0)}件除外し、正常な${fmt(recovery.retainedCount || 0)}件を残しました。`;
+  }
+  if (recovery.reason === "over-limit") {
+    return `保存上限を超えた記録を整理し、新しい${fmt(recovery.retainedCount || 0)}件を残しました。`;
+  }
+  return "保存形式を読み取れなかったため、安全な空の履歴で起動しました。";
+}
+
+function renderHistoryRecovery() {
+  const recovery = getHistoryRecovery();
+  historyRecoverySection.hidden = !recovery;
+  if (!recovery) return;
+  historyRecoveryMessage.textContent = `${historyRecoverySummary(recovery)} 修復前のデータはJSONで保存できます。`;
+}
+
+downloadHistoryRecoveryBtn.addEventListener("click", () => {
+  const recovery = getHistoryRecovery();
+  if (!recovery) {
+    renderHistoryRecovery();
+    return;
+  }
+  const blob = new Blob([JSON.stringify(recovery, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `reading-lamp-recovery-${recovery.createdAt.slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  settingsStatus.textContent = "修復前データを保存しました。内容を確認後、不要なら下のボタンで削除できます。";
+});
+
+dismissHistoryRecoveryBtn.addEventListener("click", () => {
+  removeStored(LS.historyRecovery);
+  renderHistoryRecovery();
+  settingsStatus.textContent = "修復前データを端末から削除しました。";
+});
 
 restoreInput.addEventListener("change", async () => {
   settingsStatus.textContent = "";
@@ -555,7 +809,10 @@ restoreInput.addEventListener("change", async () => {
     const source = Array.isArray(parsed) ? parsed : parsed && Array.isArray(parsed.history) ? parsed.history : null;
     if (!source || source.length > 5000) throw new Error("invalid history container");
     const imported = source.map(normalizeHistoryEntry).filter(Boolean);
-    if (!imported.length) throw new Error("no valid history entries");
+    const importedFavorites = parsed && !Array.isArray(parsed) && Array.isArray(parsed.favoriteStoryIds)
+      ? [...new Set(parsed.favoriteStoryIds.filter((id) => typeof id === "string" && /^s\d{3,}$/.test(id)))].slice(0, 500)
+      : [];
+    if (!imported.length && !importedFavorites.length) throw new Error("no valid backup entries");
     const current = getHistory();
     const known = new Set(current.map(historyFingerprint));
     const additions = [];
@@ -565,29 +822,32 @@ restoreInput.addEventListener("change", async () => {
       known.add(fingerprint);
       additions.push(entry);
     });
-    if (!additions.length) {
-      settingsStatus.textContent = "すべて既に復元済みです。重複する記録は追加しませんでした。";
-      return;
-    }
     const merged = [...current, ...additions]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, HISTORY_LIMIT);
     const retained = new Set(merged.map(historyFingerprint));
     const restoredCount = additions.filter((entry) => retained.has(historyFingerprint(entry))).length;
     const omittedCount = additions.length - restoredCount;
-    if (!restoredCount) {
-      settingsStatus.textContent = `保存上限の${fmt(HISTORY_LIMIT)}件より古い記録だけだったため、追加しませんでした。`;
+    const currentFavorites = getFavoriteIds();
+    const mergedFavorites = [...new Set([...currentFavorites, ...importedFavorites])].slice(0, 500);
+    const favoriteAddedCount = mergedFavorites.length - currentFavorites.length;
+    if (!restoredCount && !favoriteAddedCount) {
+      settingsStatus.textContent = "すべて既に復元済みです。重複するデータは追加しませんでした。";
       return;
     }
-    if (!confirm(`${restoredCount}件の記録を、現在の記録に追加します。よろしいですか？`)) return;
-    const saved = writeHistory(merged);
+    const confirmationParts = [];
+    if (restoredCount) confirmationParts.push(`記録${restoredCount}件`);
+    if (favoriteAddedCount) confirmationParts.push(`お気に入り${favoriteAddedCount}篇`);
+    if (!confirm(`${confirmationParts.join("と")}を、現在のデータに追加します。よろしいですか？`)) return;
+    const historySaved = restoredCount ? writeHistory(merged) : true;
+    const favoritesSaved = favoriteAddedCount ? saveFavoriteIds(mergedFavorites) : true;
     renderHome();
     const omittedNote = omittedCount ? ` 古い${omittedCount}件は保存上限のため除外しました。` : "";
-    settingsStatus.textContent = saved
-      ? `${restoredCount}件の記録を復元しました。${omittedNote}`
-      : `${restoredCount}件を今回のセッションへ復元しましたが、端末には保存できませんでした。${omittedNote}`;
+    settingsStatus.textContent = historySaved && favoritesSaved
+      ? `${confirmationParts.join("と")}を復元しました。${omittedNote}`
+      : `${confirmationParts.join("と")}を今回のセッションへ復元しましたが、端末には保存できませんでした。${omittedNote}`;
   } catch (err) {
-    showError("記録を復元できませんでした。Reading Lampから書き出したJSONか確認してください。");
+    showError("データを復元できませんでした。Reading Lampから書き出したJSONか確認してください。");
   } finally {
     restoreInput.value = "";
   }
@@ -599,6 +859,11 @@ const topicSelect = document.getElementById("topicSelect");
 const customTopicInput = document.getElementById("customTopicInput");
 const customTopicOption = topicSelect.querySelector('option[value="custom"]');
 
+const savedPreferredTopic = get(LS.preferredTopic, "random");
+if ([...topicSelect.options].some((option) => option.value === savedPreferredTopic)) {
+  topicSelect.value = savedPreferredTopic;
+}
+
 function syncTopicMode(useBank = usingOfflineBank()) {
   customTopicOption.disabled = useBank;
   customTopicOption.hidden = useBank;
@@ -606,12 +871,33 @@ function syncTopicMode(useBank = usingOfflineBank()) {
   customTopicInput.hidden = useBank || topicSelect.value !== "custom";
 }
 
-topicSelect.addEventListener("change", () => syncTopicMode());
+topicSelect.addEventListener("change", () => {
+  syncTopicMode();
+  if (topicSelect.value !== "custom") set(LS.preferredTopic, topicSelect.value);
+});
 
 const TOPIC_POOL = [
   "Fantasy/stories", "Famous books", "Nature and animals",
   "World affairs", "Everyday life", "History", "Science",
+  "Mystery and adventure", "Travel and culture", "People and biography",
 ];
+
+const TOPIC_LABELS = {
+  "Fantasy/stories": "Fantasy",
+  "Famous books": "Classics / Retellings",
+  "Nature and animals": "Nature and animals",
+  "World affairs": "Society / World",
+  "Everyday life": "Everyday life",
+  History: "History",
+  Science: "Science / Technology",
+  "Mystery and adventure": "Mystery / Adventure",
+  "Travel and culture": "Travel / Culture",
+  "People and biography": "People / Biography",
+};
+
+function topicLabel(topic) {
+  return TOPIC_LABELS[topic] || topic || "Unknown";
+}
 
 function totalWordsRead() {
   return getHistory().reduce((s, h) => s + (h.words || 0), 0);
@@ -749,7 +1035,7 @@ function renderHistoryAnalysis(history) {
   const topicWords = new Map();
   const levelCounts = new Map();
   completed.forEach((h) => {
-    const topic = cleanHistoryText(h.topic, "Unknown") || "Unknown";
+    const topic = topicLabel(cleanHistoryText(h.topic, "Unknown") || "Unknown");
     topicWords.set(topic, (topicWords.get(topic) || 0) + Number(h.words || 0));
     const level = Math.min(10, Math.max(1, Math.round(Number(h.level) || 1)));
     levelCounts.set(level, (levelCounts.get(level) || 0) + 1);
@@ -808,6 +1094,8 @@ function renderHome() {
   list.innerHTML = "";
   const history = getHistory();
   renderHistoryAnalysis(history);
+  renderFavorites();
+  renderActiveReadingPanel();
   if (history.length === 0) {
     const li = document.createElement("li");
     li.className = "history-empty";
@@ -850,6 +1138,10 @@ function stopLoading() { clearInterval(loadingTimer); }
 
 let session = null;
 const readingClock = { activeMs: 0, startedAt: 0, running: false };
+const ACTIVE_READING_VERSION = 1;
+const ACTIVE_READING_SAVE_INTERVAL_MS = 15000;
+let activeReadingSaveTimer = null;
+let activeReadingScrollTimer = null;
 
 function clockNow() {
   return window.performance && typeof window.performance.now === "function"
@@ -857,10 +1149,17 @@ function clockNow() {
     : Date.now();
 }
 
-function startReadingTimer() {
-  readingClock.activeMs = 0;
+function startReadingTimer(initialSeconds = 0) {
+  readingClock.activeMs = Math.max(0, Number(initialSeconds) || 0) * 1000;
   readingClock.running = !document.hidden;
   readingClock.startedAt = readingClock.running ? clockNow() : 0;
+}
+
+function readingSecondsSnapshot() {
+  const runningMs = readingClock.running
+    ? Math.max(0, clockNow() - readingClock.startedAt)
+    : 0;
+  return Math.max(0, (readingClock.activeMs + runningMs) / 1000);
 }
 
 function pauseReadingTimer() {
@@ -881,16 +1180,203 @@ function finishReadingTimer() {
   return Math.max(0, readingClock.activeMs / 1000);
 }
 
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) pauseReadingTimer();
-  else resumeReadingTimer();
-});
-window.addEventListener("pagehide", pauseReadingTimer);
-window.addEventListener("pageshow", resumeReadingTimer);
+function readingScrollRatio() {
+  const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  return maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+}
 
-document.getElementById("startBtn").addEventListener("click", startSession);
+function normalizeActiveReadingDraft(value) {
+  if (!value || value.version !== ACTIVE_READING_VERSION) return null;
+  if (!value.story || typeof value.story !== "object") return null;
+  const story = value.story;
+  if (typeof story.title !== "string" || !story.title.trim() || story.title.length > 300) return null;
+  if (typeof story.text !== "string" || !story.text.trim() || story.text.length > 100000) return null;
+  if (typeof story.topic !== "string" || story.topic.length > 300) return null;
+  const level = Math.min(10, Math.max(1, Math.round(Number(story._level) || getLevel())));
+  const bankId = typeof story._bankId === "string" && /^s\d{3,}$/.test(story._bankId)
+    ? story._bankId
+    : null;
+  const editorialStatus = bankId && typeof story._editorialStatus === "string"
+    ? story._editorialStatus
+    : null;
+  if (bankId && editorialStatus && editorialStatus !== "published") return null;
+  return {
+    version: ACTIVE_READING_VERSION,
+    phase: value.phase === "calibrate" ? "calibrate" : "reading",
+    savedAt: typeof value.savedAt === "string" ? value.savedAt : new Date().toISOString(),
+    activeSeconds: Math.min(7 * 24 * 60 * 60, Math.max(0, Number(value.activeSeconds) || 0)),
+    scrollRatio: Math.min(1, Math.max(0, Number(value.scrollRatio) || 0)),
+    story: {
+      topic: story.topic,
+      title: story.title,
+      text: story.text,
+      _bankId: bankId,
+      _level: level,
+      _editorialStatus: editorialStatus,
+    },
+  };
+}
+
+function getActiveReadingDraft() {
+  try {
+    const parsed = JSON.parse(get(LS.activeReading, "null"));
+    const normalized = normalizeActiveReadingDraft(parsed);
+    if (!normalized && parsed) removeStored(LS.activeReading);
+    return normalized;
+  } catch {
+    removeStored(LS.activeReading);
+    return null;
+  }
+}
+
+function clearActiveReadingDraft() {
+  stopActiveReadingAutosave();
+  return removeStored(LS.activeReading);
+}
+
+function persistActiveReading(phase = "reading") {
+  if (!session || typeof session.text !== "string" || !session.text.trim()) return false;
+  const activeSeconds = phase === "calibrate"
+    ? Math.max(0, Number(session._elapsedSec) || 0)
+    : readingSecondsSnapshot();
+  return set(LS.activeReading, JSON.stringify({
+    version: ACTIVE_READING_VERSION,
+    phase,
+    savedAt: new Date().toISOString(),
+    activeSeconds,
+    scrollRatio: phase === "reading" ? readingScrollRatio() : 1,
+    story: {
+      topic: String(session.topic || ""),
+      title: String(session.title || ""),
+      text: String(session.text || ""),
+      _bankId: session._bankId || null,
+      _level: Math.min(10, Math.max(1, Number(session._level) || getLevel())),
+      _editorialStatus: session._bankId ? (session._editorialStatus || null) : null,
+    },
+  }));
+}
+
+function stopActiveReadingAutosave() {
+  clearInterval(activeReadingSaveTimer);
+  clearTimeout(activeReadingScrollTimer);
+  activeReadingSaveTimer = null;
+  activeReadingScrollTimer = null;
+}
+
+function startActiveReadingAutosave() {
+  stopActiveReadingAutosave();
+  persistActiveReading("reading");
+  activeReadingSaveTimer = setInterval(() => {
+    if (!views.reading.hidden) persistActiveReading("reading");
+  }, ACTIVE_READING_SAVE_INTERVAL_MS);
+}
+
+function formatActiveReadingDate(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "保存済み";
+  return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")} 保存`;
+}
+
+function renderActiveReadingPanel() {
+  const panel = document.getElementById("resumeReadingPanel");
+  const draft = getActiveReadingDraft();
+  panel.hidden = !draft;
+  if (!draft) return;
+  document.getElementById("resumeReadingHeading").textContent = draft.story.title;
+  const phaseText = draft.phase === "calibrate" ? "読後の感想を入力するところから" : "本文の続きから";
+  document.getElementById("resumeReadingMeta").textContent =
+    `Level ${draft.story._level} ・ ${topicLabel(draft.story.topic)} ・ ${phaseText} ・ ${formatActiveReadingDate(draft.savedAt)}`;
+  document.getElementById("resumeReadingBtn").textContent =
+    draft.phase === "calibrate" ? "読後の記録を続ける" : "途中から再開";
+}
+
+async function restoreActiveReading() {
+  const draft = getActiveReadingDraft();
+  if (!draft) {
+    renderActiveReadingPanel();
+    showError("再開できる読みかけの文章がありません。");
+    return;
+  }
+  if (draft.story._bankId) {
+    try {
+      const publishedBank = await loadStoryBank();
+      if (!publishedBank.some((story) => story.id === draft.story._bankId)) {
+        clearActiveReadingDraft();
+        renderActiveReadingPanel();
+        showError("この読みかけ文章は公開対象から外れたため再開できません。別の文章を選んでください。");
+        return;
+      }
+    } catch {
+      showError("文章バンクを確認できませんでした。通信状態を確認して、もう一度お試しください。");
+      return;
+    }
+  }
+  session = { ...draft.story };
+  renderReading(session);
+  lastBankStoryId = session._bankId || lastBankStoryId;
+  if (draft.phase === "calibrate") {
+    readingClock.activeMs = draft.activeSeconds * 1000;
+    readingClock.startedAt = 0;
+    readingClock.running = false;
+    session._elapsedSec = draft.activeSeconds;
+    showView("calibrate");
+    return;
+  }
+  showView("reading");
+  startReadingTimer(draft.activeSeconds);
+  startActiveReadingAutosave();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    window.scrollTo(0, Math.round(maxScroll * draft.scrollRatio));
+  }));
+}
+
+function unmarkSeen(id) {
+  if (!id) return;
+  const seen = getSeenIds();
+  seen.delete(id);
+  set(LS.seenStoryIds, JSON.stringify([...seen]));
+}
+
+function blockNewReadingWhenDraftExists() {
+  if (!getActiveReadingDraft()) return false;
+  showError("読みかけの文章があります。先に「途中から再開」または「今回は再開しない」を選んでください。");
+  document.getElementById("resumeReadingBtn").focus();
+  return true;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    pauseReadingTimer();
+    if (!views.reading.hidden) persistActiveReading("reading");
+  } else {
+    resumeReadingTimer();
+  }
+});
+window.addEventListener("pagehide", () => {
+  pauseReadingTimer();
+  if (!views.reading.hidden) persistActiveReading("reading");
+});
+window.addEventListener("pageshow", resumeReadingTimer);
+window.addEventListener("scroll", () => {
+  if (views.reading.hidden || !session) return;
+  clearTimeout(activeReadingScrollTimer);
+  activeReadingScrollTimer = setTimeout(() => persistActiveReading("reading"), 1200);
+}, { passive: true });
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  if (!blockNewReadingWhenDraftExists()) startSession();
+});
 document.getElementById("anotherBtn").addEventListener("click", startSession);
 document.getElementById("homeBtn").addEventListener("click", () => { renderHome(); showView("home"); });
+document.getElementById("resumeReadingBtn").addEventListener("click", restoreActiveReading);
+document.getElementById("discardReadingBtn").addEventListener("click", () => {
+  const draft = getActiveReadingDraft();
+  if (draft && draft.story._bankId) unmarkSeen(draft.story._bankId);
+  clearActiveReadingDraft();
+  renderActiveReadingPanel();
+  document.getElementById("startBtn").focus();
+});
 
 async function startSession() {
   const useBank = usingOfflineBank();
@@ -922,10 +1408,12 @@ async function startSession() {
 
   try {
     session = await generate({ topic, apiKey });
+    session._level = getLevel();
     stopLoading();
     renderReading(session);
     showView("reading");
     startReadingTimer();
+    startActiveReadingAutosave();
   } catch (err) {
     stopLoading();
     console.error(err);
@@ -945,7 +1433,17 @@ async function loadStoryBank() {
   try {
     const res = await fetch("stories.json");
     if (!res.ok) throw new Error("stories.json " + res.status);
-    STORY_BANK = await res.json();
+    const storedStories = await res.json();
+    if (!Array.isArray(storedStories)) throw new Error("stories.json is not an array");
+    STORY_BANK = storedStories.filter((story) =>
+      story &&
+      story.editorialStatus === "published" &&
+      typeof story.id === "string" &&
+      typeof story.title === "string" && story.title.trim() &&
+      typeof story.text === "string" && story.text.trim() &&
+      Number.isInteger(story.level) && story.level >= 1 && story.level <= 10
+    );
+    if (!STORY_BANK.length) throw new Error("stories.json has no published stories");
     return STORY_BANK;
   } catch (err) {
     storyBankLoadError = err;
@@ -966,6 +1464,78 @@ function clearSeenForPool(ids) {
   const seen = getSeenIds();
   ids.forEach((id) => seen.delete(id));
   set(LS.seenStoryIds, JSON.stringify([...seen]));
+}
+
+function getFavoriteIds() {
+  try {
+    const parsed = JSON.parse(get(LS.favoriteStoryIds, "[]"));
+    if (!Array.isArray(parsed)) return [];
+    return [...new Set(parsed.filter((id) => typeof id === "string" && /^s\d{3,}$/.test(id)))].slice(0, 500);
+  } catch {
+    return [];
+  }
+}
+
+function saveFavoriteIds(ids) {
+  return set(LS.favoriteStoryIds, JSON.stringify([...new Set(ids)].slice(0, 500)));
+}
+
+function isFavoriteStory(id) {
+  return Boolean(id) && getFavoriteIds().includes(id);
+}
+
+function renderFavoriteButton() {
+  const button = document.getElementById("favoriteBtn");
+  const label = document.getElementById("favoriteBtnLabel");
+  const icon = button.querySelector(".favorite-icon");
+  const storyId = session && session._bankId;
+  button.hidden = !storyId;
+  if (!storyId) return;
+  const active = isFavoriteStory(storyId);
+  button.setAttribute("aria-pressed", active ? "true" : "false");
+  button.classList.toggle("is-favorite", active);
+  label.textContent = active ? "お気に入りから外す" : "お気に入りに追加";
+  icon.textContent = active ? "★" : "☆";
+}
+
+async function renderFavorites() {
+  const panel = document.getElementById("favoritesPanel");
+  const count = document.getElementById("favoriteCount");
+  const list = document.getElementById("favoriteList");
+  const favoriteIds = getFavoriteIds();
+  count.textContent = `${fmt(favoriteIds.length)}篇`;
+  panel.hidden = favoriteIds.length === 0;
+  list.innerHTML = "";
+  if (!favoriteIds.length) return;
+
+  try {
+    const bank = await loadStoryBank();
+    const storiesById = new Map(bank.map((story) => [story.id, story]));
+    favoriteIds.forEach((id) => {
+      const story = storiesById.get(id);
+      if (!story) return;
+      const row = document.createElement("li");
+      const openButton = document.createElement("button");
+      openButton.type = "button";
+      openButton.className = "favorite-open";
+      openButton.innerHTML = `<span>${esc(story.title)}</span><small>Level ${story.level} ・ ${esc(topicLabel(story.topic))}</small>`;
+      openButton.addEventListener("click", () => startFavoriteSession(story.id));
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "favorite-remove";
+      removeButton.setAttribute("aria-label", `${story.title}をお気に入りから外す`);
+      removeButton.textContent = "×";
+      removeButton.addEventListener("click", () => {
+        saveFavoriteIds(getFavoriteIds().filter((favoriteId) => favoriteId !== story.id));
+        renderFavorites();
+      });
+      row.append(openButton, removeButton);
+      list.appendChild(row);
+    });
+  } catch {
+    list.innerHTML = '<li class="favorites-error">お気に入りを読み込めませんでした。</li>';
+  }
 }
 
 // Tracks the most recently offered story so that, right when a pool resets
@@ -1024,13 +1594,39 @@ async function startOfflineSession() {
 
   const story = pickStory(bank, topicSelect.value, getLevel());
 
-  session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id };
+  session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id, _level: story.level, _editorialStatus: story.editorialStatus };
   markSeen(story.id);
   lastBankStoryId = story.id;
 
   renderReading(session);
   showView("reading");
   startReadingTimer();
+  startActiveReadingAutosave();
+}
+
+async function startFavoriteSession(storyId) {
+  if (blockNewReadingWhenDraftExists()) return;
+  showView("loading");
+  document.getElementById("loadingText").textContent = "お気に入りを開いています…";
+  try {
+    const bank = await loadStoryBank();
+    const story = bank.find((candidate) => candidate.id === storyId);
+    if (!story) throw new Error("favorite story not found");
+    if (getLevel() !== story.level) {
+      setLevel(story.level);
+      saveLevelSignals(story.level, 0);
+    }
+    session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id, _level: story.level, _editorialStatus: story.editorialStatus };
+    markSeen(story.id);
+    lastBankStoryId = story.id;
+    renderReading(session);
+    showView("reading");
+    startReadingTimer();
+    startActiveReadingAutosave();
+  } catch {
+    showView("home");
+    showError("お気に入りの文章を開けませんでした。アプリを更新してから、もう一度お試しください。");
+  }
 }
 
 function readableError(err) {
@@ -1138,7 +1734,7 @@ function countWords(text) {
 }
 
 function renderReading(s) {
-  document.getElementById("readingTopic").textContent = s.topic || "";
+  document.getElementById("readingTopic").textContent = topicLabel(s.topic || "");
   document.getElementById("readingTitle").textContent = s.title || "";
 
   const wc = countWords(s.text);
@@ -1156,10 +1752,133 @@ function renderReading(s) {
     p.textContent = para.trim();
     container.appendChild(p);
   });
+  renderFavoriteButton();
 }
+
+document.getElementById("favoriteBtn").addEventListener("click", () => {
+  if (!session || !session._bankId) return;
+  const ids = getFavoriteIds();
+  const next = ids.includes(session._bankId)
+    ? ids.filter((id) => id !== session._bankId)
+    : [session._bankId, ...ids];
+  if (!saveFavoriteIds(next)) {
+    showError("お気に入りを端末に保存できませんでした。");
+  }
+  renderFavoriteButton();
+});
+
+const reportModal = document.getElementById("reportModal");
+const closeReportIconBtn = document.getElementById("closeReportIconBtn");
+const reportNoteInput = document.getElementById("reportNoteInput");
+const reportStatus = document.getElementById("reportStatus");
+
+function closeStoryReport() {
+  closeAccessibleModal();
+}
+
+function storyReportData() {
+  const selected = document.querySelector('input[name="reportReason"]:checked');
+  const reason = selected && hasOwn(REPORT_REASONS, selected.value) ? selected.value : "other";
+  return {
+    app: "Reading Lamp",
+    appVersion: APP_VERSION,
+    createdAt: new Date().toISOString(),
+    storyId: session && session._bankId ? session._bankId : "AI-generated",
+    title: session && session.title ? session.title : "",
+    topic: session && session.topic ? session.topic : "",
+    level: session && session._level ? session._level : getLevel(),
+    issueType: reason,
+    issueLabel: REPORT_REASONS[reason],
+    note: reportNoteInput.value.trim().slice(0, 500),
+  };
+}
+
+function storyReportText(data) {
+  const lines = [
+    "Reading Lamp 文章問題報告",
+    `文章ID: ${data.storyId}`,
+    `タイトル: ${data.title}`,
+    `ジャンル: ${topicLabel(data.topic)}`,
+    `レベル: ${data.level}`,
+    `問題: ${data.issueLabel}`,
+  ];
+  if (data.note) lines.push(`補足: ${data.note}`);
+  lines.push(`アプリ版: ${data.appVersion}`, `作成日時: ${data.createdAt}`);
+  return lines.join("\n");
+}
+
+async function copyReportText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const helper = document.createElement("textarea");
+  helper.value = text;
+  helper.setAttribute("readonly", "");
+  helper.style.position = "fixed";
+  helper.style.opacity = "0";
+  document.body.appendChild(helper);
+  helper.select();
+  const copied = document.execCommand("copy");
+  helper.remove();
+  if (!copied) throw new Error("copy unavailable");
+}
+
+document.getElementById("reportStoryBtn").addEventListener("click", () => {
+  if (!session) return;
+  reportNoteInput.value = "";
+  reportStatus.textContent = "";
+  const firstReason = document.querySelector('input[name="reportReason"]');
+  firstReason.checked = true;
+  document.getElementById("reportStoryContext").textContent =
+    `${session._bankId || "AI生成"} ・ ${session.title || "タイトルなし"} ・ Level ${getLevel()}`;
+  openAccessibleModal(reportModal, firstReason, closeStoryReport);
+});
+
+closeReportIconBtn.addEventListener("click", closeStoryReport);
+document.getElementById("closeReportBtn").addEventListener("click", closeStoryReport);
+reportModal.addEventListener("click", (event) => {
+  if (event.target === reportModal) closeStoryReport();
+});
+
+document.getElementById("shareReportBtn").addEventListener("click", async () => {
+  const data = storyReportData();
+  const text = storyReportText(data);
+  reportStatus.textContent = "";
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `Reading Lamp: ${data.storyId}`, text });
+      reportStatus.textContent = "共有画面へ報告内容を渡しました。";
+    } else {
+      await copyReportText(text);
+      reportStatus.textContent = "報告内容をクリップボードへコピーしました。";
+    }
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    try {
+      await copyReportText(text);
+      reportStatus.textContent = "共有できなかったため、報告内容をコピーしました。";
+    } catch {
+      showError("報告内容を共有できませんでした。「ファイルで保存」をお使いください。");
+    }
+  }
+});
+
+document.getElementById("downloadReportBtn").addEventListener("click", () => {
+  const data = storyReportData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `reading-lamp-report-${data.storyId}-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  reportStatus.textContent = "報告ファイルを保存しました。配布元への連絡時に添付してください。";
+});
 
 document.getElementById("finishReadingBtn").addEventListener("click", () => {
   session._elapsedSec = finishReadingTimer();
+  stopActiveReadingAutosave();
+  persistActiveReading("calibrate");
   showView("calibrate");
 });
 
@@ -1193,6 +1912,7 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
     date: new Date().toISOString(),
     topic: session.topic,
     title: session.title,
+    storyId: session._bankId,
     words: 0,
     wpm: 0,
     activeSeconds: Math.round(activeSeconds),
@@ -1201,6 +1921,7 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
     abandonReason,
     abandoned: true,
   });
+  clearActiveReadingDraft();
   closeAccessibleModal({ restoreFocus: false, resumeReading: false });
   startSession();
 }));
@@ -1234,6 +1955,7 @@ function finishSession(feedback) {
     date: new Date().toISOString(),
     topic: session.topic,
     title: session.title,
+    storyId: session._bankId,
     words,
     wpm,
     activeSeconds: Math.round(activeSeconds),
@@ -1244,6 +1966,7 @@ function finishSession(feedback) {
     feedback,
     abandoned: false,
   });
+  clearActiveReadingDraft();
 
   renderSummary(words, wpm, adjustment, wpmInvalidReason);
   showView("summary");
@@ -1277,10 +2000,103 @@ function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   document.getElementById("summaryNote").textContent = notes.join(" ");
 }
 
+// ---------------------- First-run onboarding ----------------------
+
+const onboardingModal = document.getElementById("onboardingModal");
+const onboardingSteps = [...document.querySelectorAll("[data-onboarding-step]")];
+const onboardingStepLabel = document.getElementById("onboardingStepLabel");
+const onboardingLevelInput = document.getElementById("onboardingLevelInput");
+const onboardingLevelDescription = document.getElementById("onboardingLevelDescription");
+const onboardingTopicSelect = document.getElementById("onboardingTopicSelect");
+const onboardingGoalSelect = document.getElementById("onboardingGoalSelect");
+const onboardingBackBtn = document.getElementById("onboardingBackBtn");
+const onboardingNextBtn = document.getElementById("onboardingNextBtn");
+const onboardingFinishBtn = document.getElementById("onboardingFinishBtn");
+const onboardingSkipBtn = document.getElementById("onboardingSkipBtn");
+let onboardingStep = 0;
+
+function renderOnboardingLevel() {
+  const info = levelInfo(Number(onboardingLevelInput.value));
+  onboardingLevelDescription.textContent = `レベル ${info.n} — ${info.label}：${info.desc}`;
+  onboardingLevelInput.setAttribute("aria-valuetext", `レベル${info.n}、${info.label}`);
+}
+
+function renderOnboardingStep() {
+  onboardingSteps.forEach((step, index) => { step.hidden = index !== onboardingStep; });
+  onboardingStepLabel.textContent = `${onboardingStep + 1} / ${onboardingSteps.length}`;
+  onboardingModal.querySelectorAll(".onboarding-dots i").forEach((dot, index) => {
+    dot.classList.toggle("active", index === onboardingStep);
+  });
+  onboardingBackBtn.hidden = onboardingStep === 0;
+  onboardingNextBtn.hidden = onboardingStep === onboardingSteps.length - 1;
+  onboardingFinishBtn.hidden = onboardingStep !== onboardingSteps.length - 1;
+  const focusTarget = onboardingStep === onboardingSteps.length - 1 ? onboardingFinishBtn : onboardingNextBtn;
+  requestAnimationFrame(() => focusTarget.focus());
+}
+
+function openOnboarding() {
+  onboardingStep = 0;
+  onboardingLevelInput.value = String(getLevel());
+  onboardingGoalSelect.value = String(getNum(LS.dailyGoal, 1500));
+  if (![...onboardingGoalSelect.options].some((option) => option.value === onboardingGoalSelect.value)) {
+    onboardingGoalSelect.value = "1500";
+  }
+  const preferred = get(LS.preferredTopic, topicSelect.value || "random");
+  onboardingTopicSelect.value = [...onboardingTopicSelect.options].some((option) => option.value === preferred)
+    ? preferred
+    : "random";
+  renderOnboardingLevel();
+  renderOnboardingStep();
+  openAccessibleModal(onboardingModal, onboardingNextBtn, () => completeOnboarding(false));
+}
+
+function completeOnboarding(savePreferences) {
+  let saved = true;
+  if (savePreferences) {
+    const selectedLevel = Math.min(10, Math.max(1, Number(onboardingLevelInput.value)));
+    const selectedTopic = onboardingTopicSelect.value;
+    saved = set(LS.level, String(selectedLevel)) && saved;
+    saved = saveLevelSignals(selectedLevel, 0) && saved;
+    saved = set(LS.dailyGoal, onboardingGoalSelect.value) && saved;
+    saved = set(LS.preferredTopic, selectedTopic) && saved;
+    topicSelect.value = selectedTopic;
+  }
+  saved = set(LS.onboardingDone, "1") && saved;
+  closeAccessibleModal({ restoreFocus: false });
+  renderHome();
+  document.getElementById("startBtn").focus();
+  if (!saved) showError("設定を端末に保存できませんでした。このセッション中は設定を使えます。");
+}
+
+onboardingLevelInput.addEventListener("input", renderOnboardingLevel);
+onboardingBackBtn.addEventListener("click", () => {
+  onboardingStep = Math.max(0, onboardingStep - 1);
+  renderOnboardingStep();
+});
+onboardingNextBtn.addEventListener("click", () => {
+  onboardingStep = Math.min(onboardingSteps.length - 1, onboardingStep + 1);
+  renderOnboardingStep();
+});
+onboardingFinishBtn.addEventListener("click", () => completeOnboarding(true));
+onboardingSkipBtn.addEventListener("click", () => completeOnboarding(false));
+document.getElementById("replayOnboardingBtn").addEventListener("click", () => {
+  closeSettings();
+  setTimeout(openOnboarding, 0);
+});
+
 // ---------------------- Init ----------------------
 
+const startupHistoryRepair = prepareHistoryRecovery();
+applyReadingDisplay();
 renderHome();
 showView("home");
+if (startupHistoryRepair.repaired) {
+  const repairMessage = startupHistoryRepair.backupSaved && startupHistoryRepair.historySaved
+    ? "保存データの一部を安全に読み取れなかったため、有効な記録だけで起動しました。修復前データは設定から保存できます。"
+    : "保存データの一部を安全に読み取れなかったため、有効な記録だけで起動しました。端末への保存が制限されているため、修復前データは今回のセッション中に設定から保存してください。";
+  showError(repairMessage);
+}
+if (!getBool(LS.onboardingDone, false)) requestAnimationFrame(openOnboarding);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
