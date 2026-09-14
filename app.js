@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "1.7.0";
+const APP_VERSION = "2.0.0";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -62,13 +62,21 @@ const LS = {
   activeReading: "rl_active_reading_v1",
   historyRecovery: "rl_history_recovery_v1",
   rewards: "rl_rewards_v1",
-  rewardFilter: "rl_reward_filter_v1",
+  rewardFilter: "rl_reward_filter_v2",
   rewardSort: "rl_reward_sort_v1",
   pinnedReward: "rl_pinned_reward_v1",
   showRewardGoals: "rl_show_reward_goals_v1",
   rewardNotifications: "rl_reward_notifications_v1",
+  anonymousUsageConsent: "rl_anonymous_usage_consent_v1",
+  anonymousUsage: "rl_anonymous_usage_v1",
+  anonymousInstallId: "rl_anonymous_install_id_v1",
+  reportQueue: "rl_story_report_queue_v1",
 };
 const HISTORY_LIMIT = 2000;
+const REPORT_QUEUE_LIMIT = 100;
+const ANALYTICS_DAY_LIMIT = 90;
+let serviceWorkerRegistration = null;
+let offlinePreparing = false;
 
 const get = (k, d) => {
   try {
@@ -110,6 +118,205 @@ function removeStored(k) {
   try { localStorage.removeItem(k); } catch { removed = false; }
   delete memoryFallback[k];
   return removed;
+}
+
+// Optional same-origin collection endpoints are deployment settings. Empty
+// values keep all analytics and report data on this device.
+let runtimeConfigPromise = null;
+function normalizeCollectionEndpoint(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+  try {
+    const url = new URL(value, window.location.href);
+    return url.origin === window.location.origin ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function loadRuntimeConfig() {
+  if (runtimeConfigPromise) return runtimeConfigPromise;
+  runtimeConfigPromise = fetch("config.json")
+    .then((response) => response.ok ? response.json() : {})
+    .then((config) => ({
+      analyticsEndpoint: normalizeCollectionEndpoint(config.analyticsEndpoint),
+      storyReportEndpoint: normalizeCollectionEndpoint(config.storyReportEndpoint),
+    }))
+    .catch(() => ({ analyticsEndpoint: "", storyReportEndpoint: "" }));
+  return runtimeConfigPromise;
+}
+
+const ANONYMOUS_EVENTS = new Set([
+  "app_open", "candidate_shown", "story_start", "story_complete",
+  "story_abandon", "offline_ready", "level_sample_selected", "report_submitted",
+]);
+
+function getAnonymousInstallId() {
+  let id = get(LS.anonymousInstallId, "");
+  if (/^[a-z0-9-]{16,80}$/i.test(id)) return id;
+  id = window.crypto && typeof window.crypto.randomUUID === "function"
+    ? window.crypto.randomUUID()
+    : `anon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}`;
+  set(LS.anonymousInstallId, id);
+  return id;
+}
+
+function getAnonymousUsage() {
+  try {
+    const parsed = JSON.parse(get(LS.anonymousUsage, "null"));
+    if (parsed && parsed.version === 1 && parsed.days && typeof parsed.days === "object") return parsed;
+  } catch {}
+  return { version: 1, days: {} };
+}
+
+function removeSentAnonymousUsage(sentState) {
+  const latest = getAnonymousUsage();
+  Object.entries(sentState.days || {}).forEach(([date, sentDay]) => {
+    const currentDay = latest.days[date];
+    if (!currentDay) return;
+    ["events", "levels", "topics"].forEach((group) => {
+      const currentValues = currentDay[group] && typeof currentDay[group] === "object" ? currentDay[group] : {};
+      Object.entries((sentDay && sentDay[group]) || {}).forEach(([key, sentCount]) => {
+        const remaining = Math.max(0, Number(currentValues[key] || 0) - Number(sentCount || 0));
+        if (remaining) currentValues[key] = remaining;
+        else delete currentValues[key];
+      });
+      currentDay[group] = currentValues;
+    });
+    const hasValues = ["events", "levels", "topics"].some((group) => Object.keys(currentDay[group]).length);
+    if (!hasValues) delete latest.days[date];
+  });
+  if (Object.keys(latest.days).length) set(LS.anonymousUsage, JSON.stringify(latest));
+  else removeStored(LS.anonymousUsage);
+}
+
+function recordAnonymousEvent(name, details = {}) {
+  if (!getBool(LS.anonymousUsageConsent, false) || !ANONYMOUS_EVENTS.has(name)) return;
+  const state = getAnonymousUsage();
+  const key = localDateKey(new Date());
+  const savedDay = state.days[key] && typeof state.days[key] === "object" ? state.days[key] : {};
+  const day = {
+    events: savedDay.events && typeof savedDay.events === "object" ? savedDay.events : {},
+    levels: savedDay.levels && typeof savedDay.levels === "object" ? savedDay.levels : {},
+    topics: savedDay.topics && typeof savedDay.topics === "object" ? savedDay.topics : {},
+  };
+  day.events[name] = Math.min(100000, Number(day.events[name] || 0) + 1);
+  const level = Math.round(Number(details.level));
+  if (level >= 1 && level <= 10) day.levels[level] = Math.min(100000, Number(day.levels[level] || 0) + 1);
+  if (TOPIC_POOL && TOPIC_POOL.includes(details.topic)) {
+    day.topics[details.topic] = Math.min(100000, Number(day.topics[details.topic] || 0) + 1);
+  }
+  state.days[key] = day;
+  const retained = Object.keys(state.days).sort().slice(-ANALYTICS_DAY_LIMIT);
+  state.days = Object.fromEntries(retained.map((date) => [date, state.days[date]]));
+  set(LS.anonymousUsage, JSON.stringify(state));
+  scheduleAnonymousUsageFlush();
+}
+
+let anonymousUsageFlushTimer = null;
+let anonymousUsageFlushPromise = null;
+function scheduleAnonymousUsageFlush() {
+  clearTimeout(anonymousUsageFlushTimer);
+  anonymousUsageFlushTimer = setTimeout(() => flushAnonymousUsage().catch(() => {}), 2500);
+}
+
+async function flushAnonymousUsage() {
+  if (anonymousUsageFlushPromise) return anonymousUsageFlushPromise;
+  if (!getBool(LS.anonymousUsageConsent, false)) return { sent: false, reason: "disabled" };
+  const state = getAnonymousUsage();
+  if (!Object.keys(state.days).length) return { sent: false, reason: "empty" };
+  anonymousUsageFlushPromise = (async () => {
+    const config = await loadRuntimeConfig();
+    if (!config.analyticsEndpoint) return { sent: false, reason: "unconfigured" };
+    const response = await fetch(config.analyticsEndpoint, {
+      method: "POST",
+      credentials: "omit",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        anonymousInstallId: getAnonymousInstallId(),
+        appVersion: APP_VERSION,
+        days: state.days,
+      }),
+    });
+    if (!response.ok) throw new Error(`analytics ${response.status}`);
+    removeSentAnonymousUsage(state);
+    return { sent: true };
+  })().finally(() => { anonymousUsageFlushPromise = null; });
+  return anonymousUsageFlushPromise;
+}
+
+function getStoryReportQueue() {
+  try {
+    const parsed = JSON.parse(get(LS.reportQueue, "[]"));
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item) => {
+      if (!item || typeof item.queueId !== "string" || item.queueId.length > 100 || !item.report || typeof item.report !== "object") return null;
+      const report = item.report;
+      const createdAt = new Date(report.createdAt);
+      const issueType = typeof report.issueType === "string" && hasOwn(REPORT_REASONS, report.issueType) ? report.issueType : "other";
+      const level = Math.min(10, Math.max(1, Math.round(Number(report.level) || 5)));
+      return {
+        queueId: item.queueId,
+        report: {
+          app: "Reading Lamp",
+          appVersion: String(report.appVersion || APP_VERSION).slice(0, 30),
+          createdAt: Number.isFinite(createdAt.getTime()) ? createdAt.toISOString() : new Date().toISOString(),
+          storyId: String(report.storyId || "AI-generated").slice(0, 80),
+          title: String(report.title || "").slice(0, 300),
+          topic: String(report.topic || "").slice(0, 100),
+          level,
+          issueType,
+          issueLabel: REPORT_REASONS[issueType],
+          note: String(report.note || "").slice(0, 500),
+        },
+      };
+    }).filter(Boolean).slice(0, REPORT_QUEUE_LIMIT);
+  } catch {
+    return [];
+  }
+}
+
+function saveStoryReportQueue(queue) {
+  return set(LS.reportQueue, JSON.stringify(queue.slice(0, REPORT_QUEUE_LIMIT)));
+}
+
+function queueStoryReport(report) {
+  const queue = getStoryReportQueue();
+  const queueId = window.crypto && typeof window.crypto.randomUUID === "function"
+    ? window.crypto.randomUUID()
+    : `report-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  queue.unshift({ queueId, report });
+  return { saved: saveStoryReportQueue(queue), queueId };
+}
+
+let reportFlushPromise = null;
+async function flushStoryReports() {
+  if (reportFlushPromise) return reportFlushPromise;
+  reportFlushPromise = (async () => {
+    const config = await loadRuntimeConfig();
+    let queue = getStoryReportQueue();
+    if (!queue.length) return { sent: 0, pending: 0, reason: "empty" };
+    if (!config.storyReportEndpoint) return { sent: 0, pending: queue.length, reason: "unconfigured" };
+    let sent = 0;
+    for (const item of [...queue].reverse()) {
+      try {
+        const response = await fetch(config.storyReportEndpoint, {
+          method: "POST",
+          credentials: "omit",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ schemaVersion: 1, queueId: item.queueId, report: item.report }),
+        });
+        if (!response.ok) break;
+        queue = queue.filter((queued) => queued.queueId !== item.queueId);
+        saveStoryReportQueue(queue);
+        sent += 1;
+      } catch {
+        break;
+      }
+    }
+    return { sent, pending: queue.length, reason: queue.length ? "network" : "sent" };
+  })().finally(() => { reportFlushPromise = null; });
+  return reportFlushPromise;
 }
 
 // The API key is intentionally kept on this device so AI mode works again
@@ -422,6 +629,39 @@ const readingThemeInput = document.getElementById("readingThemeInput");
 const readingDisplayPreview = document.getElementById("readingDisplayPreview");
 const showRewardGoalsInput = document.getElementById("showRewardGoalsInput");
 const rewardNotificationsInput = document.getElementById("rewardNotificationsInput");
+const anonymousUsageInput = document.getElementById("anonymousUsageInput");
+const anonymousUsageStatus = document.getElementById("anonymousUsageStatus");
+
+async function renderAnonymousUsageStatus() {
+  if (!anonymousUsageInput.checked) {
+    anonymousUsageStatus.textContent = "オフです。匿名IDや利用集計は保存・送信しません。";
+    return;
+  }
+  const config = await loadRuntimeConfig();
+  const days = Object.keys(getAnonymousUsage().days).length;
+  anonymousUsageStatus.textContent = config.analyticsEndpoint
+    ? `オンです。個人を特定しない日別集計を自動送信します${days ? `（未送信${days}日分）` : ""}。`
+    : `オンです。現在は送信先未設定のため端末内だけに保存します${days ? `（${days}日分）` : ""}。`;
+}
+
+async function renderReportQueueStatus(lastResult = null) {
+  const queue = getStoryReportQueue();
+  const config = await loadRuntimeConfig();
+  const status = document.getElementById("reportQueueStatus");
+  const retry = document.getElementById("retryReportsBtn");
+  const exportButton = document.getElementById("exportQueuedReportsBtn");
+  retry.disabled = queue.length === 0 || !config.storyReportEndpoint;
+  exportButton.disabled = queue.length === 0;
+  if (!queue.length) {
+    status.textContent = lastResult && lastResult.sent ? `${lastResult.sent}件を送信しました。未送信の報告はありません。` : "未送信の報告はありません。";
+  } else if (!config.storyReportEndpoint) {
+    status.textContent = `${queue.length}件を端末内に保存しています。公開時に送信先を設定すると再送できます。`;
+  } else if (lastResult && lastResult.reason === "network") {
+    status.textContent = `${queue.length}件が未送信です。オンライン時にもう一度送信します。`;
+  } else {
+    status.textContent = `${queue.length}件が送信待ちです。`;
+  }
+}
 
 function clampDisplayNumber(value, min, max, fallback) {
   const number = Number(value);
@@ -525,12 +765,15 @@ function openSettings() {
   readingThemeInput.value = displaySettings.theme;
   showRewardGoalsInput.checked = getBool(LS.showRewardGoals, true);
   rewardNotificationsInput.checked = getBool(LS.rewardNotifications, true);
+  anonymousUsageInput.checked = getBool(LS.anonymousUsageConsent, false);
   syncSettingsMode(toggleOfflineBank.checked);
   renderApiKeyStatus();
   renderHistoryRecovery();
+  renderReportQueueStatus();
   settingsStatus.textContent = "";
   updateRangeAccessibility();
   updateReadingDisplayPreview();
+  renderAnonymousUsageStatus();
   settingsButton.setAttribute("aria-expanded", "true");
   openAccessibleModal(settingsModal, closeSettingsIconBtn, closeSettings);
 }
@@ -558,6 +801,7 @@ dailyGoalInput.addEventListener("input", () => {
 toggleOfflineBank.addEventListener("change", () => {
   syncSettingsMode(toggleOfflineBank.checked);
 });
+anonymousUsageInput.addEventListener("change", renderAnonymousUsageStatus);
 
 document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
@@ -588,6 +832,16 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok12 = set(LS.readingTheme, displaySettings.theme);
   const okRewardGoals = set(LS.showRewardGoals, showRewardGoalsInput.checked ? "1" : "0");
   const okRewardNotifications = set(LS.rewardNotifications, rewardNotificationsInput.checked ? "1" : "0");
+  const previousAnonymousUsage = getBool(LS.anonymousUsageConsent, false);
+  const okAnonymousUsage = set(LS.anonymousUsageConsent, anonymousUsageInput.checked ? "1" : "0");
+
+  if (!anonymousUsageInput.checked) {
+    removeStored(LS.anonymousUsage);
+    removeStored(LS.anonymousInstallId);
+  } else if (!previousAnonymousUsage) {
+    recordAnonymousEvent("app_open");
+    flushAnonymousUsage().catch(() => {});
+  }
 
   if (!rewardNotificationsInput.checked) {
     rewardNotificationQueue.length = 0;
@@ -596,7 +850,7 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
 
   applyReadingDisplay(displaySettings);
 
-  if (okApiKey && ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications) {
+  if (okApiKey && ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications && okAnonymousUsage) {
     closeSettings();
     renderHome();
   } else {
@@ -705,6 +959,25 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
   } catch {
     showError("リワード診断を作成できませんでした。アプリを更新して、もう一度お試しください。");
   }
+});
+
+document.getElementById("retryReportsBtn").addEventListener("click", async () => {
+  settingsStatus.textContent = "文章報告を送信しています…";
+  const result = await flushStoryReports();
+  await renderReportQueueStatus(result);
+  settingsStatus.textContent = result.sent ? `${result.sent}件の文章報告を送信しました。` : "送信できませんでした。未送信データは端末内に残しています。";
+});
+
+document.getElementById("exportQueuedReportsBtn").addEventListener("click", () => {
+  const reports = getStoryReportQueue();
+  if (!reports.length) return;
+  const blob = new Blob([JSON.stringify({ schemaVersion: 1, exportedAt: new Date().toISOString(), reports }, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `reading-lamp-pending-reports-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  settingsStatus.textContent = `${reports.length}件の未送信報告を保存しました。`;
 });
 
 function cleanHistoryText(value, fallback = "") {
@@ -993,6 +1266,7 @@ function syncTopicMode(useBank = usingOfflineBank()) {
 topicSelect.addEventListener("change", () => {
   syncTopicMode();
   if (topicSelect.value !== "custom") set(LS.preferredTopic, topicSelect.value);
+  renderStoryCandidates();
 });
 
 const TOPIC_POOL = [
@@ -1535,7 +1809,12 @@ function renderRewardTargets(definitions, state, metrics) {
     return;
   }
   renderPinnedReward(definitions, state, metrics);
-  const targets = selectRewardTargets(definitions, state, metrics);
+  if (validPinnedReward(definitions, state)) {
+    section.hidden = true;
+    container.innerHTML = "";
+    return;
+  }
+  const targets = selectRewardTargets(definitions, state, metrics).slice(0, 1);
   section.hidden = targets.length === 0;
   container.innerHTML = "";
   targets.forEach((target) => {
@@ -1586,7 +1865,7 @@ document.getElementById("unpinRewardBtn").addEventListener("click", () => {
 function renderRewardHome(state = getRewardState(), definitions = REWARD_DEFINITIONS) {
   const status = document.getElementById("rewardHomeStatus");
   const icon = document.querySelector(".reward-home-icon");
-  const total = definitions ? definitions.length : 58;
+  const total = definitions ? definitions.length : 100;
   const earnedIds = definitions
     ? definitions.filter((reward) => hasOwn(state.earned, reward.id)).map((reward) => reward.id)
     : Object.keys(state.earned).slice(0, total);
@@ -1677,7 +1956,11 @@ async function evaluateRewardsNow({ notify = true } = {}) {
   renderRewardHome(state, definitions);
   if (newlyEarned.length && notify && getBool(LS.rewardNotifications, true)) {
     if (wasInitialized) {
-      queueRewardNotifications(newlyEarned);
+      queueRewardNotifications(newlyEarned.length > 3 ? [{
+        icon: "✦",
+        title: `${newlyEarned.length}個のリワードを獲得しました`,
+        description: "これまでの記録からまとめて獲得しました。コレクションで確認できます。",
+      }] : newlyEarned);
     } else {
       queueRewardNotifications([{
         icon: "✦",
@@ -1704,6 +1987,7 @@ const rewardsModal = document.getElementById("rewardsModal");
 const closeRewardsIconBtn = document.getElementById("closeRewardsIconBtn");
 const rewardCategoryFilter = document.getElementById("rewardCategoryFilter");
 const rewardSort = document.getElementById("rewardSort");
+const rewardSortControl = document.getElementById("rewardSortControl");
 
 function closeRewards() {
   closeAccessibleModal();
@@ -1798,8 +2082,7 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
     .map((reward) => state.earned[reward.id])
     .filter(Boolean)
     .sort((a, b) => new Date(b) - new Date(a))[0] || null;
-  const visible = (filter === "all" ? definitions : definitions.filter((reward) => reward.category === filter))
-    .map((reward, index) => {
+  const allItems = definitions.map((reward, index) => {
       const earnedAt = state.earned[reward.id] || null;
       const isSuppressed = !earnedAt && suppressed.has(reward.id);
       const current = Math.max(0, Number(metrics[reward.metric] || 0));
@@ -1816,7 +2099,7 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
     });
   const activeRank = (item) => item.isSuppressed ? 2 : item.earnedAt ? 1 : 0;
   const selectedSort = rewardSort.value || "progress";
-  visible.sort((a, b) => {
+  const sortVisible = (visible) => visible.sort((a, b) => {
     if (selectedSort === "earned") {
       const group = (item) => item.earnedAt ? 0 : item.isSuppressed ? 2 : 1;
       return group(a) - group(b) || a.index - b.index;
@@ -1830,6 +2113,24 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
     }
     return activeRank(a) - activeRank(b) || b.progress - a.progress || a.threshold - b.threshold || a.index - b.index;
   });
+  let visible;
+  if (filter === "recommended") {
+    const pinnedId = get(LS.pinnedReward, "");
+    const active = allItems
+      .filter((item) => !item.earnedAt && !item.isSuppressed)
+      .sort((a, b) => Number(b.reward.id === pinnedId) - Number(a.reward.id === pinnedId) || b.progress - a.progress || a.threshold - b.threshold || a.index - b.index);
+    visible = active.length
+      ? active.slice(0, 4)
+      : allItems.filter((item) => item.earnedAt).sort((a, b) => new Date(b.earnedAt) - new Date(a.earnedAt)).slice(0, 4);
+  } else if (filter === "earned") {
+    visible = sortVisible(allItems.filter((item) => item.earnedAt));
+  } else {
+    visible = sortVisible(filter === "all" ? allItems : allItems.filter((item) => item.reward.category === filter));
+  }
+  rewardSortControl.hidden = filter === "recommended";
+  rewardSortControl.parentElement.classList.toggle("is-simple", filter === "recommended");
+  const visibleLabel = filter === "recommended" ? "おすすめ" : filter === "earned" ? "獲得済み" : "表示中";
+  document.getElementById("rewardVisibleCount").textContent = `${visibleLabel} ${visible.length}件`;
   document.getElementById("rewardCollectionCount").textContent = `${earnedCount} / ${definitions.length}`;
   renderLampStyleChoices(state);
   renderRewardChains(definitions, state, metrics);
@@ -1907,7 +2208,7 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
 }
 
 async function openRewards(options = {}) {
-  const savedFilter = get(LS.rewardFilter, "all");
+  const savedFilter = get(LS.rewardFilter, "recommended");
   const savedSort = get(LS.rewardSort, "progress");
   rewardCategoryFilter.value = [...rewardCategoryFilter.options].some((option) => option.value === savedFilter) ? savedFilter : "all";
   rewardSort.value = [...rewardSort.options].some((option) => option.value === savedSort) ? savedSort : "progress";
@@ -2100,10 +2401,12 @@ function renderHome() {
     ? "オフライン文章バンク ・ APIキー不要"
     : `AI生成 ・ 1篇 約${fmt(getNum(LS.wordCount, 800))}語`;
   document.getElementById("startBtn").textContent = useBank
-    ? "文章バンクから読みはじめる"
+    ? "おまかせで読みはじめる"
     : "AIで文章を作って読む";
   document.getElementById("quickStartBtn").hidden = !useBank;
   document.getElementById("quickStartHint").hidden = !useBank;
+  renderStoryCandidates();
+  renderOfflineStatus();
 
   const list = document.getElementById("historyList");
   list.innerHTML = "";
@@ -2116,7 +2419,7 @@ function renderHome() {
     li.textContent = "まだ記録がありません。まずは一篇、辞書を閉じて読んでみましょう。";
     list.appendChild(li);
   } else {
-    history.slice(0, 8).forEach((h) => {
+    history.slice(0, 3).forEach((h) => {
       const li = document.createElement("li");
       const d = new Date(h.date);
       const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
@@ -2426,6 +2729,7 @@ async function startSession({ preferShort = false } = {}) {
   try {
     session = await generate({ topic, apiKey });
     session._level = getLevel();
+    recordAnonymousEvent("story_start", { level: session._level });
     stopLoading();
     renderReading(session);
     showView("reading");
@@ -2443,11 +2747,13 @@ async function startSession({ preferShort = false } = {}) {
 // ---------------------- Offline story bank ----------------------
 
 let STORY_BANK = null; // loaded lazily, cached for the rest of the session
+let storyBankLoadPromise = null;
 let storyBankLoadError = null;
 
 async function loadStoryBank() {
   if (STORY_BANK) return STORY_BANK;
-  try {
+  if (storyBankLoadPromise) return storyBankLoadPromise;
+  storyBankLoadPromise = (async () => {
     const res = await fetch("stories.json");
     if (!res.ok) throw new Error("stories.json " + res.status);
     const storedStories = await res.json();
@@ -2462,11 +2768,92 @@ async function loadStoryBank() {
     );
     if (!STORY_BANK.length) throw new Error("stories.json has no published stories");
     return STORY_BANK;
-  } catch (err) {
+  })().catch((err) => {
     storyBankLoadError = err;
     throw err;
+  }).finally(() => { storyBankLoadPromise = null; });
+  return storyBankLoadPromise;
+}
+
+function setOfflineStatus(state, message, action = "") {
+  const panel = document.getElementById("offlineStatus");
+  const button = document.getElementById("prepareOfflineBtn");
+  panel.hidden = !usingOfflineBank();
+  panel.classList.remove("is-ready", "is-working", "is-error");
+  if (state) panel.classList.add(`is-${state}`);
+  document.getElementById("offlineStatusText").textContent = message;
+  button.hidden = !action;
+  if (action) button.textContent = action;
+}
+
+function serviceWorkerMessage(type) {
+  const worker = navigator.serviceWorker && (
+    navigator.serviceWorker.controller ||
+    (serviceWorkerRegistration && serviceWorkerRegistration.active)
+  );
+  if (!worker || typeof MessageChannel === "undefined") return Promise.reject(new Error("service worker unavailable"));
+  return new Promise((resolve, reject) => {
+    const channel = new MessageChannel();
+    const timeout = setTimeout(() => reject(new Error("service worker timeout")), 12000);
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timeout);
+      resolve(event.data || {});
+    };
+    worker.postMessage({ type }, [channel.port2]);
+  });
+}
+
+async function renderOfflineStatus() {
+  const panel = document.getElementById("offlineStatus");
+  panel.hidden = !usingOfflineBank();
+  if (!usingOfflineBank()) return;
+  if (!("serviceWorker" in navigator)) {
+    setOfflineStatus("error", "このブラウザではオフライン保存を利用できません。", "再試行");
+    return;
+  }
+  if (!serviceWorkerRegistration) {
+    setOfflineStatus("working", "オフライン準備を確認しています…");
+    return;
+  }
+  try {
+    const status = await serviceWorkerMessage("OFFLINE_STATUS");
+    if (status.ready) {
+      let persisted = false;
+      if (navigator.storage && typeof navigator.storage.persisted === "function") {
+        persisted = await navigator.storage.persisted().catch(() => false);
+      }
+      setOfflineStatus("ready", `1,610篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+    } else if (!navigator.onLine) {
+      setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
+    } else {
+      setOfflineStatus("working", "1,610篇を端末に保存しています…");
+      prepareOfflineContent(false);
+    }
+  } catch {
+    setOfflineStatus("error", "オフライン準備を確認できませんでした。", "再試行");
   }
 }
+
+async function prepareOfflineContent(requestPersistence = false) {
+  if (offlinePreparing || !usingOfflineBank()) return;
+  offlinePreparing = true;
+  setOfflineStatus("working", "1,610篇を端末に保存しています…");
+  try {
+    if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
+      await navigator.storage.persist().catch(() => false);
+    }
+    const result = await serviceWorkerMessage("PREPARE_OFFLINE");
+    if (!result.ready) throw new Error("offline cache incomplete");
+    recordAnonymousEvent("offline_ready");
+    await renderOfflineStatus();
+  } catch {
+    setOfflineStatus("error", navigator.onLine ? "保存に失敗しました。通信状態を確認して再試行してください。" : "オフラインのため保存を完了できません。", "再試行");
+  } finally {
+    offlinePreparing = false;
+  }
+}
+
+document.getElementById("prepareOfflineBtn").addEventListener("click", () => prepareOfflineContent(true));
 
 function getSeenIds() {
   try { return new Set(JSON.parse(get(LS.seenStoryIds, "[]"))); }
@@ -2595,6 +2982,92 @@ function pickStory(bank, topic, level, { preferShort = false } = {}) {
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
+function pickStoryCandidates(bank, topic, level, count = 3) {
+  const seen = getSeenIds();
+  const byTopic = bank.filter((story) => topic === "random" || topic === "custom" || story.topic === topic);
+  const topicPool = byTopic.length ? byTopic : [...bank];
+  const atLevel = topicPool.filter((story) => story.level === level);
+  const levelPool = atLevel.length
+    ? atLevel
+    : [...topicPool].sort((a, b) => Math.abs(a.level - level) - Math.abs(b.level - level))
+        .filter((story, index, sorted) => Math.abs(story.level - level) === Math.abs(sorted[0].level - level));
+  let available = levelPool.filter((story) => !seen.has(story.id));
+  if (available.length < count) {
+    clearSeenForPool(levelPool.map((story) => story.id));
+    available = levelPool.filter((story) => story.id !== lastBankStoryId);
+    if (!available.length) available = levelPool;
+  }
+  const shuffled = [...available].sort(() => Math.random() - 0.5);
+  const selected = [];
+  const usedSubtopics = new Set();
+  shuffled.forEach((story) => {
+    if (selected.length >= count) return;
+    const subtopic = String(story.subtopic || "");
+    if (subtopic && usedSubtopics.has(subtopic)) return;
+    selected.push(story);
+    if (subtopic) usedSubtopics.add(subtopic);
+  });
+  shuffled.forEach((story) => {
+    if (selected.length < count && !selected.some((item) => item.id === story.id)) selected.push(story);
+  });
+  return selected.slice(0, count);
+}
+
+let storyCandidateRenderToken = 0;
+async function renderStoryCandidates() {
+  const section = document.getElementById("storyCandidates");
+  const status = document.getElementById("storyCandidatesStatus");
+  const list = document.getElementById("storyCandidateList");
+  const useBank = usingOfflineBank();
+  section.hidden = !useBank;
+  if (!useBank) {
+    list.innerHTML = "";
+    return;
+  }
+  const token = ++storyCandidateRenderToken;
+  status.hidden = false;
+  status.textContent = "候補を選んでいます…";
+  list.innerHTML = "";
+  try {
+    const bank = await loadStoryBank();
+    if (token !== storyCandidateRenderToken || !usingOfflineBank()) return;
+    const candidates = pickStoryCandidates(bank, topicSelect.value, getLevel(), 3);
+    const wpm = recentWpm() || 130;
+    candidates.forEach((story) => {
+      const words = Number(story.wordCount) || countWords(story.text);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "story-candidate";
+      const subtopic = typeof story.subtopic === "string" && story.subtopic.trim() ? ` ・ ${story.subtopic.trim()}` : "";
+      button.innerHTML = `<strong class="story-candidate-title">${esc(story.title)}</strong><span class="story-candidate-time">約${Math.max(1, Math.round(words / wpm))}分</span><span class="story-candidate-meta">Level ${story.level} ・ ${esc(topicLabel(story.topic))}${esc(subtopic)} ・ ${fmt(words)}語</span>`;
+      button.addEventListener("click", () => {
+        if (!blockNewReadingWhenDraftExists()) beginOfflineStory(story, "candidate");
+      });
+      list.appendChild(button);
+    });
+    status.hidden = candidates.length > 0;
+    if (!candidates.length) status.textContent = "条件に合う候補がありません。テーマを変更してください。";
+    if (candidates.length) recordAnonymousEvent("candidate_shown", { level: getLevel(), topic: topicSelect.value });
+  } catch {
+    if (token !== storyCandidateRenderToken) return;
+    status.hidden = false;
+    status.textContent = "候補を読み込めませんでした。「選び直す」で再試行できます。";
+  }
+}
+
+function beginOfflineStory(story, source = "random") {
+  session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id, _level: story.level, _editorialStatus: story.editorialStatus };
+  markSeen(story.id);
+  lastBankStoryId = story.id;
+  recordAnonymousEvent("story_start", { level: story.level, topic: story.topic, source });
+  renderReading(session);
+  showView("reading");
+  startReadingTimer();
+  startActiveReadingAutosave();
+}
+
+document.getElementById("refreshCandidatesBtn").addEventListener("click", renderStoryCandidates);
+
 async function startOfflineSession({ preferShort = false } = {}) {
   showView("loading");
   document.getElementById("loadingText").textContent = preferShort ? "短い文章を選んでいます…" : "文章を選んでいます…";
@@ -2616,14 +3089,7 @@ async function startOfflineSession({ preferShort = false } = {}) {
 
   const story = pickStory(bank, topicSelect.value, getLevel(), { preferShort });
 
-  session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id, _level: story.level, _editorialStatus: story.editorialStatus };
-  markSeen(story.id);
-  lastBankStoryId = story.id;
-
-  renderReading(session);
-  showView("reading");
-  startReadingTimer();
-  startActiveReadingAutosave();
+  beginOfflineStory(story, preferShort ? "quick" : "random");
 }
 
 async function startFavoriteSession(storyId) {
@@ -2638,13 +3104,7 @@ async function startFavoriteSession(storyId) {
       setLevel(story.level);
       saveLevelSignals(story.level, 0);
     }
-    session = { topic: story.topic, title: story.title, text: story.text, _bankId: story.id, _level: story.level, _editorialStatus: story.editorialStatus };
-    markSeen(story.id);
-    lastBankStoryId = story.id;
-    renderReading(session);
-    showView("reading");
-    startReadingTimer();
-    startActiveReadingAutosave();
+    beginOfflineStory(story, "favorite");
   } catch {
     showView("home");
     showError("お気に入りの文章を開けませんでした。アプリを更新してから、もう一度お試しください。");
@@ -2853,6 +3313,9 @@ document.getElementById("reportStoryBtn").addEventListener("click", () => {
   reportStatus.textContent = "";
   const firstReason = document.querySelector('input[name="reportReason"]');
   firstReason.checked = true;
+  const submitButton = document.getElementById("submitReportBtn");
+  submitButton.disabled = false;
+  submitButton.textContent = "報告を送信";
   document.getElementById("reportStoryContext").textContent =
     `${session._bankId || "AI生成"} ・ ${session.title || "タイトルなし"} ・ Level ${getLevel()}`;
   openAccessibleModal(reportModal, firstReason, closeStoryReport);
@@ -2862,6 +3325,34 @@ closeReportIconBtn.addEventListener("click", closeStoryReport);
 document.getElementById("closeReportBtn").addEventListener("click", closeStoryReport);
 reportModal.addEventListener("click", (event) => {
   if (event.target === reportModal) closeStoryReport();
+});
+
+document.getElementById("submitReportBtn").addEventListener("click", async () => {
+  const button = document.getElementById("submitReportBtn");
+  const data = storyReportData();
+  button.disabled = true;
+  button.textContent = "送信中…";
+  reportStatus.textContent = "";
+  const queued = queueStoryReport(data);
+  if (!queued.saved && storageBlocked) {
+    reportStatus.textContent = "端末へ保存できないため、この画面を閉じる前に共有またはファイル保存をしてください。";
+    button.disabled = false;
+    button.textContent = "報告を送信";
+    return;
+  }
+  recordAnonymousEvent("report_submitted");
+  const result = await flushStoryReports();
+  const config = await loadRuntimeConfig();
+  if (result.sent && result.pending === 0) {
+    reportStatus.textContent = "報告を送信しました。ご協力ありがとうございます。";
+    button.textContent = "送信済み";
+  } else if (!config.storyReportEndpoint) {
+    reportStatus.textContent = "送信先が未設定のため、報告を端末内に保存しました。共有またはファイル保存も利用できます。";
+    button.textContent = "端末に保存済み";
+  } else {
+    reportStatus.textContent = "現在送信できないため端末内に保存しました。オンライン時に自動で再送します。";
+    button.textContent = "送信待ち";
+  }
 });
 
 document.getElementById("shareReportBtn").addEventListener("click", async () => {
@@ -2944,6 +3435,7 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
     abandonReason,
     abandoned: true,
   });
+  recordAnonymousEvent("story_abandon", { level: adjustment.before, topic: session.topic });
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();
   closeAccessibleModal({ restoreFocus: false, resumeReading: false });
@@ -2990,6 +3482,7 @@ function finishSession(feedback) {
     feedback,
     abandoned: false,
   });
+  recordAnonymousEvent("story_complete", { level: adjustment.before, topic: session.topic });
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();
 
@@ -3044,6 +3537,7 @@ const onboardingBackBtn = document.getElementById("onboardingBackBtn");
 const onboardingNextBtn = document.getElementById("onboardingNextBtn");
 const onboardingFinishBtn = document.getElementById("onboardingFinishBtn");
 const onboardingSkipBtn = document.getElementById("onboardingSkipBtn");
+const onboardingLevelSamples = [...document.querySelectorAll('input[name="onboardingLevelSample"]')];
 let onboardingStep = 0;
 
 function renderOnboardingLevel() {
@@ -3068,6 +3562,9 @@ function renderOnboardingStep() {
 function openOnboarding() {
   onboardingStep = 0;
   onboardingLevelInput.value = String(getLevel());
+  const closestSample = [...onboardingLevelSamples]
+    .sort((a, b) => Math.abs(Number(a.value) - getLevel()) - Math.abs(Number(b.value) - getLevel()))[0];
+  onboardingLevelSamples.forEach((sample) => { sample.checked = sample === closestSample; });
   onboardingGoalSelect.value = String(getNum(LS.dailyGoal, 1500));
   if (![...onboardingGoalSelect.options].some((option) => option.value === onboardingGoalSelect.value)) {
     onboardingGoalSelect.value = "1500";
@@ -3099,7 +3596,16 @@ function completeOnboarding(savePreferences) {
   if (!saved) showError("設定を端末に保存できませんでした。このセッション中は設定を使えます。");
 }
 
-onboardingLevelInput.addEventListener("input", renderOnboardingLevel);
+onboardingLevelInput.addEventListener("input", () => {
+  onboardingLevelSamples.forEach((sample) => { sample.checked = false; });
+  renderOnboardingLevel();
+});
+onboardingLevelSamples.forEach((sample) => sample.addEventListener("change", () => {
+  if (!sample.checked) return;
+  onboardingLevelInput.value = sample.value;
+  renderOnboardingLevel();
+  recordAnonymousEvent("level_sample_selected", { level: Number(sample.value) });
+}));
 onboardingBackBtn.addEventListener("click", () => {
   onboardingStep = Math.max(0, onboardingStep - 1);
   renderOnboardingStep();
@@ -3122,6 +3628,9 @@ applyEquippedLampStyle();
 applyReadingDisplay();
 renderHome();
 showView("home");
+recordAnonymousEvent("app_open");
+flushAnonymousUsage().catch(() => {});
+flushStoryReports().catch(() => {});
 evaluateRewards({ notify: true });
 if (startupHistoryRepair.repaired) {
   const repairMessage = startupHistoryRepair.backupSaved && startupHistoryRepair.historySaved
@@ -3162,6 +3671,8 @@ if ("serviceWorker" in navigator) {
     });
 
     navigator.serviceWorker.register("sw.js").then((registration) => {
+      serviceWorkerRegistration = registration;
+      renderOfflineStatus();
       if (registration.waiting && navigator.serviceWorker.controller) {
         showUpdateNotice(registration.waiting);
       }
@@ -3183,6 +3694,14 @@ if ("serviceWorker" in navigator) {
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) registration.update().catch(() => {});
       });
-    }).catch(() => {});
+    }).catch(() => {
+      setOfflineStatus("error", "オフライン保存を開始できませんでした。", "再試行");
+    });
   });
 }
+
+window.addEventListener("online", () => {
+  renderOfflineStatus();
+  flushStoryReports().then(renderReportQueueStatus).catch(() => {});
+  flushAnonymousUsage().then(renderAnonymousUsageStatus).catch(() => {});
+});

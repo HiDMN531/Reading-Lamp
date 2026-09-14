@@ -11,6 +11,7 @@ const fail = (message) => { throw new Error(message); };
 const html = read("index.html");
 const app = read("app.js");
 const sw = read("sw.js");
+const config = JSON.parse(read("config.json"));
 const rewards = JSON.parse(read("rewards.json"));
 const stories = JSON.parse(read("stories.json"));
 
@@ -23,10 +24,34 @@ const directDomIds = [...app.matchAll(/getElementById\("([^"]+)"\)/g)].map((matc
 const missingDomIds = [...new Set(directDomIds.filter((id) => !htmlIdSet.has(id)))];
 if (missingDomIds.length) fail(`missing HTML elements: ${missingDomIds.join(", ")}`);
 
-if (!app.includes('const APP_VERSION = "1.7.0"')) fail("unexpected app version");
-if (!html.includes("Reading Lamp v1.7.0")) fail("footer version mismatch");
-if (!sw.includes('const CACHE_NAME = "reading-lamp-v52"')) fail("service worker version mismatch");
+if (!app.includes('const APP_VERSION = "2.0.0"')) fail("unexpected app version");
+if (!html.includes("Reading Lamp v2.0.0")) fail("footer version mismatch");
+if (!sw.includes('const CACHE_NAME = "reading-lamp-v56"')) fail("service worker version mismatch");
 if (!sw.includes('"./rewards.json"')) fail("rewards.json is not pre-cached");
+if (!sw.includes('"./config.json"')) fail("config.json is not pre-cached");
+if (!sw.includes('const OFFLINE_CONTENT_FILES = ["./stories.json"]')) fail("offline story package is not separated from the app shell");
+const shellFilesBlock = sw.slice(sw.indexOf("const SHELL_FILES"), sw.indexOf("const OFFLINE_CONTENT_FILES"));
+if (shellFilesBlock.includes('"./stories.json"')) fail("stories.json must not block app-shell installation");
+if (!sw.includes('event.data.type === "PREPARE_OFFLINE"') || !sw.includes('event.data.type === "OFFLINE_STATUS"')) fail("offline preparation messaging is missing");
+if (typeof config.analyticsEndpoint !== "string" || typeof config.storyReportEndpoint !== "string") fail("invalid collection endpoint config");
+const homeStartIndex = html.indexOf('class="home-start-area"');
+const counterHeroIndex = html.indexOf('class="counter-hero"');
+const statRowIndex = html.indexOf('class="stat-row"');
+if (homeStartIndex < 0 || counterHeroIndex < 0 || statRowIndex < 0 || homeStartIndex > counterHeroIndex || homeStartIndex > statRowIndex) {
+  fail("today reading controls are not at the top of the home view");
+}
+if (!app.includes("history.slice(0, 3).forEach")) fail("home history is not limited to three entries");
+if (!app.includes("const HISTORY_LIMIT = 2000")) fail("stored history limit changed unexpectedly");
+if (!app.includes("selectRewardTargets(definitions, state, metrics).slice(0, 1)")) fail("home reward target is not limited to one");
+if (!app.includes("active.slice(0, 4)")) fail("recommended reward collection is not limited to four");
+if (!html.includes('<option value="recommended">いま見る4件（おすすめ）</option>')) fail("recommended reward view is missing");
+if (!app.includes("newlyEarned.length > 3")) fail("bulk reward notifications are not consolidated");
+if (!app.includes("pickStoryCandidates(bank, topicSelect.value, getLevel(), 3)")) fail("three-story candidates are missing");
+if ((html.match(/name="onboardingLevelSample"/g) || []).length !== 3) fail("three onboarding level samples are required");
+if (!app.includes("anonymousInstallId: getAnonymousInstallId()")) fail("anonymous usage payload is missing its pseudonymous id");
+if (!app.includes("if (!getBool(LS.anonymousUsageConsent, false)")) fail("anonymous usage consent guard is missing");
+if (!app.includes("const REPORT_QUEUE_LIMIT = 100")) fail("story report queue limit is missing");
+if (!app.includes("flushStoryReports()")) fail("story report retry flow is missing");
 
 const allowedCategories = new Set(["words", "stories", "rhythm", "exploration", "comeback", "habits", "collection"]);
 const allowedMetrics = new Set([
@@ -38,8 +63,10 @@ const allowedMetrics = new Set([
   "topic:Travel and culture", "topic:People and biography",
 ]);
 const allowedLampStyles = new Set(["ember", "ocean", "forest", "violet", "dawn", "moon", "prism"]);
-if (rewards.length !== 58) fail(`expected 58 rewards, found ${rewards.length}`);
+if (rewards.length !== 100) fail(`expected 100 rewards, found ${rewards.length}`);
 if (new Set(rewards.map((reward) => reward.id)).size !== rewards.length) fail("duplicate reward ids");
+if (new Set(rewards.map((reward) => reward.title)).size !== rewards.length) fail("duplicate reward titles");
+if (new Set(rewards.map((reward) => `${reward.metric}|${reward.threshold}`)).size !== rewards.length) fail("duplicate reward milestones");
 rewards.forEach((reward) => {
   if (!/^[a-z0-9-]{1,80}$/.test(reward.id)) fail(`invalid reward id: ${reward.id}`);
   if (!allowedCategories.has(reward.category)) fail(`invalid reward category: ${reward.id}`);
@@ -85,7 +112,7 @@ if (!topicPoolMatch || [rewardMetricsStart, rewardMetricsEnd, rewardWeekStart, r
 const syntheticHistory = [
   { date: "2026-01-01T12:00:00Z", topic: "Fantasy/stories", level: 2, words: 100, abandoned: false },
   { date: "2026-01-02T12:00:00Z", topic: "History", level: 3, words: 200, abandoned: false },
-  { date: "2026-01-03T22:00:00Z", topic: "Science", level: 4, words: 300, abandoned: false },
+  { date: "2026-01-03T12:00:00Z", topic: "Science", level: 4, words: 300, abandoned: false },
   { date: "2026-01-10T12:00:00Z", topic: "Travel and culture", level: 4, words: 400, abandoned: false },
   { date: "2026-01-11T12:00:00Z", topic: "History", level: 4, words: 0, abandoned: true },
 ];
@@ -158,8 +185,8 @@ if (cells.size !== 100) fail(`expected 100 level/topic cells, found ${cells.size
 if (Math.min(...cells.values()) < 15) fail("a level/topic cell has fewer than 15 stories");
 
 console.log(JSON.stringify({
-  appVersion: "1.7.0",
-  serviceWorker: "reading-lamp-v52",
+  appVersion: "2.0.0",
+  serviceWorker: "reading-lamp-v56",
   rewards: rewards.length,
   rewardCategories: new Set(rewards.map((reward) => reward.category)).size,
   lampStyles: allowedLampStyles.size + 1,

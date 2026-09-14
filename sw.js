@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v52";
+const CACHE_NAME = "reading-lamp-v56";
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
 // the user's "更新する" action.
@@ -9,9 +9,9 @@ const SHELL_FILES = [
   "./styles.css",
   "./app.js",
   "./manifest.json",
+  "./config.json",
   "./privacy.html",
   "./terms.html",
-  "./stories.json",
   "./rewards.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -20,6 +20,7 @@ const SHELL_FILES = [
   "./icons/apple-touch-icon.png",
   "./icons/settings-gear.png",
 ];
+const OFFLINE_CONTENT_FILES = ["./stories.json"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -37,7 +38,28 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+  if (!event.data) return;
+  if (event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+    return;
+  }
+  const reply = event.ports && event.ports[0];
+  if (event.data.type === "OFFLINE_STATUS") {
+    event.waitUntil(
+      caches.open(CACHE_NAME)
+        .then((cache) => Promise.all(OFFLINE_CONTENT_FILES.map((file) => cache.match(file))))
+        .then((matches) => reply && reply.postMessage({ ready: matches.every(Boolean) }))
+        .catch(() => reply && reply.postMessage({ ready: false }))
+    );
+  }
+  if (event.data.type === "PREPARE_OFFLINE") {
+    event.waitUntil(
+      caches.open(CACHE_NAME)
+        .then((cache) => cache.addAll(OFFLINE_CONTENT_FILES))
+        .then(() => reply && reply.postMessage({ ready: true }))
+        .catch(() => reply && reply.postMessage({ ready: false }))
+    );
+  }
 });
 
 self.addEventListener("activate", (event) => {

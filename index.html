@@ -30,6 +30,64 @@
   <!-- ============ HOME ============ -->
   <section id="view-home" class="view" >
 
+    <section id="resumeReadingPanel" class="resume-reading-panel" aria-labelledby="resumeReadingHeading" hidden>
+      <p class="resume-reading-kicker">読みかけの文章があります</p>
+      <h2 id="resumeReadingHeading" class="resume-reading-title"></h2>
+      <p id="resumeReadingMeta" class="resume-reading-meta"></p>
+      <div class="resume-reading-actions">
+        <button id="resumeReadingBtn" class="btn-primary" type="button">途中から再開</button>
+        <button id="discardReadingBtn" class="btn-ghost" type="button">今回は再開しない</button>
+      </div>
+    </section>
+
+    <section class="home-start-area" aria-labelledby="todayReadingLabel">
+      <div class="option-panel">
+        <div class="option-group">
+          <label id="todayReadingLabel" class="option-label" for="topicSelect">今日読むもの</label>
+          <select id="topicSelect" class="topic-select">
+            <option value="random">おまかせ (ランダム)</option>
+            <option value="Fantasy/stories">Fantasy</option>
+            <option value="Famous books">Classics / Retellings</option>
+            <option value="Nature and animals">Nature and animals</option>
+            <option value="World affairs">Society / World</option>
+            <option value="Everyday life">Everyday life</option>
+            <option value="History">History</option>
+            <option value="Science">Science / Technology</option>
+            <option value="Mystery and adventure">Mystery / Adventure</option>
+            <option value="Travel and culture">Travel / Culture</option>
+            <option value="People and biography">People / Biography</option>
+            <option value="custom">自分でテーマを指定…</option>
+          </select>
+          <input type="text" id="customTopicInput" class="text-input" placeholder="例: coffee culture in Vietnam" hidden />
+        </div>
+      </div>
+
+      <p class="level-note" id="levelNote"></p>
+      <p class="mode-note" id="modeNote"></p>
+
+      <div id="offlineStatus" class="offline-status" role="status" aria-live="polite" hidden>
+        <span id="offlineStatusDot" class="offline-status-dot" aria-hidden="true"></span>
+        <span id="offlineStatusText">オフライン準備を確認しています…</span>
+        <button id="prepareOfflineBtn" class="btn-text-quiet" type="button" hidden>端末に保存</button>
+      </div>
+
+      <section id="storyCandidates" class="story-candidates" aria-labelledby="storyCandidatesTitle" hidden>
+        <div class="story-candidates-header">
+          <div>
+            <span class="option-label">今日の候補</span>
+            <h2 id="storyCandidatesTitle">この3篇から選ぶ</h2>
+          </div>
+          <button id="refreshCandidatesBtn" class="btn-text-quiet" type="button">選び直す</button>
+        </div>
+        <p id="storyCandidatesStatus" class="story-candidates-status" role="status" aria-live="polite">候補を選んでいます…</p>
+        <div id="storyCandidateList" class="story-candidate-list"></div>
+      </section>
+
+      <button id="startBtn" class="btn-primary btn-lg">おまかせで読みはじめる</button>
+      <button id="quickStartBtn" class="btn-quick-start" type="button" aria-describedby="quickStartHint">短い一篇から始める</button>
+      <p id="quickStartHint" class="quick-start-hint">今のレベルとテーマから、短めの文章を選びます。</p>
+    </section>
+
     <div class="counter-hero">
       <p class="counter-caption">これまでに読んだ語数</p>
       <p class="counter-value"><span id="totalWords">0</span><span class="counter-unit">語</span></p>
@@ -89,7 +147,7 @@
     <section id="rewardTargets" class="reward-targets" aria-labelledby="rewardTargetsTitle" hidden>
       <div class="reward-targets-header">
         <h2 id="rewardTargetsTitle">次の目標</h2>
-        <button id="openRewardsTargetsBtn" class="btn-text-quiet" type="button" aria-haspopup="dialog" aria-controls="rewardsModal">すべて見る</button>
+        <button id="openRewardsTargetsBtn" class="btn-text-quiet" type="button" aria-haspopup="dialog" aria-controls="rewardsModal">コレクション</button>
       </div>
       <div id="rewardTargetList" class="reward-target-list" aria-live="polite"></div>
     </section>
@@ -119,44 +177,6 @@
       </div>
       <p id="monthlySummaryMessage" class="monthly-summary-message"></p>
     </details>
-
-    <p class="level-note" id="levelNote"></p>
-    <p class="mode-note" id="modeNote"></p>
-
-    <div class="option-panel">
-      <div class="option-group">
-        <span class="option-label">今日読むもの</span>
-        <select id="topicSelect" class="topic-select">
-          <option value="random">おまかせ (ランダム)</option>
-          <option value="Fantasy/stories">Fantasy</option>
-          <option value="Famous books">Classics / Retellings</option>
-          <option value="Nature and animals">Nature and animals</option>
-          <option value="World affairs">Society / World</option>
-          <option value="Everyday life">Everyday life</option>
-          <option value="History">History</option>
-          <option value="Science">Science / Technology</option>
-          <option value="Mystery and adventure">Mystery / Adventure</option>
-          <option value="Travel and culture">Travel / Culture</option>
-          <option value="People and biography">People / Biography</option>
-          <option value="custom">自分でテーマを指定…</option>
-        </select>
-        <input type="text" id="customTopicInput" class="text-input" placeholder="例: coffee culture in Vietnam" hidden />
-      </div>
-    </div>
-
-    <button id="startBtn" class="btn-primary btn-lg">読みはじめる</button>
-    <button id="quickStartBtn" class="btn-quick-start" type="button" aria-describedby="quickStartHint">短い一篇から始める</button>
-    <p id="quickStartHint" class="quick-start-hint">今のレベルとテーマから、短めの文章を選びます。</p>
-
-    <section id="resumeReadingPanel" class="resume-reading-panel" aria-labelledby="resumeReadingHeading" hidden>
-      <p class="resume-reading-kicker">読みかけの文章があります</p>
-      <h2 id="resumeReadingHeading" class="resume-reading-title"></h2>
-      <p id="resumeReadingMeta" class="resume-reading-meta"></p>
-      <div class="resume-reading-actions">
-        <button id="resumeReadingBtn" class="btn-primary" type="button">途中から再開</button>
-        <button id="discardReadingBtn" class="btn-ghost" type="button">今回は再開しない</button>
-      </div>
-    </section>
 
     <p class="principle-reminder">辞書は引かなくて大丈夫です。分からない語は飛ばして、話の流れを追ってください。</p>
 
@@ -196,7 +216,7 @@
         <a href="privacy.html">プライバシーポリシー</a>
         <a href="terms.html">利用規約</a>
       </nav>
-      <span>Reading Lamp v1.7.0</span>
+      <span>Reading Lamp v2.0.0</span>
     </footer>
   </section>
 
@@ -361,7 +381,7 @@
       <label class="toggle-row compact-toggle-row">
         <span>
           <span class="toggle-name">次の目標をホームに表示</span>
-          <span class="toggle-desc">固定した目標と3段階のおすすめを表示します</span>
+          <span class="toggle-desc">固定した目標、または次の目標を1つ表示します</span>
         </span>
         <input type="checkbox" id="showRewardGoalsInput" />
       </label>
@@ -372,6 +392,18 @@
         </span>
         <input type="checkbox" id="rewardNotificationsInput" />
       </label>
+    </fieldset>
+
+    <fieldset class="privacy-settings">
+      <legend>品質改善への協力</legend>
+      <label class="toggle-row compact-toggle-row">
+        <span>
+          <span class="toggle-name">匿名の利用状況を記録</span>
+          <span class="toggle-desc">開始・読了・途中終了などの件数だけを集計します。文章名、自由入力、APIキーは含みません</span>
+        </span>
+        <input type="checkbox" id="anonymousUsageInput" aria-describedby="anonymousUsageStatus" />
+      </label>
+      <p id="anonymousUsageStatus" class="modal-hint" role="status" aria-live="polite"></p>
     </fieldset>
 
     <fieldset class="reading-display-settings">
@@ -413,6 +445,14 @@
       <button id="exportBtn" class="btn-text-quiet" type="button">記録・お気に入り・リワードを書き出す (JSON)</button>
       <button id="exportRewardDiagnosticsBtn" class="btn-text-quiet" type="button">匿名のリワード診断を保存する</button>
       <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名、読書日時、APIキーは含みません。</p>
+      <section class="report-queue-tools" aria-labelledby="reportQueueTitle">
+        <h4 id="reportQueueTitle">未送信の文章報告</h4>
+        <p id="reportQueueStatus" class="modal-hint" role="status" aria-live="polite"></p>
+        <div class="report-queue-actions">
+          <button id="retryReportsBtn" class="btn-text-quiet" type="button">送信を再試行</button>
+          <button id="exportQueuedReportsBtn" class="btn-text-quiet" type="button">報告を保存</button>
+        </div>
+      </section>
       <label class="restore-label" for="restoreInput">記録・お気に入り・リワードを復元する (JSON)</label>
       <input id="restoreInput" class="restore-input" type="file" accept="application/json,.json" aria-describedby="restoreHint" />
       <p id="restoreHint" class="modal-hint">現在のデータを残したまま、重複を除いて追加します。以前の履歴だけのファイルにも対応しています。</p>
@@ -449,10 +489,10 @@
       <h2 id="rewardsTitle" class="modal-title">灯りのコレクション</h2>
       <button id="closeRewardsIconBtn" class="modal-close" type="button" aria-label="リワードを閉じる">×</button>
     </div>
-    <p id="rewardsIntro" class="modal-intro">読んだ量だけでなく、戻ってきた日や新しいジャンルとの出会いも記録します。獲得したリワードは失われません。</p>
+    <p id="rewardsIntro" class="modal-intro">まずは今の記録に合う4件だけを表示します。獲得したリワードは失われず、必要なときに全件を確認できます。</p>
 
     <div class="reward-collection-summary">
-      <strong id="rewardCollectionCount">0 / 58</strong>
+      <strong id="rewardCollectionCount">0 / 100</strong>
       <span>獲得済み</span>
     </div>
 
@@ -468,8 +508,10 @@
 
     <div class="reward-controls">
       <label for="rewardCategoryFilter">
-        <span>表示する種類</span>
+        <span>表示する内容</span>
         <select id="rewardCategoryFilter" class="topic-select">
+          <option value="recommended">いま見る4件（おすすめ）</option>
+          <option value="earned">獲得済み</option>
           <option value="all">すべて</option>
           <option value="words">累計語数</option>
           <option value="stories">読了篇数</option>
@@ -480,7 +522,7 @@
           <option value="collection">お気に入り</option>
         </select>
       </label>
-      <label for="rewardSort">
+      <label id="rewardSortControl" for="rewardSort">
         <span>並べ替え</span>
         <select id="rewardSort" class="topic-select">
           <option value="progress">達成に近い順</option>
@@ -491,6 +533,7 @@
       </label>
     </div>
 
+    <p id="rewardVisibleCount" class="reward-visible-count" aria-live="polite"></p>
     <div id="rewardGrid" class="reward-grid"></div>
     <p id="rewardCollectionStatus" class="settings-status" role="status" aria-live="polite"></p>
     <button id="closeRewardsBtn" class="btn-ghost" type="button">閉じる</button>
@@ -520,11 +563,32 @@
 
     <section class="onboarding-step" data-onboarding-step="1" hidden>
       <p class="section-kicker">開始レベル</p>
-      <h2 class="onboarding-title">「少しやさしい」を選びましょう</h2>
-      <p class="onboarding-copy">迷った場合はレベル5から始めてください。読後の感想に合わせて、アプリがゆっくり調整します。</p>
-      <label class="modal-label" for="onboardingLevelInput">読みやすさレベル</label>
-      <input type="range" id="onboardingLevelInput" min="1" max="10" step="1" value="5" aria-describedby="onboardingLevelDescription" />
+      <h2 class="onboarding-title">止まらず読める英文を選択</h2>
+      <p class="onboarding-copy">単語を調べず、内容を楽に追えるものを1つ選んでください。テストではありません。</p>
+      <fieldset class="level-sample-options">
+        <legend class="sr-only">読みやすい英文を選択</legend>
+        <label>
+          <input type="radio" name="onboardingLevelSample" value="3" />
+          <span class="level-sample-text">Mia walks to a small shop after school. She buys bread for her family. On the way home, she sees a wet dog under a tree. Mia shares a little bread and waits with the dog until its owner comes.</span>
+          <span class="level-sample-choice">この英文が読みやすい</span>
+        </label>
+        <label>
+          <input type="radio" name="onboardingLevelSample" value="5" checked />
+          <span class="level-sample-text">When Leo moved to a new town, he expected the first week to feel lonely. Instead, a neighbor invited him to help repair an old community garden. Working beside strangers gave him an easy way to learn their names and stories.</span>
+          <span class="level-sample-choice">この英文が読みやすい</span>
+        </label>
+        <label>
+          <input type="radio" name="onboardingLevelSample" value="7" />
+          <span class="level-sample-text">Although the museum appeared quiet, its restoration room was filled with careful activity. Specialists examined a faded map, comparing its paper and ink with records from several centuries. Their findings could change what historians believed about the region's earliest trade routes.</span>
+          <span class="level-sample-choice">この英文が読みやすい</span>
+        </label>
+      </fieldset>
       <div id="onboardingLevelDescription" class="onboarding-selection"></div>
+      <details class="onboarding-manual-level">
+        <summary>レベルを手動で調整</summary>
+        <label class="modal-label" for="onboardingLevelInput">読みやすさレベル</label>
+        <input type="range" id="onboardingLevelInput" min="1" max="10" step="1" value="5" aria-describedby="onboardingLevelDescription" />
+      </details>
     </section>
 
     <section class="onboarding-step" data-onboarding-step="2" hidden>
@@ -587,7 +651,7 @@
       <h2 id="reportTitle" class="modal-title">文章の問題を報告</h2>
       <button id="closeReportIconBtn" class="modal-close" type="button" aria-label="問題報告を閉じる">×</button>
     </div>
-    <p id="reportIntro" class="modal-intro">報告内容は自動送信されません。端末の共有画面を開くか、クリップボードへコピーします。</p>
+    <p id="reportIntro" class="modal-intro">「報告を送信」を押すと送信を試みます。送信先が設定済みで通信できない場合は端末内に保存し、次回オンライン時に再送します。</p>
     <p id="reportStoryContext" class="report-context"></p>
 
     <fieldset class="report-options">
@@ -604,9 +668,10 @@
     <p id="reportStatus" class="settings-status" role="status" aria-live="polite"></p>
 
     <div class="modal-actions">
-      <button id="shareReportBtn" class="btn-primary" type="button">報告内容を共有</button>
-      <button id="downloadReportBtn" class="btn-ghost" type="button">ファイルで保存</button>
+      <button id="submitReportBtn" class="btn-primary" type="button">報告を送信</button>
+      <button id="shareReportBtn" class="btn-ghost" type="button">ほかの方法で共有</button>
     </div>
+    <button id="downloadReportBtn" class="btn-text-quiet report-download" type="button">報告ファイルを保存</button>
     <button id="closeReportBtn" class="btn-text-quiet report-close" type="button">閉じる</button>
   </div>
 </div>
