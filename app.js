@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.5.2";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -924,7 +924,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 1610, rewardDefinitions: definitions.length },
+      corpus: { stories: 2000, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -2401,7 +2401,7 @@ function renderHome() {
     ? "オフライン文章バンク ・ APIキー不要"
     : `AI生成 ・ 1篇 約${fmt(getNum(LS.wordCount, 800))}語`;
   document.getElementById("startBtn").textContent = useBank
-    ? "おまかせで読みはじめる"
+    ? "読みはじめる"
     : "AIで文章を作って読む";
   document.getElementById("quickStartBtn").hidden = !useBank;
   document.getElementById("quickStartHint").hidden = !useBank;
@@ -2822,11 +2822,11 @@ async function renderOfflineStatus() {
       if (navigator.storage && typeof navigator.storage.persisted === "function") {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
-      setOfflineStatus("ready", `1,610篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+      setOfflineStatus("ready", `2,000篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
-      setOfflineStatus("working", "1,610篇を端末に保存しています…");
+      setOfflineStatus("working", "2,000篇を端末に保存しています…");
       prepareOfflineContent(false);
     }
   } catch {
@@ -2837,7 +2837,7 @@ async function renderOfflineStatus() {
 async function prepareOfflineContent(requestPersistence = false) {
   if (offlinePreparing || !usingOfflineBank()) return;
   offlinePreparing = true;
-  setOfflineStatus("working", "1,610篇を端末に保存しています…");
+  setOfflineStatus("working", "2,000篇を端末に保存しています…");
   try {
     if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
       await navigator.storage.persist().catch(() => false);

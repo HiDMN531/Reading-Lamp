@@ -1,6 +1,6 @@
 # Reading Lamp 教材メタデータ仕様 v1
 
-更新日: 2026-09-13
+更新日: 2026-09-14
 
 ## 目的
 
@@ -41,15 +41,16 @@
 
 ## 現在の登録状況
 
-- 全1,610篇に7フィールドを設定
-- `editorialStatus: "published"`: 1,610篇
-- `vocabularyVersion: "v2"`: 1,610篇
-- `reviewedAt: "2026-09-13"`: 1,610篇
-- 原典名付きの古典リテリング: 153篇・71原典
+- 全2,000篇に7フィールドを設定
+- `editorialStatus: "published"`: 2,000篇
+- `vocabularyVersion: "v2"`: 2,000篇
+- `reviewedAt: "2026-09-14"`: 2,000篇
+- 原典名付きの古典リテリング: 192篇・78原典
 - オリジナル文章の `sourceWork`: `null`
-- `factChecked: false`: 1,610篇
+- `factChecked: true`: 2,000篇
+- `factChecked: false`: 0篇
 
-`reviewedAt` と `vocabularyVersion` は既存の全件編集判定・語彙監査を表します。これらは外部資料と照合する事実確認とは別工程です。独立した事実確認をしていないため、現時点の `factChecked` は全件 `false` です。確認後に対象篇だけを `true` へ変更してください。フィクションでも、原典・歴史・科学に関する説明を事実確認した場合は `true` にできます。
+`reviewedAt` と `vocabularyVersion` は全件編集判定・語彙監査を表し、外部資料と照合する事実確認とは別工程です。全2,000篇について、外部資料・原典との照合、または明示的な創作・仮想事例として外部事実が混入していないことの確認を完了しています。篇別の確認区分と根拠は `fact_check_all_2000.csv` に記録します。
 
 ## 更新方法
 

@@ -1,7 +1,7 @@
 {
   "name": "Reading Lamp — 英語多読",
   "short_name": "Reading Lamp",
-  "description": "AI生成と1,610篇・10ジャンルのオフライン文章バンクに対応した、英語多読(Extensive Reading)の練習アプリ",
+  "description": "AI生成と2,000篇・10ジャンルのオフライン文章バンクに対応した、英語多読(Extensive Reading)の練習アプリ",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

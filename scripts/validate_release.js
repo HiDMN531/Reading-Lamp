@@ -14,6 +14,10 @@ const sw = read("sw.js");
 const config = JSON.parse(read("config.json"));
 const rewards = JSON.parse(read("rewards.json"));
 const stories = JSON.parse(read("stories.json"));
+const vocabularyAudit = read("vocabulary_audit_2000.csv");
+const vocabularyReview = read("vocabulary_editorial_review_2000.csv");
+const factCheck = read("fact_check_all_2000.csv");
+const languageQuality = read("language_quality_s1911_s2000.csv");
 
 const htmlIds = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
 const duplicateHtmlIds = htmlIds.filter((id, index) => htmlIds.indexOf(id) !== index);
@@ -24,9 +28,12 @@ const directDomIds = [...app.matchAll(/getElementById\("([^"]+)"\)/g)].map((matc
 const missingDomIds = [...new Set(directDomIds.filter((id) => !htmlIdSet.has(id)))];
 if (missingDomIds.length) fail(`missing HTML elements: ${missingDomIds.join(", ")}`);
 
-if (!app.includes('const APP_VERSION = "2.0.0"')) fail("unexpected app version");
-if (!html.includes("Reading Lamp v2.0.0")) fail("footer version mismatch");
-if (!sw.includes('const CACHE_NAME = "reading-lamp-v56"')) fail("service worker version mismatch");
+if (!app.includes('const APP_VERSION = "2.5.2"')) fail("unexpected app version");
+if (!html.includes("Reading Lamp v2.5.2")) fail("footer version mismatch");
+if (!sw.includes('const CACHE_NAME = "reading-lamp-v63"')) fail("service worker version mismatch");
+if (!html.includes('<button id="startBtn" class="btn-primary btn-lg">読みはじめる</button>')) fail("offline start button label mismatch");
+if (!app.includes('? "読みはじめる"')) fail("dynamic offline start button label mismatch");
+if (html.includes("おまかせで読みはじめる") || app.includes("おまかせで読みはじめる") || html.includes("この条件で1篇読みはじめる") || app.includes("この条件で1篇読みはじめる")) fail("obsolete offline start label remains");
 if (!sw.includes('"./rewards.json"')) fail("rewards.json is not pre-cached");
 if (!sw.includes('"./config.json"')) fail("config.json is not pre-cached");
 if (!sw.includes('const OFFLINE_CONTENT_FILES = ["./stories.json"]')) fail("offline story package is not separated from the app shell");
@@ -157,36 +164,102 @@ if (inspected.monthly.readingDays !== 4 || inspected.monthly.stories !== 4 || in
   fail(`monthly summary is incorrect: ${JSON.stringify(inspected.monthly)}`);
 }
 
-if (stories.length !== 1610) fail(`expected 1,610 stories, found ${stories.length}`);
+if (stories.length !== 2000) fail(`expected 2,000 stories, found ${stories.length}`);
 const storyIds = new Set();
 const storyTitles = new Set();
+const storyTexts = new Set();
 let totalWords = 0;
 let wordCountMismatches = 0;
 let metadataErrors = 0;
 const cells = new Map();
+const newCells = new Map();
 const requiredMetadata = ["subtopic", "contentType", "editorialStatus", "factChecked", "reviewedAt", "sourceWork", "vocabularyVersion"];
-stories.forEach((story) => {
+const allowedStoryTopics = new Set([
+  "Fantasy/stories", "Nature and animals", "World affairs", "Everyday life", "History",
+  "Science", "Famous books", "Mystery and adventure", "Travel and culture", "People and biography",
+]);
+const contentTypeForTopic = {
+  "Fantasy/stories": "narrative-fiction",
+  "Nature and animals": "explanatory-nonfiction",
+  "World affairs": "explanatory-nonfiction",
+  "Everyday life": "narrative-fiction",
+  History: "historical-narrative",
+  Science: "explanatory-nonfiction",
+  "Famous books": "classic-retelling",
+  "Mystery and adventure": "mystery-fiction",
+  "Travel and culture": "travel-vignette",
+  "People and biography": "fictional-biography",
+};
+stories.forEach((story, index) => {
+  const expectedId = `s${String(index + 1).padStart(3, "0")}`;
+  if (story.id !== expectedId) fail(`unexpected story sequence at ${expectedId}: ${story.id}`);
   if (storyIds.has(story.id)) fail(`duplicate story id: ${story.id}`);
   if (storyTitles.has(story.title)) fail(`duplicate story title: ${story.title}`);
+  if (storyTexts.has(story.text)) fail(`duplicate story text: ${story.id}`);
   storyIds.add(story.id);
   storyTitles.add(story.title);
+  storyTexts.add(story.text);
+  if (!Number.isInteger(story.level) || story.level < 1 || story.level > 10) fail(`invalid story level: ${story.id}`);
+  if (!allowedStoryTopics.has(story.topic)) fail(`invalid story topic: ${story.id}`);
+  if (!String(story.title || "").trim() || !String(story.text || "").trim()) fail(`missing story content: ${story.id}`);
   const counted = String(story.text || "").trim().split(/\s+/).filter(Boolean).length;
   if (counted !== story.wordCount) wordCountMismatches += 1;
   totalWords += story.wordCount;
   if (requiredMetadata.some((field) => !Object.prototype.hasOwnProperty.call(story, field))) metadataErrors += 1;
   if (story.editorialStatus !== "published") metadataErrors += 1;
+  if (typeof story.factChecked !== "boolean") metadataErrors += 1;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(story.reviewedAt)) metadataErrors += 1;
+  if (story.vocabularyVersion !== "v2") metadataErrors += 1;
+  if (!String(story.subtopic || "").trim()) metadataErrors += 1;
+  if (story.contentType !== contentTypeForTopic[story.topic]) metadataErrors += 1;
+  if (story.topic === "Famous books" ? !String(story.sourceWork || "").trim() : story.sourceWork !== null) metadataErrors += 1;
   const cell = `${story.level}|${story.topic}`;
   cells.set(cell, (cells.get(cell) || 0) + 1);
+  if (story.reviewedAt !== "2026-09-14" || story.factChecked !== true) metadataErrors += 1;
+  if (index >= 1910) {
+    newCells.set(cell, (newCells.get(cell) || 0) + 1);
+  }
 });
-if (totalWords !== 305511) fail(`unexpected corpus word total: ${totalWords}`);
+if (totalWords !== 345407) fail(`unexpected corpus word total: ${totalWords}`);
 if (wordCountMismatches) fail(`wordCount mismatches: ${wordCountMismatches}`);
 if (metadataErrors) fail(`story metadata errors: ${metadataErrors}`);
 if (cells.size !== 100) fail(`expected 100 level/topic cells, found ${cells.size}`);
-if (Math.min(...cells.values()) < 15) fail("a level/topic cell has fewer than 15 stories");
+if (Math.min(...cells.values()) < 18) fail("a level/topic cell has fewer than 18 stories");
+if (newCells.size !== 90 || [...newCells.values()].some((count) => count !== 1)) fail("new stories must occupy 90 distinct level/topic cells");
+const newLevelCounts = new Map();
+const newTopicCounts = new Map();
+stories.slice(1910).forEach((story) => {
+  newLevelCounts.set(story.level, (newLevelCounts.get(story.level) || 0) + 1);
+  newTopicCounts.set(story.topic, (newTopicCounts.get(story.topic) || 0) + 1);
+});
+if ([...newLevelCounts.values()].some((count) => count !== 9) || newLevelCounts.size !== 10) fail("new stories are not balanced at nine per level");
+if ([...newTopicCounts.values()].some((count) => count !== 9) || newTopicCounts.size !== 10) fail("new stories are not balanced at nine per topic");
+const omittedTopicByLevel = new Map([
+  [1, "Mystery and adventure"], [2, "Travel and culture"], [3, "People and biography"],
+  [4, "Fantasy/stories"], [5, "History"], [6, "Nature and animals"], [7, "Everyday life"],
+  [8, "World affairs"], [9, "Science"], [10, "Famous books"],
+]);
+omittedTopicByLevel.forEach((topic, level) => {
+  if (newCells.has(`${level}|${topic}`)) fail(`unexpected new story in intentionally omitted cell: ${level}|${topic}`);
+});
+if (vocabularyAudit.trim().split(/\r?\n/).length !== 2001) fail("vocabulary audit row count mismatch");
+if (vocabularyReview.trim().split(/\r?\n/).length !== 2001) fail("vocabulary review row count mismatch");
+if (factCheck.trim().split(/\r?\n/).length !== 2001) fail("fact-check row count mismatch");
+if (languageQuality.trim().split(/\r?\n/).length !== 91) fail("language-quality audit row count mismatch");
+if ((languageQuality.match(/,"pass","pass","pass","reviewed",/g) || []).length !== 90) fail("language-quality pass count mismatch");
+for (let id = 1; id <= 2000; id += 1) {
+  const storyId = `s${String(id).padStart(3, "0")}`;
+  const prefix = `${storyId},`;
+  if (!vocabularyAudit.includes(`\n${prefix}`) || !vocabularyReview.includes(`\n${prefix}`)) fail(`missing vocabulary review row: s${id}`);
+  if (!factCheck.includes(`"${storyId}"`)) fail(`missing fact-check row: ${storyId}`);
+}
+if ((factCheck.match(/verified-against-authoritative-source/g) || []).length !== 583) fail("authoritative-source fact-check count mismatch");
+if ((factCheck.match(/verified-against-primary-text/g) || []).length !== 192) fail("primary-text fact-check count mismatch");
+if ((factCheck.match(/verified-no-external-claims/g) || []).length !== 1225) fail("no-external-claims fact-check count mismatch");
 
 console.log(JSON.stringify({
-  appVersion: "2.0.0",
-  serviceWorker: "reading-lamp-v56",
+  appVersion: "2.5.2",
+  serviceWorker: "reading-lamp-v63",
   rewards: rewards.length,
   rewardCategories: new Set(rewards.map((reward) => reward.category)).size,
   lampStyles: allowedLampStyles.size + 1,
