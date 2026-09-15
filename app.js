@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.9.2";
+const APP_VERSION = "2.9.4";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -18,10 +18,13 @@ const APP_VERSION = "2.9.2";
 // thing that runs, before anything else can throw.
 
 window.addEventListener("error", (e) => {
-  alert("エラーが発生しました:\n" + e.message + "\n(" + (e.filename || "").split("/").pop() + ":" + e.lineno + ")");
+  // Exception messages may contain URL parameters or user input. Keep the
+  // on-screen report useful without exposing those values to a bystander.
+  const file = (e.filename || "").split("/").pop();
+  alert(`処理を続けられませんでした。アプリを開き直してください。\n${file ? `場所：${file}:${Number(e.lineno) || 0}` : ""}`);
 });
 window.addEventListener("unhandledrejection", (e) => {
-  alert("エラーが発生しました:\n" + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  alert("処理を続けられませんでした。通信状態を確認して、もう一度試してください。");
 });
 
 // iOS Safari (especially in home-screen standalone mode) does not resize
@@ -894,10 +897,11 @@ apiKeyInput.addEventListener("focus", () => {
 });
 
 document.getElementById("resetHistoryBtn").addEventListener("click", () => {
-  if (confirm("これまでの記録をすべて消去します。よろしいですか？")) {
+  if (confirm("読書履歴と既読判定を消去します。お気に入りと獲得済みリワードは残ります。よろしいですか？")) {
     try { localStorage.removeItem(LS.history); } catch {}
     delete memoryFallback[LS.history];
     removeStored(LS.historyRecovery);
+    removeStored(LS.seenStoryIds);
     removeStored(LS.lastBackupAt);
     removeStored(LS.firstCompletionGuideSeen);
     renderHome();
@@ -915,10 +919,11 @@ function backupReminderState(history = getHistory(), now = new Date(), lastBacku
   if (!completed.length) return { due: false, lastBackup, message: "読書記録はまだありません。" };
   if (lastBackup) {
     const daysAgo = Math.max(0, Math.floor((now - lastBackup) / 86400000));
+    const newReadings = completed.filter((entry) => new Date(entry.date) > lastBackup).length;
     return {
-      due: daysAgo >= 30,
+      due: daysAgo >= 30 || newReadings >= 10,
       lastBackup,
-      message: daysAgo === 0 ? "今日バックアップしました。" : `最終バックアップ：${daysAgo}日前`,
+      message: `${daysAgo === 0 ? "今日バックアップしました" : `最終バックアップ：${daysAgo}日前`}${newReadings ? `・その後${newReadings}篇を読了` : ""}。`,
     };
   }
   const oldest = completed.reduce((earliest, entry) => {
@@ -953,7 +958,7 @@ function renderBackupStatus(history = getHistory()) {
   if (reminder) {
     reminder.hidden = !backup.due;
     document.getElementById("backupReminderMessage").textContent = backup.lastBackup
-      ? `${backup.message}。追加した記録を含めて再保存できます。`
+      ? `${backup.message} 追加した記録を含めて再保存できます。`
       : "読書記録、お気に入り、リワードをJSONとして保存できます。";
   }
 }
@@ -967,24 +972,88 @@ document.getElementById("openBackupSettingsBtn").addEventListener("click", () =>
   });
 });
 
-document.getElementById("exportBtn").addEventListener("click", () => {
+function beginFileDownload(blob, filename) {
+  const link = document.createElement("a");
+  const objectUrl = URL.createObjectURL(blob);
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  try {
+    link.click();
+  } catch (error) {
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
+    throw error;
+  }
+  // Give mobile browsers time to consume the Blob URL before releasing it.
+  setTimeout(() => { link.remove(); URL.revokeObjectURL(objectUrl); }, 60000);
+}
+
+let pendingBackupAt = null;
+const confirmBackupBtn = document.getElementById("confirmBackupBtn");
+const shareBackupBtn = document.getElementById("shareBackupBtn");
+
+function createBackupPackage() {
   const exportedAt = new Date().toISOString();
-  const backup = {
-    schemaVersion: 4,
+  return {
+    schemaVersion: 5,
     exportedAt,
     history: getHistory(),
     favoriteStoryIds: getFavoriteIds(),
+    seenStoryIds: [...getSeenIds()],
     rewardState: getRewardState(),
   };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `reading-lamp-backup-${exportedAt.slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  set(LS.lastBackupAt, exportedAt);
+}
+
+function backupFilename(backup) {
+  return `reading-lamp-backup-${backup.exportedAt.slice(0, 10)}.json`;
+}
+
+function offerBackupConfirmation(exportedAt) {
+  pendingBackupAt = exportedAt;
+  confirmBackupBtn.hidden = false;
+  settingsStatus.textContent = "ファイルへの保存を確認したら、下のボタンを押してください。";
+}
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const backup = createBackupPackage();
+  try {
+    beginFileDownload(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }), backupFilename(backup));
+    offerBackupConfirmation(backup.exportedAt);
+  } catch {
+    settingsStatus.textContent = "ダウンロードを開始できませんでした。共有を試してください。";
+  }
+});
+
+function canShareBackupFile() {
+  if (typeof File === "undefined" || typeof navigator.canShare !== "function" || typeof navigator.share !== "function") return false;
+  try {
+    return navigator.canShare({ files: [new File(["{}"], "reading-lamp-test.json", { type: "application/json" })] });
+  } catch { return false; }
+}
+
+shareBackupBtn.hidden = !canShareBackupFile();
+shareBackupBtn.addEventListener("click", async () => {
+  const backup = createBackupPackage();
+  const file = new File([JSON.stringify(backup, null, 2)], backupFilename(backup), { type: "application/json" });
+  try {
+    // Called immediately from the click handler so Web Share retains user activation.
+    await navigator.share({ files: [file], title: "Reading Lampのバックアップ" });
+    offerBackupConfirmation(backup.exportedAt);
+  } catch {
+    settingsStatus.textContent = "ファイルを共有できませんでした。ダウンロードを試してください。";
+  }
+});
+
+confirmBackupBtn.addEventListener("click", () => {
+  if (!pendingBackupAt) return;
+  const saved = set(LS.lastBackupAt, pendingBackupAt);
+  pendingBackupAt = null;
+  confirmBackupBtn.hidden = true;
   renderBackupStatus();
-  settingsStatus.textContent = "バックアップを保存しました。このJSONは安全な場所に保管してください。";
+  settingsStatus.textContent = saved
+    ? "ファイルを確認しました。端末の外にも保管してください。"
+    : "保存時刻を端末に記録できませんでした。ファイルは保管してください。";
 });
 
 document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", async () => {
@@ -1031,12 +1100,8 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       })),
     };
     const blob = new Blob([JSON.stringify(diagnostic, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `reading-lamp-reward-diagnostic-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
-    settingsStatus.textContent = "匿名のリワード診断を保存しました。自動送信はしていません。";
+    beginFileDownload(blob, `reading-lamp-reward-diagnostic-${new Date().toISOString().slice(0, 10)}.json`);
+    settingsStatus.textContent = "匿名のリワード診断のダウンロードを開始しました。自動送信はしていません。";
   } catch {
     showError("リワード診断を作成できませんでした。アプリを更新して、もう一度お試しください。");
   }
@@ -1044,21 +1109,25 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
 
 document.getElementById("retryReportsBtn").addEventListener("click", async () => {
   settingsStatus.textContent = "文章報告を送信しています…";
-  const result = await flushStoryReports();
-  await renderReportQueueStatus(result);
-  settingsStatus.textContent = result.sent ? `${result.sent}件の文章報告を送信しました。` : "送信できませんでした。未送信データは端末内に残しています。";
+  try {
+    const result = await flushStoryReports();
+    await renderReportQueueStatus(result);
+    settingsStatus.textContent = result.sent
+      ? `${result.sent}件の文章報告を送信しました。`
+      : result.reason === "unconfigured"
+        ? "自動送信先は未設定です。必要なら「報告を保存」を利用してください。"
+        : "送信できませんでした。未送信データは端末内に残しています。";
+  } catch {
+    settingsStatus.textContent = "送信を確認できませんでした。未送信データは端末内に残しています。";
+  }
 });
 
 document.getElementById("exportQueuedReportsBtn").addEventListener("click", () => {
   const reports = getStoryReportQueue();
   if (!reports.length) return;
   const blob = new Blob([JSON.stringify({ schemaVersion: 1, exportedAt: new Date().toISOString(), reports }, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `reading-lamp-pending-reports-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-  settingsStatus.textContent = `${reports.length}件の未送信報告を保存しました。`;
+  beginFileDownload(blob, `reading-lamp-pending-reports-${new Date().toISOString().slice(0, 10)}.json`);
+  settingsStatus.textContent = `${reports.length}件の未送信報告のダウンロードを開始しました。`;
 });
 
 function cleanHistoryText(value, fallback = "") {
@@ -1104,6 +1173,14 @@ function normalizeHistoryEntry(entry) {
     normalized.storyId = entry.storyId;
   }
   return normalized;
+}
+
+function seenIdsFromBackup(parsed, importedHistory) {
+  if (parsed && !Array.isArray(parsed) && Array.isArray(parsed.seenStoryIds)) {
+    return validSeenStoryIds(parsed.seenStoryIds);
+  }
+  // Older backups contained history but not the independent per-pool seen state.
+  return validSeenStoryIds(importedHistory.filter((entry) => !entry.abandoned).map((entry) => entry.storyId));
 }
 
 function historyFingerprint(entry) {
@@ -1211,12 +1288,8 @@ downloadHistoryRecoveryBtn.addEventListener("click", () => {
     return;
   }
   const blob = new Blob([JSON.stringify(recovery, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `reading-lamp-recovery-${recovery.createdAt.slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  settingsStatus.textContent = "修復前データを保存しました。内容を確認後、不要なら下のボタンで削除できます。";
+  beginFileDownload(blob, `reading-lamp-recovery-${recovery.createdAt.slice(0, 10)}.json`);
+  settingsStatus.textContent = "修復前データのダウンロードを開始しました。ファイルを確認してから削除してください。";
 });
 
 dismissHistoryRecoveryBtn.addEventListener("click", () => {
@@ -1240,6 +1313,7 @@ restoreInput.addEventListener("change", async () => {
     const source = Array.isArray(parsed) ? parsed : parsed && Array.isArray(parsed.history) ? parsed.history : null;
     if (!source || source.length > 5000) throw new Error("invalid history container");
     const imported = source.map(normalizeHistoryEntry).filter(Boolean);
+    const importedSeen = seenIdsFromBackup(parsed, imported);
     const importedFavorites = parsed && !Array.isArray(parsed) && Array.isArray(parsed.favoriteStoryIds)
       ? [...new Set(parsed.favoriteStoryIds.filter((id) => typeof id === "string" && /^s\d{3,}$/.test(id)))].slice(0, 500)
       : [];
@@ -1263,7 +1337,7 @@ restoreInput.addEventListener("change", async () => {
       : Object.entries(LAMP_STYLES)
           .filter(([, style]) => style.rewardId && hasOwn(importedEarned, style.rewardId))
           .map(([styleId]) => styleId);
-    if (!imported.length && !importedFavorites.length && !Object.keys(importedEarned).length) throw new Error("no valid backup entries");
+    if (!imported.length && !importedFavorites.length && !importedSeen.length && !Object.keys(importedEarned).length) throw new Error("no valid backup entries");
     const current = getHistory();
     const known = new Set(current.map(historyFingerprint));
     const additions = [];
@@ -1282,6 +1356,9 @@ restoreInput.addEventListener("change", async () => {
     const currentFavorites = getFavoriteIds();
     const mergedFavorites = [...new Set([...currentFavorites, ...importedFavorites])].slice(0, 500);
     const favoriteAddedCount = mergedFavorites.length - currentFavorites.length;
+    const currentSeen = getSeenIds();
+    const mergedSeen = validSeenStoryIds([...currentSeen, ...importedSeen]);
+    const seenAddedCount = mergedSeen.filter((id) => !currentSeen.has(id)).length;
     const currentRewardState = getRewardState();
     const rewardAddedIds = Object.keys(importedEarned).filter((id) => !hasOwn(currentRewardState.earned, id));
     const mergedEarned = { ...importedEarned, ...currentRewardState.earned };
@@ -1304,25 +1381,27 @@ restoreInput.addEventListener("change", async () => {
       seenPrizes: [...new Set([...(currentRewardState.seenPrizes || []), ...importedSeenPrizes])],
     };
     const lampChanged = mergedRewardState.equippedLamp !== currentRewardState.equippedLamp;
-    if (!restoredCount && !favoriteAddedCount && !rewardAddedIds.length && !lampChanged && !suppressionChanged) {
+    if (!restoredCount && !favoriteAddedCount && !seenAddedCount && !rewardAddedIds.length && !lampChanged && !suppressionChanged) {
       settingsStatus.textContent = "すべて既に復元済みです。重複するデータは追加しませんでした。";
       return;
     }
     const confirmationParts = [];
     if (restoredCount) confirmationParts.push(`記録${restoredCount}件`);
     if (favoriteAddedCount) confirmationParts.push(`お気に入り${favoriteAddedCount}篇`);
+    if (seenAddedCount) confirmationParts.push(`既読判定${seenAddedCount}篇`);
     if (rewardAddedIds.length) confirmationParts.push(`リワード${rewardAddedIds.length}個`);
     if (lampChanged) confirmationParts.push("灯りカラー");
     if (suppressionChanged) confirmationParts.push("リワード設定");
     if (!confirm(`${confirmationParts.join("と")}を、現在のデータに追加します。よろしいですか？`)) return;
     const historySaved = restoredCount ? writeHistory(merged) : true;
     const favoritesSaved = favoriteAddedCount ? saveFavoriteIds(mergedFavorites) : true;
+    const seenSaved = seenAddedCount ? set(LS.seenStoryIds, JSON.stringify(mergedSeen)) : true;
     const rewardsSaved = rewardAddedIds.length || lampChanged || suppressionChanged ? saveRewardState(mergedRewardState) : true;
     if (rewardAddedIds.length || lampChanged || suppressionChanged) applyEquippedLampStyle(mergedRewardState);
     renderHome();
     evaluateRewards({ notify: false });
     const omittedNote = omittedCount ? ` 古い${omittedCount}件は保存上限のため除外しました。` : "";
-    settingsStatus.textContent = historySaved && favoritesSaved && rewardsSaved
+    settingsStatus.textContent = historySaved && favoritesSaved && seenSaved && rewardsSaved
       ? `${confirmationParts.join("と")}を復元しました。${omittedNote}`
       : `${confirmationParts.join("と")}を今回のセッションへ復元しましたが、端末には保存できませんでした。${omittedNote}`;
   } catch (err) {
@@ -1383,8 +1462,18 @@ function totalWordsRead() {
   return getHistory().reduce((s, h) => s + (h.words || 0), 0);
 }
 
+function isValidWpmEntry(h) {
+  const wpm = Number(h.wpm);
+  if (h.abandoned || h.wpmValid === false || wpm < 10 || wpm > 600 || !Number.isFinite(wpm)) return false;
+  if (!Object.prototype.hasOwnProperty.call(h, "activeSeconds")) return true;
+  const seconds = Number(h.activeSeconds);
+  const words = Number(h.words);
+  const measured = words / (seconds / 60);
+  return seconds >= 10 && Number.isFinite(measured) && measured >= 10 && measured <= 600;
+}
+
 function combinedWpm(entries) {
-  const withWpm = entries.filter((h) => h.wpm > 0 && h.wpmValid !== false);
+  const withWpm = entries.filter(isValidWpmEntry);
   if (withWpm.length === 0) return null;
 
   // Combine words and time instead of averaging session WPM values. This
@@ -1411,7 +1500,7 @@ function combinedWpm(entries) {
 
 function recentWpm() {
   return combinedWpm(
-    getHistory().filter((h) => h.wpm > 0 && h.wpmValid !== false).slice(0, 5)
+    getHistory().filter(isValidWpmEntry).slice(0, 5)
   );
 }
 
@@ -2699,7 +2788,7 @@ function renderHistoryAnalysis(history) {
     ? `${Math.round((abandoned.length / attempts) * 100)}%`
     : "0%";
 
-  const validWpm = completed.filter((h) => h.wpm > 0 && h.wpmValid !== false);
+  const validWpm = completed.filter(isValidWpmEntry);
   const currentWpm = combinedWpm(validWpm.slice(0, 5));
   const previousWpm = combinedWpm(validWpm.slice(5, 10));
   let trendText = "WPMの有効な記録はまだありません。";
@@ -3210,7 +3299,14 @@ async function renderOfflineStatus() {
       if (navigator.storage && typeof navigator.storage.persisted === "function") {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
-      setOfflineStatus("ready", `2,000篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+      if (status.current || typeof status.current !== "boolean") {
+        setOfflineStatus("ready", `2,000篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+      } else if (navigator.onLine) {
+        setOfflineStatus("working", "以前の版を利用できます。更新版の文章を保存しています…");
+        prepareOfflineContent(false);
+      } else {
+        setOfflineStatus("ready", "以前の版の2,000篇をオフラインで利用できます。", "");
+      }
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
@@ -3235,7 +3331,12 @@ async function prepareOfflineContent(requestPersistence = false) {
     recordAnonymousEvent("offline_ready");
     await renderOfflineStatus();
   } catch {
-    setOfflineStatus("error", navigator.onLine ? "保存に失敗しました。通信状態を確認して再試行してください。" : "オフラインのため保存を完了できません。", "再試行");
+    const fallback = await serviceWorkerMessage("OFFLINE_STATUS").catch(() => ({ ready: false }));
+    if (fallback.ready && !fallback.current) {
+      setOfflineStatus("ready", "以前の版を利用できます。更新版の文章は保存できませんでした。", "再試行");
+    } else {
+      setOfflineStatus("error", navigator.onLine ? "保存に失敗しました。通信状態を確認して再試行してください。" : "オフラインのため保存を完了できません。", "再試行");
+    }
   } finally {
     offlinePreparing = false;
   }
@@ -3243,14 +3344,19 @@ async function prepareOfflineContent(requestPersistence = false) {
 
 document.getElementById("prepareOfflineBtn").addEventListener("click", () => prepareOfflineContent(true));
 
+function validSeenStoryIds(value) {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.filter((id) => typeof id === "string" && /^s\d{3,}$/.test(id)))].slice(0, 5000);
+}
 function getSeenIds() {
-  try { return new Set(JSON.parse(get(LS.seenStoryIds, "[]"))); }
+  try { return new Set(validSeenStoryIds(JSON.parse(get(LS.seenStoryIds, "[]")))); }
   catch { return new Set(); }
 }
 function markSeen(id) {
+  if (typeof id !== "string" || !/^s\d{3,}$/.test(id)) return;
   const seen = getSeenIds();
   seen.add(id);
-  set(LS.seenStoryIds, JSON.stringify([...seen]));
+  set(LS.seenStoryIds, JSON.stringify(validSeenStoryIds([...seen])));
 }
 function clearSeenForPool(ids) {
   const seen = getSeenIds();
@@ -3415,7 +3521,7 @@ function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = fals
     : [...topicPool].sort((a, b) => Math.abs(a.level - level) - Math.abs(b.level - level))
         .filter((story, index, sorted) => Math.abs(story.level - level) === Math.abs(sorted[0].level - level));
   let available = levelPool.filter((story) => !seen.has(story.id));
-  if (available.length < count) {
+  if (available.length === 0) {
     clearSeenForPool(levelPool.map((story) => story.id));
     available = levelPool.filter((story) => story.id !== lastBankStoryId);
     if (!available.length) available = levelPool;
@@ -3479,9 +3585,11 @@ async function renderStoryCandidates() {
       });
       list.appendChild(button);
     });
-    status.hidden = candidates.length > 0 && !returning.returning;
+    status.hidden = candidates.length === 3 && !returning.returning;
     if (candidates.length && returning.returning) {
-      status.textContent = "短めの候補を3篇表示しています。";
+      status.textContent = `短めの候補を${candidates.length}篇表示しています。`;
+    } else if (candidates.length < 3 && candidates.length > 0) {
+      status.textContent = `未読の候補があと${candidates.length}篇あります。読み切ると次の周が始まります。`;
     }
     if (!candidates.length) status.textContent = "条件に合う候補がありません。テーマを変更してください。";
     if (candidates.length) recordAnonymousEvent("candidate_shown", { level: getLevel(), topic: topicSelect.value });
@@ -3845,12 +3953,8 @@ document.getElementById("shareReportBtn").addEventListener("click", async () => 
 document.getElementById("downloadReportBtn").addEventListener("click", () => {
   const data = storyReportData();
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `reading-lamp-report-${data.storyId}-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-  reportStatus.textContent = "報告ファイルを保存しました。配布元への連絡時に添付してください。";
+  beginFileDownload(blob, `reading-lamp-report-${data.storyId}-${new Date().toISOString().slice(0, 10)}.json`);
+  reportStatus.textContent = "報告ファイルのダウンロードを開始しました。保存を確認してから添付してください。";
 });
 
 document.getElementById("finishReadingBtn").addEventListener("click", () => {

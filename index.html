@@ -156,20 +156,20 @@
       <div id="rewardTargetList" class="reward-target-list" aria-live="polite"></div>
     </section>
 
-    <section class="weekly-summary" aria-labelledby="weeklySummaryTitle">
-      <div class="weekly-summary-header">
+    <details class="weekly-summary">
+      <summary><span id="weeklySummaryTitle">今週のまとめ</span><span>開く</span></summary>
+      <div class="weekly-summary-content">
         <p class="weekly-summary-kicker">月曜から日曜の記録</p>
-        <h2 id="weeklySummaryTitle">今週のまとめ</h2>
+        <div class="weekly-summary-stats">
+          <div><strong id="weeklySummaryDays">0</strong><span>読書日</span></div>
+          <div><strong id="weeklySummaryStories">0</strong><span>篇</span></div>
+          <div><strong id="weeklySummaryWords">0</strong><span>語</span></div>
+          <div><strong id="weeklySummaryRewards">0</strong><span>リワード</span></div>
+        </div>
+        <p id="weeklySummaryMessage" class="weekly-summary-message"></p>
+        <p id="weeklySummaryComparison" class="weekly-summary-comparison"></p>
       </div>
-      <div class="weekly-summary-stats">
-        <div><strong id="weeklySummaryDays">0</strong><span>読書日</span></div>
-        <div><strong id="weeklySummaryStories">0</strong><span>篇</span></div>
-        <div><strong id="weeklySummaryWords">0</strong><span>語</span></div>
-        <div><strong id="weeklySummaryRewards">0</strong><span>リワード</span></div>
-      </div>
-      <p id="weeklySummaryMessage" class="weekly-summary-message"></p>
-      <p id="weeklySummaryComparison" class="weekly-summary-comparison"></p>
-    </section>
+    </details>
 
     <details class="monthly-summary">
       <summary><span id="monthlySummaryTitle">今月のまとめ</span><span>開く</span></summary>
@@ -229,7 +229,7 @@
         <a href="terms.html">利用規約</a>
         <a href="mailto:Reading.Lamp012@gmail.com?subject=Reading%20Lamp%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a>
       </nav>
-      <span>Reading Lamp v2.9.2</span>
+      <span>Reading Lamp v2.9.4</span>
     </footer>
   </section>
 
@@ -469,7 +469,10 @@
     <div class="history-tools" aria-labelledby="historyToolsTitle">
       <h3 id="historyToolsTitle" class="history-tools-title">記録のバックアップ</h3>
       <p id="backupStatus" class="modal-hint" role="status" aria-live="polite"></p>
-      <button id="exportBtn" class="btn-text-quiet" type="button">記録・お気に入り・リワードを書き出す (JSON)</button>
+      <button id="exportBtn" class="btn-text-quiet" type="button">記録・既読判定・お気に入り・リワードを書き出す (JSON)</button>
+      <button id="shareBackupBtn" class="btn-text-quiet" type="button" hidden>バックアップをファイルへ共有</button>
+      <button id="confirmBackupBtn" class="btn-text-quiet" type="button" hidden>保存したファイルを確認した</button>
+      <p id="backupExportHint" class="modal-hint">ダウンロードまたは共有の後、端末にJSONファイルがあることを確認してください。</p>
       <button id="exportRewardDiagnosticsBtn" class="btn-text-quiet" type="button">匿名のリワード診断を保存する</button>
       <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名、読書日時、APIキーは含みません。</p>
       <section class="report-queue-tools" aria-labelledby="reportQueueTitle">
@@ -480,7 +483,7 @@
           <button id="exportQueuedReportsBtn" class="btn-text-quiet" type="button">報告を保存</button>
         </div>
       </section>
-      <label class="restore-label" for="restoreInput">記録・お気に入り・リワードを復元する (JSON)</label>
+      <label class="restore-label" for="restoreInput">記録・既読判定・お気に入り・リワードを復元する (JSON)</label>
       <input id="restoreInput" class="restore-input" type="file" accept="application/json,.json" aria-describedby="restoreHint" />
       <p id="restoreHint" class="modal-hint">現在のデータを残したまま、重複を除いて追加します。以前の履歴だけのファイルにも対応しています。</p>
       <p id="settingsStatus" class="settings-status" role="status" aria-live="polite"></p>
@@ -504,7 +507,7 @@
     </nav>
 
     <div class="modal-danger">
-      <button id="resetHistoryBtn" class="btn-text-danger">記録をすべて消去する</button>
+      <button id="resetHistoryBtn" class="btn-text-danger">読書履歴と既読判定を消去する</button>
     </div>
   </div>
 </div>

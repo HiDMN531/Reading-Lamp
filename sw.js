@@ -1,4 +1,5 @@
-const CACHE_NAME = "reading-lamp-v70";
+const CACHE_NAME = "reading-lamp-v72";
+const OWN_CACHE_NAME = /^reading-lamp-v(\d+)$/;
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
 // the user's "更新する" action.
@@ -21,6 +22,40 @@ const SHELL_FILES = [
   "./icons/settings-gear.png",
 ];
 const OFFLINE_CONTENT_FILES = ["./stories.json"];
+const ownAssetPaths = new Set([...SHELL_FILES, ...OFFLINE_CONTENT_FILES]
+  .map((file) => {
+    const url = new URL(file, self.registration.scope);
+    return `${url.origin}${url.pathname}`;
+  }));
+
+async function previousContentResponse(request) {
+  const keys = (await caches.keys())
+    .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
+    .sort((a, b) => Number(b.match(OWN_CACHE_NAME)[1]) - Number(a.match(OWN_CACHE_NAME)[1]));
+  for (const key of keys) {
+    const response = await (await caches.open(key)).match(request, { ignoreSearch: true });
+    if (response) return response;
+  }
+  return null;
+}
+
+async function offlineContentStatus() {
+  const currentCache = await caches.open(CACHE_NAME);
+  const current = (await Promise.all(OFFLINE_CONTENT_FILES.map((file) => currentCache.match(file)))).every(Boolean);
+  if (current) return { ready: true, current: true };
+  const previous = (await Promise.all(OFFLINE_CONTENT_FILES.map(previousContentResponse))).every(Boolean);
+  return { ready: previous, current: false };
+}
+
+async function deleteOldOwnCachesIfReady() {
+  const currentCache = await caches.open(CACHE_NAME);
+  const ready = (await Promise.all(OFFLINE_CONTENT_FILES.map((file) => currentCache.match(file)))).every(Boolean);
+  if (!ready) return;
+  const keys = await caches.keys();
+  await Promise.all(keys
+    .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
+    .map((key) => caches.delete(key)));
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -29,7 +64,7 @@ self.addEventListener("install", (event) => {
       .then(() => caches.keys())
       .then((keys) => {
         const needsMigration = keys.some((key) => {
-          const match = /^reading-lamp-v(\d+)$/.exec(key);
+          const match = OWN_CACHE_NAME.exec(key);
           return match && Number(match[1]) < UPDATE_PROMPT_FIRST_VERSION;
         });
         return needsMigration ? self.skipWaiting() : undefined;
@@ -46,16 +81,16 @@ self.addEventListener("message", (event) => {
   const reply = event.ports && event.ports[0];
   if (event.data.type === "OFFLINE_STATUS") {
     event.waitUntil(
-      caches.open(CACHE_NAME)
-        .then((cache) => Promise.all(OFFLINE_CONTENT_FILES.map((file) => cache.match(file))))
-        .then((matches) => reply && reply.postMessage({ ready: matches.every(Boolean) }))
-        .catch(() => reply && reply.postMessage({ ready: false }))
+      offlineContentStatus()
+        .then((status) => reply && reply.postMessage(status))
+        .catch(() => reply && reply.postMessage({ ready: false, current: false }))
     );
   }
   if (event.data.type === "PREPARE_OFFLINE") {
     event.waitUntil(
       caches.open(CACHE_NAME)
         .then((cache) => cache.addAll(OFFLINE_CONTENT_FILES))
+        .then(deleteOldOwnCachesIfReady)
         .then(() => reply && reply.postMessage({ ready: true }))
         .catch(() => reply && reply.postMessage({ ready: false }))
     );
@@ -63,31 +98,36 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil(deleteOldOwnCachesIfReady().then(() => self.clients.claim()));
 });
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Never cache/interfere with API calls — always go to network.
-  if (url.hostname === "api.anthropic.com") return;
+  // Only handle this app's static files. API and unrelated requests use the network.
+  if (event.request.method !== "GET" || !ownAssetPaths.has(`${url.origin}${url.pathname}`)) return;
 
-  // App shell: cache-first, falling back to network.
+  // The newest cache takes priority. An older story bank is an offline fallback
+  // until the updated package has been saved successfully.
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(event.request, { ignoreSearch: true });
       if (cached) return cached;
-      return fetch(event.request).then((res) => {
-        if (event.request.method === "GET" && res.ok && url.origin === self.location.origin) {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+      try {
+        const response = await fetch(event.request);
+        if (response.ok) {
+          event.waitUntil(cache.put(event.request, response.clone())
+            .then(() => url.pathname.endsWith("/stories.json") ? deleteOldOwnCachesIfReady() : undefined)
+            .catch(() => {}));
         }
-        return res;
-      }).catch(() => cached);
+        return response;
+      } catch {
+        if (url.pathname.endsWith("/stories.json")) {
+          const previous = await previousContentResponse(event.request);
+          if (previous) return previous;
+        }
+        return Response.error();
+      }
     })
   );
 });

@@ -332,11 +332,11 @@ a { color: var(--amber); }
 .reward-targets,
 .weekly-summary {
   margin: -12px 0 24px;
-  padding: 16px;
   border: 1px solid #FFFFFF12;
   border-radius: var(--radius-lg);
   background: var(--panel);
 }
+.reward-targets { padding: 16px; }
 .reward-targets-header {
   display: flex;
   align-items: center;
@@ -344,8 +344,7 @@ a { color: var(--amber); }
   gap: 14px;
   margin-bottom: 11px;
 }
-.reward-targets-header h2,
-.weekly-summary h2 {
+.reward-targets-header h2 {
   margin: 0;
   color: var(--page);
   font-family: var(--serif);
@@ -468,7 +467,7 @@ a { color: var(--amber); }
 }
 .reward-target-pin[aria-pressed="true"] { color: var(--good); }
 .weekly-summary { background: linear-gradient(145deg, var(--amber-faint), var(--panel)); }
-.weekly-summary-header { margin-bottom: 13px; }
+.weekly-summary-content { padding: 0 16px 16px; }
 .weekly-summary-kicker {
   margin: 0 0 3px;
   color: var(--ink-faint);
@@ -517,6 +516,7 @@ a { color: var(--amber); }
   border-radius: var(--radius-lg);
   background: var(--panel);
 }
+.weekly-summary summary,
 .monthly-summary summary {
   display: flex;
   align-items: center;
@@ -529,10 +529,16 @@ a { color: var(--amber); }
   cursor: pointer;
   list-style: none;
 }
+.weekly-summary summary::-webkit-details-marker,
 .monthly-summary summary::-webkit-details-marker { display: none; }
+.weekly-summary summary span:last-child,
 .monthly-summary summary span:last-child { color: var(--amber); font-family: var(--sans); font-size: 10px; }
+.weekly-summary[open] summary span:last-child,
 .monthly-summary[open] summary span:last-child { font-size: 0; }
+.weekly-summary[open] summary span:last-child::after,
 .monthly-summary[open] summary span:last-child::after { content: "閉じる"; font-size: 10px; }
+.weekly-summary summary:focus-visible,
+.monthly-summary summary:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
 .monthly-summary-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
