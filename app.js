@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.5.2";
+const APP_VERSION = "2.9.2";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -67,6 +67,9 @@ const LS = {
   pinnedReward: "rl_pinned_reward_v1",
   showRewardGoals: "rl_show_reward_goals_v1",
   rewardNotifications: "rl_reward_notifications_v1",
+  personalizedSuggestions: "rl_personalized_suggestions_v1",
+  lastBackupAt: "rl_last_backup_at_v1",
+  firstCompletionGuideSeen: "rl_first_completion_guide_seen_v1",
   anonymousUsageConsent: "rl_anonymous_usage_consent_v1",
   anonymousUsage: "rl_anonymous_usage_v1",
   anonymousInstallId: "rl_anonymous_install_id_v1",
@@ -133,6 +136,11 @@ function normalizeCollectionEndpoint(value) {
   }
 }
 
+function normalizeSupportEmail(value) {
+  const email = typeof value === "string" ? value.trim() : "";
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : "";
+}
+
 function loadRuntimeConfig() {
   if (runtimeConfigPromise) return runtimeConfigPromise;
   runtimeConfigPromise = fetch("config.json")
@@ -140,8 +148,9 @@ function loadRuntimeConfig() {
     .then((config) => ({
       analyticsEndpoint: normalizeCollectionEndpoint(config.analyticsEndpoint),
       storyReportEndpoint: normalizeCollectionEndpoint(config.storyReportEndpoint),
+      supportEmail: normalizeSupportEmail(config.supportEmail),
     }))
-    .catch(() => ({ analyticsEndpoint: "", storyReportEndpoint: "" }));
+    .catch(() => ({ analyticsEndpoint: "", storyReportEndpoint: "", supportEmail: "" }));
   return runtimeConfigPromise;
 }
 
@@ -433,8 +442,8 @@ function adjustLevelFromFeedback(feedback, before) {
       before,
       after,
       note: after < before
-        ? `次からレベル ${after} に下げます。易しいほうが多読は伸びます。`
-        : "現在はレベル1です。難しい文章は無理せず別の文章に替えてください。",
+        ? `次からレベル ${after} に下げます。`
+        : "現在はレベル1です。難しい文章は別の文章に替えてください。",
     };
   }
 
@@ -629,6 +638,7 @@ const readingThemeInput = document.getElementById("readingThemeInput");
 const readingDisplayPreview = document.getElementById("readingDisplayPreview");
 const showRewardGoalsInput = document.getElementById("showRewardGoalsInput");
 const rewardNotificationsInput = document.getElementById("rewardNotificationsInput");
+const personalizedSuggestionsInput = document.getElementById("personalizedSuggestionsInput");
 const anonymousUsageInput = document.getElementById("anonymousUsageInput");
 const anonymousUsageStatus = document.getElementById("anonymousUsageStatus");
 
@@ -727,7 +737,7 @@ function syncSettingsMode(useBank) {
   apiKeySection.hidden = useBank;
   wordCountSection.hidden = useBank;
   modeDescription.textContent = useBank
-    ? "通常はこちらをおすすめします。通信やAPI利用料なしで読めます。"
+    ? "収録済みの文章を読みます。AIのAPI利用料はかかりません。端末に保存後はオフラインでも読めます。"
     : "オフにするとAI生成モードになります。入力したAPIキーはこの端末に保存されます。";
 }
 
@@ -765,11 +775,13 @@ function openSettings() {
   readingThemeInput.value = displaySettings.theme;
   showRewardGoalsInput.checked = getBool(LS.showRewardGoals, true);
   rewardNotificationsInput.checked = getBool(LS.rewardNotifications, true);
+  personalizedSuggestionsInput.checked = getBool(LS.personalizedSuggestions, true);
   anonymousUsageInput.checked = getBool(LS.anonymousUsageConsent, false);
   syncSettingsMode(toggleOfflineBank.checked);
   renderApiKeyStatus();
   renderHistoryRecovery();
   renderReportQueueStatus();
+  renderBackupStatus();
   settingsStatus.textContent = "";
   updateRangeAccessibility();
   updateReadingDisplayPreview();
@@ -832,6 +844,7 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok12 = set(LS.readingTheme, displaySettings.theme);
   const okRewardGoals = set(LS.showRewardGoals, showRewardGoalsInput.checked ? "1" : "0");
   const okRewardNotifications = set(LS.rewardNotifications, rewardNotificationsInput.checked ? "1" : "0");
+  const okPersonalizedSuggestions = set(LS.personalizedSuggestions, personalizedSuggestionsInput.checked ? "1" : "0");
   const previousAnonymousUsage = getBool(LS.anonymousUsageConsent, false);
   const okAnonymousUsage = set(LS.anonymousUsageConsent, anonymousUsageInput.checked ? "1" : "0");
 
@@ -850,7 +863,7 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
 
   applyReadingDisplay(displaySettings);
 
-  if (okApiKey && ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications && okAnonymousUsage) {
+  if (okApiKey && ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications && okPersonalizedSuggestions && okAnonymousUsage) {
     closeSettings();
     renderHome();
   } else {
@@ -885,15 +898,80 @@ document.getElementById("resetHistoryBtn").addEventListener("click", () => {
     try { localStorage.removeItem(LS.history); } catch {}
     delete memoryFallback[LS.history];
     removeStored(LS.historyRecovery);
+    removeStored(LS.lastBackupAt);
+    removeStored(LS.firstCompletionGuideSeen);
     renderHome();
     closeSettings();
   }
 });
 
+function lastBackupDate() {
+  const date = new Date(get(LS.lastBackupAt, ""));
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+
+function backupReminderState(history = getHistory(), now = new Date(), lastBackup = lastBackupDate()) {
+  const completed = history.filter((entry) => !entry.abandoned && Number(entry.words) > 0);
+  if (!completed.length) return { due: false, lastBackup, message: "読書記録はまだありません。" };
+  if (lastBackup) {
+    const daysAgo = Math.max(0, Math.floor((now - lastBackup) / 86400000));
+    return {
+      due: daysAgo >= 30,
+      lastBackup,
+      message: daysAgo === 0 ? "今日バックアップしました。" : `最終バックアップ：${daysAgo}日前`,
+    };
+  }
+  const oldest = completed.reduce((earliest, entry) => {
+    const time = new Date(entry.date).getTime();
+    return Number.isFinite(time) ? Math.min(earliest, time) : earliest;
+  }, now.getTime());
+  const readingSpanDays = Math.max(0, Math.floor((now.getTime() - oldest) / 86400000));
+  return {
+    due: completed.length >= 10 || (completed.length >= 3 && readingSpanDays >= 14),
+    lastBackup: null,
+    message: "バックアップはまだありません。JSONを保存すると、別の端末でも記録を復元できます。",
+  };
+}
+
+function returningReaderState(history = getHistory(), now = new Date()) {
+  const thresholdDays = 14;
+  const completedTimes = history
+    .filter((entry) => !entry.abandoned && Number(entry.words) > 0)
+    .map((entry) => new Date(entry.date).getTime())
+    .filter(Number.isFinite);
+  if (!completedTimes.length) return { returning: false, daysAway: 0, thresholdDays };
+  const latestCompletedAt = Math.max(...completedTimes);
+  const daysAway = Math.max(0, Math.floor((now.getTime() - latestCompletedAt) / 86400000));
+  return { returning: daysAway >= thresholdDays, daysAway, thresholdDays };
+}
+
+function renderBackupStatus(history = getHistory()) {
+  const backup = backupReminderState(history);
+  const status = document.getElementById("backupStatus");
+  const reminder = document.getElementById("backupReminder");
+  if (status) status.textContent = backup.message;
+  if (reminder) {
+    reminder.hidden = !backup.due;
+    document.getElementById("backupReminderMessage").textContent = backup.lastBackup
+      ? `${backup.message}。追加した記録を含めて再保存できます。`
+      : "読書記録、お気に入り、リワードをJSONとして保存できます。";
+  }
+}
+
+document.getElementById("openBackupSettingsBtn").addEventListener("click", () => {
+  openSettings();
+  requestAnimationFrame(() => {
+    const exportButton = document.getElementById("exportBtn");
+    exportButton.focus();
+    exportButton.scrollIntoView({ block: "center" });
+  });
+});
+
 document.getElementById("exportBtn").addEventListener("click", () => {
+  const exportedAt = new Date().toISOString();
   const backup = {
-    schemaVersion: 3,
-    exportedAt: new Date().toISOString(),
+    schemaVersion: 4,
+    exportedAt,
     history: getHistory(),
     favoriteStoryIds: getFavoriteIds(),
     rewardState: getRewardState(),
@@ -901,9 +979,12 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `reading-lamp-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `reading-lamp-backup-${exportedAt.slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
+  set(LS.lastBackupAt, exportedAt);
+  renderBackupStatus();
+  settingsStatus.textContent = "バックアップを保存しました。このJSONは安全な場所に保管してください。";
 });
 
 document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", async () => {
@@ -1177,6 +1258,11 @@ restoreInput.addEventListener("change", async () => {
     const importedSuppressed = importedRewardState && Array.isArray(importedRewardState.suppressed)
       ? [...new Set(importedRewardState.suppressed.filter((id) => validRewardIds.has(id)))].slice(0, 200)
       : [];
+    const importedSeenPrizes = importedRewardState && Array.isArray(importedRewardState.seenPrizes)
+      ? [...new Set(importedRewardState.seenPrizes.filter((styleId) => hasOwn(LAMP_STYLES, styleId) && styleId !== "classic"))]
+      : Object.entries(LAMP_STYLES)
+          .filter(([, style]) => style.rewardId && hasOwn(importedEarned, style.rewardId))
+          .map(([styleId]) => styleId);
     if (!imported.length && !importedFavorites.length && !Object.keys(importedEarned).length) throw new Error("no valid backup entries");
     const current = getHistory();
     const known = new Set(current.map(historyFingerprint));
@@ -1215,6 +1301,7 @@ restoreInput.addEventListener("change", async () => {
       equippedLamp: isLampStyleUnlocked(importedLamp, { ...currentRewardState, earned: mergedEarned })
         ? importedLamp
         : currentRewardState.equippedLamp,
+      seenPrizes: [...new Set([...(currentRewardState.seenPrizes || []), ...importedSeenPrizes])],
     };
     const lampChanged = mergedRewardState.equippedLamp !== currentRewardState.equippedLamp;
     if (!restoredCount && !favoriteAddedCount && !rewardAddedIds.length && !lampChanged && !suppressionChanged) {
@@ -1400,18 +1487,18 @@ function weeklyReadingRhythm(history = getHistory(), now = new Date(), goal = ge
 
 function weeklyRhythmMessage(rhythm) {
   if (rhythm.completed >= rhythm.goal) {
-    return "今週の目標を達成しました。余裕がある日にもう一篇でも、今日は休んでも大丈夫です。";
+    return "今週の目標日数を達成しました。";
   }
   if (rhythm.todayRead) {
-    return `今日は読めています。今週はあと${rhythm.remaining}日、都合のよい日に読めば達成です。`;
+    return `今日は読了済みです。目標まであと${rhythm.remaining}日。`;
   }
   if (rhythm.daysLeft < rhythm.remaining) {
-    return "今週の目標に届かなくても問題ありません。今日の一篇が、次の週へ戻るきっかけになります。";
+    return "今週の残り日数では目標に届きません。来週からまた数えます。";
   }
   if (rhythm.completed === 0) {
-    return "まずは短い一篇だけでも十分です。読み終えた日が、ここに灯ります。";
+    return "今週はまだ読了記録がありません。";
   }
-  return `今週はあと${rhythm.remaining}日です。連続でなくても、日曜までの好きな日に読めます。`;
+  return `目標まであと${rhythm.remaining}日。日曜までの都合のよい日に読めます。`;
 }
 
 function renderWeeklyRhythm(history) {
@@ -1459,6 +1546,14 @@ const LAMP_STYLES = {
   dawn: { label: "Dawn", color: "#F1B2A0", rewardId: "words-500000" },
   moon: { label: "Moon", color: "#C5D5F2", rewardId: "words-1000000" },
   prism: { label: "Prism", color: "#D6B4F0", rewardId: "topics-10" },
+  rose: { label: "Rose", color: "#E89AAA", rewardId: "stories-10" },
+  mint: { label: "Mint", color: "#8FD8C2", rewardId: "days-7" },
+  gold: { label: "Gold", color: "#F2C35B", rewardId: "weeks-4" },
+  sky: { label: "Sky", color: "#82B8E8", rewardId: "levels-5" },
+  copper: { label: "Copper", color: "#D18D64", rewardId: "stories-100" },
+  sakura: { label: "Sakura", color: "#F3B6C6", rewardId: "favorites-10" },
+  teal: { label: "Teal", color: "#55B6AC", rewardId: "short-reads-5" },
+  silver: { label: "Silver", color: "#B8C2D1", rewardId: "days-100" },
 };
 let REWARD_DEFINITIONS = null;
 let rewardLoadPromise = null;
@@ -1471,7 +1566,7 @@ function normalizeRewardTimestamp(value) {
 }
 
 function getRewardState() {
-  const empty = { version: REWARD_STATE_VERSION, initialized: false, earned: {}, suppressed: [], equippedLamp: "classic" };
+  const empty = { version: REWARD_STATE_VERSION, initialized: false, earned: {}, suppressed: [], equippedLamp: "classic", seenPrizes: [] };
   try {
     const parsed = JSON.parse(get(LS.rewards, "null"));
     if (!parsed || parsed.version !== REWARD_STATE_VERSION || typeof parsed !== "object") return empty;
@@ -1487,7 +1582,13 @@ function getRewardState() {
       ? [...new Set(parsed.suppressed.filter((id) => typeof id === "string" && /^[a-z0-9-]{1,80}$/.test(id)))].slice(0, 200)
       : [];
     const equippedLamp = hasOwn(LAMP_STYLES, parsed.equippedLamp) ? parsed.equippedLamp : "classic";
-    return { version: REWARD_STATE_VERSION, initialized: parsed.initialized === true, earned, suppressed, equippedLamp };
+    const earnedStyleIds = Object.entries(LAMP_STYLES)
+      .filter(([, style]) => style.rewardId && hasOwn(earned, style.rewardId))
+      .map(([styleId]) => styleId);
+    const seenPrizes = Array.isArray(parsed.seenPrizes)
+      ? [...new Set(parsed.seenPrizes.filter((styleId) => hasOwn(LAMP_STYLES, styleId) && styleId !== "classic"))]
+      : earnedStyleIds;
+    return { version: REWARD_STATE_VERSION, initialized: parsed.initialized === true, earned, suppressed, equippedLamp, seenPrizes };
   } catch {
     return empty;
   }
@@ -1500,6 +1601,9 @@ function saveRewardState(state) {
     earned: state.earned || {},
     suppressed: Array.isArray(state.suppressed) ? state.suppressed.slice(0, 200) : [],
     equippedLamp: hasOwn(LAMP_STYLES, state.equippedLamp) ? state.equippedLamp : "classic",
+    seenPrizes: Array.isArray(state.seenPrizes)
+      ? [...new Set(state.seenPrizes.filter((styleId) => hasOwn(LAMP_STYLES, styleId) && styleId !== "classic"))]
+      : [],
   }));
 }
 
@@ -1663,18 +1767,18 @@ function renderWeeklySummary(history = getHistory(), state = getRewardState()) {
   const dayDifference = summary.readingDays - summary.previous.readingDays;
   const wordDifference = summary.words - summary.previous.words;
   comparison.textContent = summary.previous.readingDays || summary.previous.words
-    ? `先週と比べて 読書日 ${signedDifference(dayDifference)}日・語数 ${signedDifference(wordDifference)}語。増減は評価ではなく、今のペースを知る目安です。`
-    : "先週との比較は、記録がたまるとここに表示されます。";
+    ? `先週との差：読書日 ${signedDifference(dayDifference)}日・語数 ${signedDifference(wordDifference)}語。`
+    : "先週の読了記録はありません。";
   if (!summary.stories) {
     message.textContent = summary.skips
-      ? `合わない文章を${summary.skips}回替えました。無理をしない選択も読書の一部です。`
-      : "今週の記録はこれからです。短い一篇からでも十分です。";
+      ? `今週は文章を${summary.skips}回替えました。`
+      : "今週はまだ読了記録がありません。";
     return;
   }
   const parts = [`${summary.topics}ジャンルを読みました`];
   if (summary.newTopics) parts.push(`新しいジャンルは${summary.newTopics}つです`);
   if (summary.skips) parts.push(`合わない文章は${summary.skips}回替えました`);
-  message.textContent = `${parts.join("。")}。来週に持ち越す必要はありません。`;
+  message.textContent = `${parts.join("。")}。`;
 }
 
 function monthlySummaryData(history = getHistory(), state = getRewardState(), now = new Date()) {
@@ -1710,12 +1814,13 @@ function renderMonthlySummary(history = getHistory(), state = getRewardState()) 
   if (summary.wpm) parts.push(`平均${summary.wpm}語/分`);
   if (summary.skips) parts.push(`文章を替えた回数${summary.skips}回`);
   document.getElementById("monthlySummaryMessage").textContent = parts.length
-    ? `${parts.join("・")}。自分のペースを確認するための記録です。`
-    : "今月の記録はこれからです。月の途中から始めても問題ありません。";
+    ? `${parts.join("・")}。`
+    : "今月はまだ読了記録がありません。";
 }
 
 function rewardCandidates(definitions, state, metrics) {
   const suppressed = new Set(state.suppressed);
+  const progression = rewardProgression(definitions, state);
   return definitions
     .map((reward, index) => {
       const current = Math.max(0, Number(metrics[reward.metric] || 0));
@@ -1728,7 +1833,78 @@ function rewardCandidates(definitions, state, metrics) {
         ratio: Math.min(1, current / threshold),
       };
     })
-    .filter((item) => !hasOwn(state.earned, item.reward.id) && !suppressed.has(item.reward.id));
+    .filter((item) =>
+      progression.currentIds.has(item.reward.id) &&
+      !hasOwn(state.earned, item.reward.id) &&
+      !suppressed.has(item.reward.id)
+    );
+}
+
+function rewardProgression(definitions, state, pinnedId = "") {
+  const sequences = new Map();
+  definitions.forEach((reward, index) => {
+    if (!sequences.has(reward.metric)) sequences.set(reward.metric, []);
+    sequences.get(reward.metric).push({ reward, index });
+  });
+  sequences.forEach((items) => items.sort((a, b) =>
+    Number(a.reward.threshold) - Number(b.reward.threshold) || a.index - b.index
+  ));
+
+  const suppressed = new Set(state.suppressed);
+  const revealedIds = new Set();
+  const currentIds = new Set();
+  const hiddenIds = new Set();
+  const discoveryIds = new Set();
+
+  sequences.forEach((items) => {
+    if (items.length === 1) {
+      const id = items[0].reward.id;
+      if (hasOwn(state.earned, id)) revealedIds.add(id);
+      else if (!suppressed.has(id)) discoveryIds.add(id);
+      return;
+    }
+
+    items.forEach(({ reward }) => {
+      if (hasOwn(state.earned, reward.id)) revealedIds.add(reward.id);
+    });
+    const nextIndex = items.findIndex(({ reward }) =>
+      !hasOwn(state.earned, reward.id) && !suppressed.has(reward.id)
+    );
+    if (nextIndex >= 0) {
+      const nextId = items[nextIndex].reward.id;
+      revealedIds.add(nextId);
+      currentIds.add(nextId);
+      items.slice(nextIndex + 1).forEach(({ reward }) => {
+        if (!hasOwn(state.earned, reward.id) && !suppressed.has(reward.id)) hiddenIds.add(reward.id);
+      });
+    }
+  });
+
+  const pinned = definitions.find((reward) => reward.id === pinnedId);
+  if (pinned && !hasOwn(state.earned, pinned.id) && !suppressed.has(pinned.id)) {
+    revealedIds.add(pinned.id);
+    currentIds.add(pinned.id);
+    discoveryIds.delete(pinned.id);
+    hiddenIds.delete(pinned.id);
+  }
+
+  return { sequences, revealedIds, currentIds, hiddenIds, discoveryIds };
+}
+
+function nextRewardInChain(reward, definitions, state) {
+  if (!reward || !reward.metric) return null;
+  const progression = rewardProgression(definitions, state);
+  const sequence = progression.sequences.get(reward.metric) || [];
+  if (sequence.length < 2) return null;
+  const rewardIndex = sequence.findIndex((item) => item.reward.id === reward.id);
+  if (rewardIndex < 0) return null;
+  const nextIndex = sequence.findIndex((item, index) =>
+    index > rewardIndex && progression.currentIds.has(item.reward.id)
+  );
+  if (nextIndex < 0) return null;
+  const laterEarnedExists = sequence.slice(rewardIndex + 1, nextIndex)
+    .some((item) => hasOwn(state.earned, item.reward.id));
+  return laterEarnedExists ? null : sequence[nextIndex].reward;
 }
 
 function selectRewardTargets(definitions, state, metrics) {
@@ -1745,17 +1921,14 @@ function selectRewardTargets(definitions, state, metrics) {
     .sort(byNearness)[0];
   if (weekly) selected.push({ ...weekly, kind: "今週できそう" });
 
-  const longWordFloor = Math.max(100000, Number(metrics.totalWords || 0) * 1.5);
-  const longWords = candidates
-    .filter((item) => item.reward.category === "words" && item.threshold >= longWordFloor)
-    .sort((a, b) => a.threshold - b.threshold);
-  const fallbackLong = candidates
-    .filter((item) => !selected.some((chosen) => chosen.reward.id === item.reward.id) &&
-      ((item.reward.category === "stories" && item.threshold >= 100) ||
-       (item.reward.metric === "readingDays" && item.threshold >= 30)))
-    .sort(byNearness);
-  const long = longWords.find((item) => !selected.some((chosen) => chosen.reward.id === item.reward.id)) || fallbackLong[0];
-  if (long) selected.push({ ...long, kind: "長期目標" });
+  const nextDifferentCategory = candidates
+    .filter((item) => !selected.some((chosen) => chosen.reward.id === item.reward.id))
+    .sort((a, b) => {
+      const aUsed = selected.some((chosen) => chosen.reward.category === a.reward.category) ? 1 : 0;
+      const bUsed = selected.some((chosen) => chosen.reward.category === b.reward.category) ? 1 : 0;
+      return aUsed - bUsed || byNearness(a, b);
+    })[0];
+  if (nextDifferentCategory) selected.push({ ...nextDifferentCategory, kind: "次の候補" });
   return selected;
 }
 
@@ -1865,26 +2038,26 @@ document.getElementById("unpinRewardBtn").addEventListener("click", () => {
 function renderRewardHome(state = getRewardState(), definitions = REWARD_DEFINITIONS) {
   const status = document.getElementById("rewardHomeStatus");
   const icon = document.querySelector(".reward-home-icon");
-  const total = definitions ? definitions.length : 100;
   const earnedIds = definitions
     ? definitions.filter((reward) => hasOwn(state.earned, reward.id)).map((reward) => reward.id)
-    : Object.keys(state.earned).slice(0, total);
-  icon.style.setProperty("--reward-progress", `${Math.min(360, Math.round((earnedIds.length / total) * 360))}deg`);
+    : Object.keys(state.earned);
   if (!definitions) {
     renderRewardTargets(null, state, null);
-    status.textContent = `${earnedIds.length} / ${total}個${earnedIds.length ? " ・ 続きを確認できます" : " ・ 最初の一篇から集められます"}`;
+    icon.style.setProperty("--reward-progress", "0deg");
+    status.textContent = earnedIds.length
+      ? `${earnedIds.length}個の灯りを獲得 ・ 続きを確認できます`
+      : "獲得済みのリワードはありません";
     return;
   }
   const metrics = rewardMetrics();
   renderRewardTargets(definitions, state, metrics);
-  const suppressed = new Set(state.suppressed);
-  const next = definitions
-    .filter((reward) => !hasOwn(state.earned, reward.id) && !suppressed.has(reward.id))
-    .map((reward) => ({ reward, ratio: Math.min(1, Number(metrics[reward.metric] || 0) / Number(reward.threshold)) }))
+  const next = rewardCandidates(definitions, state, metrics)
+    .map((item) => ({ reward: item.reward, ratio: item.ratio }))
     .sort((a, b) => b.ratio - a.ratio || Number(a.reward.threshold) - Number(b.reward.threshold))[0];
+  icon.style.setProperty("--reward-progress", `${next ? Math.round(next.ratio * 360) : 360}deg`);
   status.textContent = next
-    ? `${earnedIds.length} / ${total}個 ・ 次：${next.reward.title} ${Math.round(next.ratio * 100)}%`
-    : `${earnedIds.length} / ${total}個 ・ コレクションを確認できます`;
+    ? `${earnedIds.length}個獲得 ・ 次：${next.reward.title} ${Math.round(next.ratio * 100)}%`
+    : `${earnedIds.length}個獲得`;
 }
 
 function showNextRewardNotification() {
@@ -1893,7 +2066,13 @@ function showNextRewardNotification() {
   const reward = rewardNotificationQueue[0];
   document.getElementById("rewardToastIcon").textContent = reward.icon || "✦";
   document.getElementById("rewardToastTitle").textContent = reward.title;
-  document.getElementById("rewardToastUnlock").textContent = reward.unlock && reward.unlock.label ? reward.unlock.label : reward.description || "";
+  const state = getRewardState();
+  const nextStage = REWARD_DEFINITIONS ? nextRewardInChain(reward, REWARD_DEFINITIONS, state) : null;
+  const details = [];
+  if (reward.unlock && reward.unlock.label) details.push(reward.unlock.label);
+  if (nextStage) details.push(`次の段階「${nextStage.title}」を公開しました`);
+  if (!details.length && reward.description) details.push(reward.description);
+  document.getElementById("rewardToastUnlock").textContent = details.join(" ・ ");
   document.getElementById("rewardToastNextBtn").textContent = rewardNotificationQueue.length > 1 ? `次へ（残り${rewardNotificationQueue.length - 1}）` : "確認";
   document.getElementById("rewardToastLampBtn").hidden = !(reward.unlock && reward.unlock.type === "lamp-style");
   const canStartNext = !views.home.hidden || !views.summary.hidden;
@@ -1998,30 +2177,141 @@ function formatRewardDate(value) {
   return Number.isFinite(date.getTime()) ? `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} 獲得` : "獲得済み";
 }
 
-function renderLampStyleChoices(state) {
+function earnedPrizeStyles(state) {
+  return Object.entries(LAMP_STYLES)
+    .filter(([, style]) => style.rewardId && hasOwn(state.earned, style.rewardId))
+    .map(([styleId, style]) => ({ styleId, style, earnedAt: state.earned[style.rewardId] }))
+    .sort((a, b) => new Date(b.earnedAt) - new Date(a.earnedAt));
+}
+
+function renderRecentPrizes(state) {
+  const section = document.getElementById("recentPrizeSection");
+  const list = document.getElementById("recentPrizeList");
+  const prizes = earnedPrizeStyles(state).slice(0, 3);
+  section.hidden = prizes.length === 0;
+  list.innerHTML = "";
+  prizes.forEach(({ styleId, style, earnedAt }) => {
+    const item = document.createElement("li");
+    item.style.setProperty("--style-color", style.color);
+    const light = document.createElement("span");
+    light.className = "recent-prize-light";
+    light.setAttribute("aria-hidden", "true");
+    const copy = document.createElement("span");
+    copy.className = "recent-prize-copy";
+    const name = document.createElement("strong");
+    name.textContent = style.label;
+    const date = document.createElement("span");
+    date.textContent = formatRewardDate(earnedAt);
+    copy.append(name, date);
+    item.append(light, copy);
+    if (!state.seenPrizes.includes(styleId)) {
+      const badge = document.createElement("span");
+      badge.className = "prize-new-badge";
+      badge.textContent = "NEW";
+      item.appendChild(badge);
+      item.setAttribute("aria-label", `${style.label}、新しいプライズ、${formatRewardDate(earnedAt)}`);
+    }
+    list.appendChild(item);
+  });
+}
+
+function markDisplayedPrizesSeen(state = getRewardState()) {
+  const displayed = [...document.querySelectorAll("#lampStyleChoices [data-style-id]")]
+    .map((button) => button.dataset.styleId)
+    .filter((styleId) => styleId && styleId !== "classic" && isLampStyleUnlocked(styleId, state));
+  const nextSeen = [...new Set([...(state.seenPrizes || []), ...displayed])];
+  if (nextSeen.length === (state.seenPrizes || []).length) return;
+  state.seenPrizes = nextSeen;
+  saveRewardState(state);
+}
+
+function renderLampStyleChoices(state, definitions = REWARD_DEFINITIONS) {
   const section = document.getElementById("lampStyleSection");
   const container = document.getElementById("lampStyleChoices");
-  const unlocked = Object.entries(LAMP_STYLES).filter(([styleId]) => isLampStyleUnlocked(styleId, state));
-  section.hidden = unlocked.length === 0;
+  const styles = Object.entries(LAMP_STYLES);
+  const rewardById = new Map((definitions || []).map((reward) => [reward.id, reward]));
+  const progression = definitions ? rewardProgression(definitions, state, get(LS.pinnedReward, "")) : null;
+  const visibleStyles = styles.filter(([styleId, style]) =>
+    styleId === "classic" ||
+    isLampStyleUnlocked(styleId, state) ||
+    (style.rewardId && progression?.currentIds.has(style.rewardId))
+  );
+  section.hidden = visibleStyles.length === 0;
   container.innerHTML = "";
-  unlocked.forEach(([styleId, style]) => {
+  visibleStyles.forEach(([styleId, style]) => {
+    const unlocked = isLampStyleUnlocked(styleId, state);
+    const equipped = unlocked && state.equippedLamp === styleId;
+    const isNewPrize = unlocked && Boolean(style.rewardId) && !(state.seenPrizes || []).includes(styleId);
+    const unlockReward = style.rewardId ? rewardById.get(style.rewardId) : null;
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "lamp-style-choice";
-    button.textContent = style.label;
+    button.dataset.styleId = styleId;
+    button.className = `lamp-style-choice${unlocked ? "" : " is-locked"}`;
     button.style.setProperty("--style-color", style.color);
-    button.setAttribute("aria-pressed", state.equippedLamp === styleId ? "true" : "false");
+    button.setAttribute("aria-pressed", equipped ? "true" : "false");
+    button.setAttribute("aria-disabled", unlocked ? "false" : "true");
+    const copy = document.createElement("span");
+    copy.className = "lamp-style-choice-copy";
+    const name = document.createElement("strong");
+    name.textContent = style.label;
+    const condition = document.createElement("span");
+    condition.className = "lamp-style-choice-state";
+    condition.textContent = equipped
+      ? "使用中"
+      : unlocked
+        ? style.rewardId ? "獲得済み" : "標準"
+        : unlockReward?.description || "未解放";
+    copy.append(name, condition);
+    button.appendChild(copy);
+    if (isNewPrize) {
+      const badge = document.createElement("span");
+      badge.className = "prize-new-badge";
+      badge.textContent = "NEW";
+      button.appendChild(badge);
+    }
+    button.setAttribute("aria-label", unlocked
+      ? `${style.label}、${isNewPrize ? "新しいプライズ、" : ""}${equipped ? "使用中" : style.rewardId ? "獲得済み" : "標準"}`
+      : `${style.label}、未解放、${condition.textContent}`);
     button.addEventListener("click", () => {
       const latest = getRewardState();
       if (!isLampStyleUnlocked(styleId, latest)) return;
       latest.equippedLamp = styleId;
+      latest.seenPrizes = [...new Set([...(latest.seenPrizes || []), styleId])];
       saveRewardState(latest);
       applyEquippedLampStyle(latest);
       renderLampStyleChoices(latest);
+      renderRecentPrizes(latest);
       document.getElementById("rewardCollectionStatus").textContent = `${style.label}の灯りに変更しました。`;
     });
     container.appendChild(button);
   });
+  const hiddenStyleCount = styles.length - visibleStyles.length;
+  if (hiddenStyleCount > 0) {
+    const more = document.createElement("p");
+    more.className = "lamp-style-more";
+    more.textContent = "ほかの灯りカラーは、関連するリワードの段階を進めると公開されます。";
+    container.appendChild(more);
+  }
+  renderRecentPrizes(state);
+}
+
+function selectNearestRewardItems(items, limit = 4) {
+  const ranked = [...items].sort((a, b) => b.progress - a.progress || a.threshold - b.threshold || a.index - b.index);
+  const selected = [];
+  const selectedIds = new Set();
+  const categories = new Set();
+  ranked.forEach((item) => {
+    if (selected.length >= limit || categories.has(item.reward.category)) return;
+    selected.push(item);
+    selectedIds.add(item.reward.id);
+    categories.add(item.reward.category);
+  });
+  ranked.forEach((item) => {
+    if (selected.length >= limit || selectedIds.has(item.reward.id)) return;
+    selected.push(item);
+    selectedIds.add(item.reward.id);
+  });
+  return selected;
 }
 
 const REWARD_CHAINS = [
@@ -2030,6 +2320,16 @@ const REWARD_CHAINS = [
   { metric: "readingDays", label: "読書日" },
   { metric: "longestStreak", label: "連続日数" },
   { metric: "threeDayWeeks", label: "週3日の達成" },
+  { metric: "sevenDayWeeks", label: "週7日の達成" },
+  { metric: "topicsExplored", label: "ジャンル探索" },
+  { metric: "levelsExplored", label: "レベル探索" },
+  { metric: "returnGapDays", label: "久しぶりの再開" },
+  { metric: "shortReads", label: "短い一篇" },
+  { metric: "earlyReads", label: "朝の読書" },
+  { metric: "nightReads", label: "夜の読書" },
+  { metric: "weekendReads", label: "週末の読書" },
+  { metric: "healthySkips", label: "文章を替える選択" },
+  { metric: "favorites", label: "お気に入り" },
 ];
 
 function compactRewardThreshold(value) {
@@ -2038,13 +2338,20 @@ function compactRewardThreshold(value) {
   return fmt(value);
 }
 
+function setRewardStepCopy(step, titleText, detailText) {
+  const title = document.createElement("strong");
+  title.textContent = titleText;
+  const detail = document.createElement("small");
+  detail.textContent = detailText;
+  step.append(title, detail);
+}
+
 function renderRewardChains(definitions, state, metrics) {
   const container = document.getElementById("rewardChainList");
   container.innerHTML = "";
+  const progression = rewardProgression(definitions, state, get(LS.pinnedReward, ""));
   REWARD_CHAINS.forEach((chain) => {
-    const rewards = definitions
-      .filter((reward) => reward.metric === chain.metric)
-      .sort((a, b) => Number(a.threshold) - Number(b.threshold));
+    const rewards = (progression.sequences.get(chain.metric) || []).map((item) => item.reward);
     if (rewards.length < 2) return;
     const row = document.createElement("section");
     row.className = "reward-chain";
@@ -2058,26 +2365,71 @@ function renderRewardChains(definitions, state, metrics) {
     const steps = document.createElement("div");
     steps.className = "reward-chain-steps";
     steps.setAttribute("role", "list");
-    rewards.forEach((reward) => {
-      const earned = hasOwn(state.earned, reward.id);
-      const step = document.createElement("span");
-      step.className = `reward-chain-step${earned ? " is-earned" : ""}`;
-      step.setAttribute("role", "listitem");
-      step.setAttribute("aria-label", `${reward.title}、${fmt(Number(reward.threshold))}${earned ? "、獲得済み" : "、未獲得"}`);
-      step.textContent = compactRewardThreshold(Number(reward.threshold));
-      steps.appendChild(step);
-    });
+    const earnedRewards = rewards.filter((reward) => hasOwn(state.earned, reward.id));
+    const currentReward = rewards.find((reward) => progression.currentIds.has(reward.id));
+    const hiddenRemain = rewards.some((reward) => progression.hiddenIds.has(reward.id));
+
+    if (earnedRewards.length) {
+      const latest = earnedRewards[earnedRewards.length - 1];
+      const earned = document.createElement("span");
+      earned.className = "reward-chain-step is-earned";
+      earned.setAttribute("role", "listitem");
+      earned.setAttribute("aria-label", `${chain.label}は${earnedRewards.length}段階達成済み。直近は${latest.title}`);
+      setRewardStepCopy(earned, `✓ ${earnedRewards.length}段階達成`, `直近：${latest.title}`);
+      steps.appendChild(earned);
+    }
+
+    if (currentReward) {
+      const currentValue = Math.max(0, Number(metrics[currentReward.metric] || 0));
+      const threshold = Number(currentReward.threshold);
+      const percent = Math.min(100, Math.round((currentValue / threshold) * 100));
+      const currentStep = document.createElement("span");
+      currentStep.className = "reward-chain-step is-current";
+      currentStep.setAttribute("role", "listitem");
+      currentStep.setAttribute("aria-label", `現在の段階、${currentReward.title}、進捗${percent}%`);
+      setRewardStepCopy(currentStep, `次：${currentReward.title}`, `${fmt(Math.min(currentValue, threshold))} / ${fmt(threshold)}・${percent}%`);
+      steps.appendChild(currentStep);
+    } else {
+      const complete = document.createElement("span");
+      complete.className = "reward-chain-step is-complete";
+      complete.setAttribute("role", "listitem");
+      complete.textContent = "この系列を達成しました";
+      steps.appendChild(complete);
+    }
+
+    if (hiddenRemain) {
+      const hidden = document.createElement("span");
+      hidden.className = "reward-chain-step is-hidden";
+      hidden.setAttribute("role", "listitem");
+      hidden.setAttribute("aria-label", "未公開の次段階。現在の段階を達成すると公開されます");
+      setRewardStepCopy(hidden, "🔒 未公開", "達成後に続きを公開");
+      steps.appendChild(hidden);
+    }
     row.append(heading, steps);
     container.appendChild(row);
   });
+
+  const discoveryRewards = [...progression.sequences.values()]
+    .filter((items) => items.length === 1)
+    .map((items) => items[0].reward);
+  const discoveryEarned = discoveryRewards.filter((reward) => hasOwn(state.earned, reward.id)).length;
+  const discovery = document.createElement("section");
+  discovery.className = "reward-discovery";
+  const discoveryTitle = document.createElement("strong");
+  discoveryTitle.textContent = "発見型リワード";
+  const discoveryCopy = document.createElement("span");
+  discoveryCopy.textContent = `${discoveryEarned ? `${discoveryEarned}件獲得済み。` : ""}条件は非公開です。獲得したリワードはコレクションに追加されます。`;
+  discovery.append(discoveryTitle, discoveryCopy);
+  container.appendChild(discovery);
 }
 
 function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRewardState()) {
   if (!definitions) return;
-  const filter = rewardCategoryFilter.value || "all";
+  const filter = rewardCategoryFilter.value || "nearest";
   const earnedCount = definitions.filter((reward) => hasOwn(state.earned, reward.id)).length;
   const metrics = rewardMetrics();
   const suppressed = new Set(state.suppressed);
+  const progression = rewardProgression(definitions, state, get(LS.pinnedReward, ""));
   const newestEarnedAt = definitions
     .map((reward) => state.earned[reward.id])
     .filter(Boolean)
@@ -2092,6 +2444,7 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
         index,
         earnedAt,
         isSuppressed,
+        isCurrent: progression.currentIds.has(reward.id),
         current,
         threshold,
         progress: earnedAt ? 100 : Math.min(100, Math.round((current / threshold) * 100)),
@@ -2114,37 +2467,41 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
     return activeRank(a) - activeRank(b) || b.progress - a.progress || a.threshold - b.threshold || a.index - b.index;
   });
   let visible;
-  if (filter === "recommended") {
-    const pinnedId = get(LS.pinnedReward, "");
+  if (filter === "nearest") {
     const active = allItems
-      .filter((item) => !item.earnedAt && !item.isSuppressed)
-      .sort((a, b) => Number(b.reward.id === pinnedId) - Number(a.reward.id === pinnedId) || b.progress - a.progress || a.threshold - b.threshold || a.index - b.index);
+      .filter((item) => item.isCurrent && !item.earnedAt && !item.isSuppressed);
     visible = active.length
-      ? active.slice(0, 4)
+      ? selectNearestRewardItems(active, 4)
       : allItems.filter((item) => item.earnedAt).sort((a, b) => new Date(b.earnedAt) - new Date(a.earnedAt)).slice(0, 4);
+  } else if (filter === "current") {
+    visible = sortVisible(allItems.filter((item) => item.isCurrent && !item.earnedAt && !item.isSuppressed));
   } else if (filter === "earned") {
     visible = sortVisible(allItems.filter((item) => item.earnedAt));
   } else {
-    visible = sortVisible(filter === "all" ? allItems : allItems.filter((item) => item.reward.category === filter));
+    visible = sortVisible(allItems.filter((item) =>
+      item.reward.category === filter &&
+      (item.earnedAt || item.isCurrent) &&
+      !item.isSuppressed
+    ));
   }
-  rewardSortControl.hidden = filter === "recommended";
-  rewardSortControl.parentElement.classList.toggle("is-simple", filter === "recommended");
-  const visibleLabel = filter === "recommended" ? "おすすめ" : filter === "earned" ? "獲得済み" : "表示中";
+  rewardSortControl.hidden = filter === "nearest" || filter === "current";
+  rewardSortControl.parentElement.classList.toggle("is-simple", rewardSortControl.hidden);
+  const visibleLabel = filter === "nearest" ? "達成に近い" : filter === "current" ? "現在公開中" : filter === "earned" ? "獲得済み" : "このカテゴリで公開中";
   document.getElementById("rewardVisibleCount").textContent = `${visibleLabel} ${visible.length}件`;
-  document.getElementById("rewardCollectionCount").textContent = `${earnedCount} / ${definitions.length}`;
-  renderLampStyleChoices(state);
+  document.getElementById("rewardCollectionCount").textContent = fmt(earnedCount);
+  renderLampStyleChoices(state, definitions);
   renderRewardChains(definitions, state, metrics);
 
   const grid = document.getElementById("rewardGrid");
   grid.innerHTML = "";
-  visible.forEach(({ reward, earnedAt, isSuppressed, current, threshold, progress }) => {
+  visible.forEach(({ reward, earnedAt, isSuppressed, isCurrent, current, threshold, progress }) => {
     const card = document.createElement("article");
-    card.className = `reward-card${earnedAt ? " is-earned" : " is-locked"}${earnedAt === newestEarnedAt ? " is-newest" : ""}${isSuppressed ? " is-suppressed" : ""}`;
-    card.setAttribute("aria-label", `${reward.title}、${earnedAt ? "獲得済み" : isSuppressed ? "記録消去済み" : `未獲得、進捗${progress}%`}`);
+    card.className = `reward-card${earnedAt ? " is-earned" : " is-current"}${earnedAt === newestEarnedAt ? " is-newest" : ""}${isSuppressed ? " is-suppressed" : ""}`;
+    card.setAttribute("aria-label", `${reward.title}、${earnedAt ? "獲得済み" : isSuppressed ? "記録消去済み" : `現在の段階、進捗${progress}%`}`);
 
     const icon = document.createElement("span");
     icon.className = "reward-card-icon";
-    icon.textContent = earnedAt ? reward.icon : "·";
+    icon.textContent = reward.icon || "✦";
     icon.setAttribute("aria-hidden", "true");
     const title = document.createElement("strong");
     title.className = "reward-card-title";
@@ -2153,6 +2510,13 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
     description.className = "reward-card-description";
     description.textContent = reward.description;
     card.append(icon, title, description);
+
+    if (!earnedAt && isCurrent) {
+      const stage = document.createElement("span");
+      stage.className = "reward-card-stage";
+      stage.textContent = "現在の段階";
+      card.appendChild(stage);
+    }
 
     const progressRow = document.createElement("span");
     progressRow.className = "reward-card-progress-row";
@@ -2189,7 +2553,7 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
       unlock.textContent = reward.unlock.label;
       card.appendChild(unlock);
     }
-    if (!earnedAt && !isSuppressed && getBool(LS.showRewardGoals, true)) {
+    if (!earnedAt && isCurrent && !isSuppressed && getBool(LS.showRewardGoals, true)) {
       const pin = document.createElement("button");
       pin.type = "button";
       pin.className = "reward-card-pin";
@@ -2208,16 +2572,23 @@ function renderRewardCollection(definitions = REWARD_DEFINITIONS, state = getRew
 }
 
 async function openRewards(options = {}) {
-  const savedFilter = get(LS.rewardFilter, "recommended");
+  const savedFilter = get(LS.rewardFilter, "nearest");
+  const normalizedFilter = savedFilter === "recommended"
+    ? "nearest"
+    : savedFilter === "all"
+      ? "current"
+      : savedFilter;
   const savedSort = get(LS.rewardSort, "progress");
-  rewardCategoryFilter.value = [...rewardCategoryFilter.options].some((option) => option.value === savedFilter) ? savedFilter : "all";
+  rewardCategoryFilter.value = [...rewardCategoryFilter.options].some((option) => option.value === normalizedFilter) ? normalizedFilter : "nearest";
   rewardSort.value = [...rewardSort.options].some((option) => option.value === savedSort) ? savedSort : "progress";
   document.getElementById("rewardCollectionStatus").textContent = "";
   document.getElementById("rewardGrid").innerHTML = '<p class="modal-hint">コレクションを読み込んでいます…</p>';
   openAccessibleModal(rewardsModal, closeRewardsIconBtn, closeRewards);
   try {
     const definitions = await loadRewards();
-    renderRewardCollection(definitions, getRewardState());
+    const state = getRewardState();
+    renderRewardCollection(definitions, state);
+    requestAnimationFrame(() => markDisplayedPrizesSeen(state));
     if (options.focusLamp === true) {
       const firstLamp = document.querySelector("#lampStyleChoices button");
       if (firstLamp) {
@@ -2252,7 +2623,7 @@ document.getElementById("resetRewardsBtn").addEventListener("click", async () =>
     const suppressed = definitions
       .filter((reward) => Number(metrics[reward.metric] || 0) >= Number(reward.threshold))
       .map((reward) => reward.id);
-    const state = { version: REWARD_STATE_VERSION, initialized: true, earned: {}, suppressed, equippedLamp: "classic" };
+    const state = { version: REWARD_STATE_VERSION, initialized: true, earned: {}, suppressed, equippedLamp: "classic", seenPrizes: [] };
     saveRewardState(state);
     rewardNotificationQueue.length = 0;
     document.getElementById("rewardToast").hidden = true;
@@ -2365,6 +2736,7 @@ function renderHistoryAnalysis(history) {
 
 function renderHome() {
   const history = getHistory();
+  const returning = returningReaderState(history);
   const total = history.reduce((sum, entry) => sum + Number(entry.words || 0), 0);
   document.getElementById("totalWords").textContent = fmt(total);
 
@@ -2386,6 +2758,7 @@ function renderHome() {
   renderWeeklyRhythm(history);
   renderWeeklySummary(history);
   renderMonthlySummary(history);
+  renderBackupStatus(history);
   renderRewardHome();
   const wpm = recentWpm();
   document.getElementById("statWpm").textContent = wpm === null ? "—" : wpm;
@@ -2398,13 +2771,19 @@ function renderHome() {
   const useBank = usingOfflineBank();
   syncTopicMode(useBank);
   document.getElementById("modeNote").textContent = useBank
-    ? "オフライン文章バンク ・ APIキー不要"
+    ? `オフライン文章バンク ・ APIキー不要${topicSelect.value === "random" && recommendationHasSignal(history) ? " ・ 最近の記録を候補に反映" : ""}${returning.returning ? " ・ 短めの文章を優先" : ""}`
     : `AI生成 ・ 1篇 約${fmt(getNum(LS.wordCount, 800))}語`;
   document.getElementById("startBtn").textContent = useBank
     ? "読みはじめる"
     : "AIで文章を作って読む";
   document.getElementById("quickStartBtn").hidden = !useBank;
   document.getElementById("quickStartHint").hidden = !useBank;
+  document.getElementById("quickStartBtn").textContent = returning.returning
+    ? "短い一篇から再開する"
+    : "短い一篇から始める";
+  document.getElementById("quickStartHint").textContent = returning.returning
+    ? `最後の読了から${returning.daysAway}日。今のレベルとテーマから短めの文章を選びます。`
+    : "今のレベルとテーマから、短めの文章を選びます。";
   renderStoryCandidates();
   renderOfflineStatus();
 
@@ -2416,7 +2795,7 @@ function renderHome() {
   if (history.length === 0) {
     const li = document.createElement("li");
     li.className = "history-empty";
-    li.textContent = "まだ記録がありません。まずは一篇、辞書を閉じて読んでみましょう。";
+    li.textContent = "読書記録はまだありません。";
     list.appendChild(li);
   } else {
     history.slice(0, 3).forEach((h) => {
@@ -2435,9 +2814,9 @@ function renderHome() {
 // ---------------------- Generation ----------------------
 
 const LOADING_MESSAGES = [
-  "文章を書いています…",
-  "語彙をレベルに合わせています…",
-  "読みやすさを整えています…",
+  "文章を作成しています…",
+  "応答を待っています…",
+  "文章を作成しています…",
 ];
 let loadingTimer = null;
 
@@ -2682,13 +3061,22 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 document.getElementById("startBtn").addEventListener("click", () => {
-  if (!blockNewReadingWhenDraftExists()) startSession();
+  if (!blockNewReadingWhenDraftExists()) {
+    startSession({ preferShort: usingOfflineBank() && returningReaderState().returning });
+  }
 });
 document.getElementById("quickStartBtn").addEventListener("click", () => {
   if (!blockNewReadingWhenDraftExists()) startSession({ preferShort: true });
 });
-document.getElementById("anotherBtn").addEventListener("click", startSession);
-document.getElementById("homeBtn").addEventListener("click", () => { renderHome(); showView("home"); });
+document.getElementById("anotherBtn").addEventListener("click", () => {
+  dismissFirstCompletionGuide();
+  startSession();
+});
+document.getElementById("homeBtn").addEventListener("click", () => {
+  dismissFirstCompletionGuide();
+  renderHome();
+  showView("home");
+});
 document.getElementById("resumeReadingBtn").addEventListener("click", restoreActiveReading);
 document.getElementById("discardReadingBtn").addEventListener("click", () => {
   const draft = getActiveReadingDraft();
@@ -2946,6 +3334,38 @@ async function renderFavorites() {
 // (see below), we don't immediately hand back the very same text again.
 let lastBankStoryId = null;
 
+function topicRecommendationWeight(topic, history = getHistory()) {
+  if (!getBool(LS.personalizedSuggestions, true)) return 1;
+  let weight = 1;
+  history.slice(0, 60).forEach((entry, index) => {
+    if (entry.topic !== topic) return;
+    const freshness = Math.max(0.2, 1 - index / 75);
+    if (!entry.abandoned && Number(entry.words) > 0) {
+      weight += 0.18 * freshness;
+    } else if (entry.abandonReason === "not-interesting") {
+      weight -= 0.55 * freshness;
+    }
+  });
+  return Math.min(2.4, Math.max(0.35, weight));
+}
+
+function recommendationHasSignal(history = getHistory()) {
+  return getBool(LS.personalizedSuggestions, true) && history.some((entry) =>
+    (!entry.abandoned && Number(entry.words) > 0) || entry.abandonReason === "not-interesting"
+  );
+}
+
+function rankStoriesForRecommendation(stories, history = getHistory(), random = Math.random) {
+  return stories
+    .map((story) => {
+      const weight = topicRecommendationWeight(story.topic, history);
+      const draw = Math.max(Number.EPSILON, Math.min(1, Number(random()) || 0));
+      return { story, key: Math.pow(draw, 1 / weight) };
+    })
+    .sort((a, b) => b.key - a.key)
+    .map((item) => item.story);
+}
+
 function pickStory(bank, topic, level, { preferShort = false } = {}) {
   const seen = getSeenIds();
 
@@ -2979,10 +3399,13 @@ function pickStory(bank, topic, level, { preferShort = false } = {}) {
         .sort((a, b) => (Number(a.wordCount) || countWords(a.text)) - (Number(b.wordCount) || countWords(b.text)))
         .slice(0, Math.max(1, Math.ceil(unseen.length * 0.35)))
     : unseen;
+  if (topic === "random" && recommendationHasSignal()) {
+    return rankStoriesForRecommendation(candidates)[0];
+  }
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
-function pickStoryCandidates(bank, topic, level, count = 3) {
+function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = false } = {}) {
   const seen = getSeenIds();
   const byTopic = bank.filter((story) => topic === "random" || topic === "custom" || story.topic === topic);
   const topicPool = byTopic.length ? byTopic : [...bank];
@@ -2997,14 +3420,24 @@ function pickStoryCandidates(bank, topic, level, count = 3) {
     available = levelPool.filter((story) => story.id !== lastBankStoryId);
     if (!available.length) available = levelPool;
   }
-  const shuffled = [...available].sort(() => Math.random() - 0.5);
+  const candidatePool = preferShort
+    ? [...available]
+        .sort((a, b) => (Number(a.wordCount) || countWords(a.text)) - (Number(b.wordCount) || countWords(b.text)))
+        .slice(0, Math.max(count, Math.ceil(available.length * 0.35)))
+    : available;
+  const shuffled = topic === "random" && recommendationHasSignal()
+    ? rankStoriesForRecommendation(candidatePool)
+    : [...candidatePool].sort(() => Math.random() - 0.5);
   const selected = [];
   const usedSubtopics = new Set();
+  const usedTopics = new Set();
   shuffled.forEach((story) => {
     if (selected.length >= count) return;
     const subtopic = String(story.subtopic || "");
+    if (topic === "random" && usedTopics.has(story.topic)) return;
     if (subtopic && usedSubtopics.has(subtopic)) return;
     selected.push(story);
+    usedTopics.add(story.topic);
     if (subtopic) usedSubtopics.add(subtopic);
   });
   shuffled.forEach((story) => {
@@ -3031,7 +3464,8 @@ async function renderStoryCandidates() {
   try {
     const bank = await loadStoryBank();
     if (token !== storyCandidateRenderToken || !usingOfflineBank()) return;
-    const candidates = pickStoryCandidates(bank, topicSelect.value, getLevel(), 3);
+    const returning = returningReaderState();
+    const candidates = pickStoryCandidates(bank, topicSelect.value, getLevel(), 3, { preferShort: returning.returning });
     const wpm = recentWpm() || 130;
     candidates.forEach((story) => {
       const words = Number(story.wordCount) || countWords(story.text);
@@ -3045,7 +3479,10 @@ async function renderStoryCandidates() {
       });
       list.appendChild(button);
     });
-    status.hidden = candidates.length > 0;
+    status.hidden = candidates.length > 0 && !returning.returning;
+    if (candidates.length && returning.returning) {
+      status.textContent = "短めの候補を3篇表示しています。";
+    }
     if (!candidates.length) status.textContent = "条件に合う候補がありません。テーマを変更してください。";
     if (candidates.length) recordAnonymousEvent("candidate_shown", { level: getLevel(), topic: topicSelect.value });
   } catch {
@@ -3314,11 +3751,28 @@ document.getElementById("reportStoryBtn").addEventListener("click", () => {
   const firstReason = document.querySelector('input[name="reportReason"]');
   firstReason.checked = true;
   const submitButton = document.getElementById("submitReportBtn");
-  submitButton.disabled = false;
-  submitButton.textContent = "報告を送信";
+  const shareButton = document.getElementById("shareReportBtn");
+  submitButton.disabled = true;
+  submitButton.textContent = "確認中…";
+  shareButton.textContent = "ほかの方法で共有";
+  document.getElementById("reportIntro").textContent = "報告方法を確認しています…";
   document.getElementById("reportStoryContext").textContent =
     `${session._bankId || "AI生成"} ・ ${session.title || "タイトルなし"} ・ Level ${getLevel()}`;
   openAccessibleModal(reportModal, firstReason, closeStoryReport);
+  loadRuntimeConfig().then((config) => {
+    submitButton.disabled = false;
+    submitButton.textContent = config.storyReportEndpoint ? "報告を送信" : "端末に保存";
+    shareButton.textContent = config.supportEmail ? "メールで送る" : "ほかの方法で共有";
+    submitButton.classList.toggle("btn-primary", Boolean(config.storyReportEndpoint || !config.supportEmail));
+    submitButton.classList.toggle("btn-ghost", Boolean(!config.storyReportEndpoint && config.supportEmail));
+    shareButton.classList.toggle("btn-primary", Boolean(!config.storyReportEndpoint && config.supportEmail));
+    shareButton.classList.toggle("btn-ghost", Boolean(config.storyReportEndpoint || !config.supportEmail));
+    document.getElementById("reportIntro").textContent = config.storyReportEndpoint
+      ? "送信できない場合は端末内に保存し、オンライン復帰時に再送します。"
+      : config.supportEmail
+        ? "メールアプリを開き、内容を確認して送信してください。自動送信はされません。送れない場合は端末に保存できます。"
+        : "自動送信先は未設定です。端末に保存した後、共有またはJSON保存を利用できます。";
+  });
 });
 
 closeReportIconBtn.addEventListener("click", closeStoryReport);
@@ -3347,7 +3801,9 @@ document.getElementById("submitReportBtn").addEventListener("click", async () =>
     reportStatus.textContent = "報告を送信しました。ご協力ありがとうございます。";
     button.textContent = "送信済み";
   } else if (!config.storyReportEndpoint) {
-    reportStatus.textContent = "送信先が未設定のため、報告を端末内に保存しました。共有またはファイル保存も利用できます。";
+    reportStatus.textContent = config.supportEmail
+      ? "報告を端末内に保存しました。運営者へ届けるには「メールで送る」から送信してください。"
+      : "送信先が未設定のため、報告を端末内に保存しました。共有またはファイル保存も利用できます。";
     button.textContent = "端末に保存済み";
   } else {
     reportStatus.textContent = "現在送信できないため端末内に保存しました。オンライン時に自動で再送します。";
@@ -3360,6 +3816,14 @@ document.getElementById("shareReportBtn").addEventListener("click", async () => 
   const text = storyReportText(data);
   reportStatus.textContent = "";
   try {
+    const config = await loadRuntimeConfig();
+    if (config.supportEmail) {
+      const subject = encodeURIComponent(`Reading Lamp 文章問題報告：${data.storyId}`);
+      const body = encodeURIComponent(text);
+      window.location.href = `mailto:${config.supportEmail}?subject=${subject}&body=${body}`;
+      reportStatus.textContent = "メールアプリを開きました。内容を確認して送信してください。";
+      return;
+    }
     if (navigator.share) {
       await navigator.share({ title: `Reading Lamp: ${data.storyId}`, text });
       reportStatus.textContent = "共有画面へ報告内容を渡しました。";
@@ -3509,7 +3973,7 @@ function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   if (weeklyRhythm.completed >= weeklyRhythm.goal) {
     notes.push(`今週の読書目標 ${weeklyRhythm.goal}日を達成しました。`);
   } else {
-    notes.push(`今週は ${weeklyRhythm.completed}/${weeklyRhythm.goal}日。連続でなくても大丈夫です。`);
+    notes.push(`今週の読書：${weeklyRhythm.completed}/${weeklyRhythm.goal}日。`);
   }
 
   const crossed = MILESTONES.find((m) => total >= m && total - words < m);
@@ -3522,7 +3986,21 @@ function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   }
 
   document.getElementById("summaryNote").textContent = notes.join(" ");
+
+  const completedCount = getHistory().filter((entry) => !entry.abandoned && Number(entry.words) > 0).length;
+  document.getElementById("firstCompletionGuide").hidden = !(
+    completedCount === 1 && !getBool(LS.firstCompletionGuideSeen, false)
+  );
 }
+
+function dismissFirstCompletionGuide() {
+  const guide = document.getElementById("firstCompletionGuide");
+  if (guide.hidden) return;
+  set(LS.firstCompletionGuideSeen, "1");
+  guide.hidden = true;
+}
+
+document.getElementById("dismissFirstCompletionGuideBtn").addEventListener("click", dismissFirstCompletionGuide);
 
 // ---------------------- First-run onboarding ----------------------
 
