@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.9.4";
+const APP_VERSION = "2.10.0";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -73,6 +73,7 @@ const LS = {
   personalizedSuggestions: "rl_personalized_suggestions_v1",
   lastBackupAt: "rl_last_backup_at_v1",
   firstCompletionGuideSeen: "rl_first_completion_guide_seen_v1",
+  firstReadingTipSeen: "rl_first_reading_tip_seen_v1",
   anonymousUsageConsent: "rl_anonymous_usage_consent_v1",
   anonymousUsage: "rl_anonymous_usage_v1",
   anonymousInstallId: "rl_anonymous_install_id_v1",
@@ -797,6 +798,30 @@ settingsButton.addEventListener("click", openSettings);
 document.getElementById("closeSettingsBtn").addEventListener("click", closeSettings);
 closeSettingsIconBtn.addEventListener("click", closeSettings);
 settingsModal.addEventListener("click", (e) => { if (e.target === settingsModal) closeSettings(); });
+
+// ---------------------- Reading guide ----------------------
+
+const readingGuideModal = document.getElementById("readingGuideModal");
+const closeReadingGuideIconBtn = document.getElementById("closeReadingGuideIconBtn");
+
+function closeReadingGuide() {
+  closeAccessibleModal();
+}
+
+function openReadingGuide() {
+  openAccessibleModal(readingGuideModal, closeReadingGuideIconBtn, closeReadingGuide);
+}
+
+document.getElementById("openReadingGuideBtn").addEventListener("click", openReadingGuide);
+document.getElementById("openReadingGuideFromSettingsBtn").addEventListener("click", () => {
+  closeSettings();
+  setTimeout(openReadingGuide, 0);
+});
+document.getElementById("closeReadingGuideBtn").addEventListener("click", closeReadingGuide);
+closeReadingGuideIconBtn.addEventListener("click", closeReadingGuide);
+readingGuideModal.addEventListener("click", (e) => {
+  if (e.target === readingGuideModal) closeReadingGuide();
+});
 
 levelInput.addEventListener("input", () => renderLevelDescription(levelInput.value));
 wordCountInput.addEventListener("input", () => {
@@ -3779,8 +3804,15 @@ function renderReading(s) {
     p.textContent = para.trim();
     container.appendChild(p);
   });
+  document.getElementById("firstReadingTip").hidden = getBool(LS.firstReadingTipSeen, false);
   renderFavoriteButton();
 }
+
+document.getElementById("dismissFirstReadingTipBtn").addEventListener("click", () => {
+  set(LS.firstReadingTipSeen, "1");
+  document.getElementById("firstReadingTip").hidden = true;
+  document.getElementById("readingText").focus({ preventScroll: true });
+});
 
 document.getElementById("favoriteBtn").addEventListener("click", () => {
   if (!session || !session._bankId) return;
@@ -4007,7 +4039,11 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();
   closeAccessibleModal({ restoreFocus: false, resumeReading: false });
-  startSession();
+  startSession().then(() => {
+    if (abandonReason === "too-hard") {
+      showError(`次の候補からレベルを${adjustment.after < adjustment.before ? "1つ下げました" : "確認しました"}。辞書が必要だと感じるときは、設定からさらに下げてもかまいません。`);
+    }
+  });
 }));
 
 // ---------------------- Calibration ----------------------

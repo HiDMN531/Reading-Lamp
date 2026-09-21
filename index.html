@@ -190,7 +190,14 @@
       <button id="openBackupSettingsBtn" class="btn-text-quiet" type="button">設定で保存</button>
     </section>
 
-    <p class="principle-reminder">分からない語は飛ばして、話の流れを追ってください。</p>
+      <section class="reading-method-card" aria-labelledby="readingMethodCardTitle">
+        <div>
+          <p class="reading-method-kicker">Reading Lampの読み方</p>
+          <h2 id="readingMethodCardTitle">英語を、英語のまま読む練習</h2>
+          <p>辞書を使わず、分かるところから話の流れをつかみます。難しい場合はレベルを下げてください。</p>
+        </div>
+        <button id="openReadingGuideBtn" class="btn-text-quiet" type="button">詳しい使い方</button>
+      </section>
 
     <details id="favoritesPanel" class="favorites-panel" hidden>
       <summary>お気に入り <span id="favoriteCount" class="favorites-count">0篇</span></summary>
@@ -229,7 +236,7 @@
         <a href="terms.html">利用規約</a>
         <a href="mailto:Reading.Lamp012@gmail.com?subject=Reading%20Lamp%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a>
       </nav>
-      <span>Reading Lamp v2.9.4</span>
+      <span>Reading Lamp v2.10.0</span>
     </footer>
   </section>
 
@@ -248,6 +255,13 @@
       <span class="favorite-icon" aria-hidden="true">☆</span>
       <span id="favoriteBtnLabel">お気に入りに追加</span>
     </button>
+    <aside id="firstReadingTip" class="first-reading-tip" aria-labelledby="firstReadingTipTitle" hidden>
+      <div>
+        <h3 id="firstReadingTipTitle">全部を理解しなくても大丈夫です</h3>
+        <p>単語を調べず、そのまま読み進めてみてください。内容を追えない場合は、無理に読まず別の文章や低いレベルを選べます。</p>
+      </div>
+      <button id="dismissFirstReadingTipBtn" class="btn-text-quiet" type="button">閉じる</button>
+    </aside>
     <article class="reading-text" id="readingText"></article>
     <div class="reading-actions">
       <button id="finishReadingBtn" class="btn-primary btn-lg">読み終えた</button>
@@ -498,6 +512,7 @@
     </div>
 
     <div class="settings-help">
+      <button id="openReadingGuideFromSettingsBtn" class="btn-text-quiet" type="button">Reading Lampの使い方</button>
       <button id="replayOnboardingBtn" class="btn-text-quiet" type="button">はじめ方をもう一度見る</button>
     </div>
 
@@ -509,6 +524,45 @@
     <div class="modal-danger">
       <button id="resetHistoryBtn" class="btn-text-danger">読書履歴と既読判定を消去する</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ READING GUIDE ============ -->
+<div id="readingGuideModal" class="modal-backdrop" hidden>
+  <div class="modal reading-guide-modal" role="dialog" aria-modal="true" aria-labelledby="readingGuideTitle" aria-describedby="readingGuideIntro">
+    <div class="modal-header">
+      <h2 id="readingGuideTitle" class="modal-title">Reading Lampの使い方</h2>
+      <button id="closeReadingGuideIconBtn" class="modal-close" type="button" aria-label="使い方を閉じる">×</button>
+    </div>
+    <p id="readingGuideIntro" class="reading-guide-lead">Reading Lampは、やさしい英文をたくさん読み、英語を英語のまま理解する感覚を育てる多読アプリです。</p>
+
+    <section class="reading-guide-section">
+      <span class="reading-guide-number" aria-hidden="true">1</span>
+      <div>
+        <h3>分からない単語は飛ばす</h3>
+        <p>一語ずつ調べず、分かるところから話の流れをつかみます。すべての文を完全に理解する必要はありません。</p>
+      </div>
+    </section>
+    <section class="reading-guide-section">
+      <span class="reading-guide-number" aria-hidden="true">2</span>
+      <div>
+        <h3>難しければレベルを下げる</h3>
+        <p>知らない単語が多く、話の流れが分からない場合は、その文章が難しすぎます。辞書を使う代わりに、低いレベルを選んでください。</p>
+      </div>
+    </section>
+    <section class="reading-guide-section">
+      <span class="reading-guide-number" aria-hidden="true">3</span>
+      <div>
+        <h3>合わない文章は途中でやめる</h3>
+        <p>興味を持てない文章を無理に読み切る必要はありません。別の文章を選び、読み続けられるものを探してください。</p>
+      </div>
+    </section>
+
+    <div class="reading-guide-policy">
+      <strong>日本語訳・単語帳・理解度テストを付けていない理由</strong>
+      <p>Reading Lampでは、調べるために立ち止まらず、英語を読み続けることを大切にしています。この読み方を「多読」といいます。</p>
+    </div>
+    <button id="closeReadingGuideBtn" class="btn-primary btn-lg" type="button">使い方を確認した</button>
   </div>
 </div>
 
@@ -584,19 +638,23 @@
 
     <section class="onboarding-step" data-onboarding-step="0">
       <p class="section-kicker">Reading Lampへようこそ</p>
-      <h2 class="onboarding-title">読みやすい英文から始める</h2>
-      <p id="onboardingIntro" class="onboarding-copy">レベルとジャンルを選び、英文を読み進めます。分からない語は飛ばして、話の流れを追ってください。</p>
+      <h2 class="onboarding-title">英語を、英語のまま読む練習</h2>
+      <p id="onboardingIntro" class="onboarding-copy">Reading Lampは、やさしい英文をたくさん読むためのアプリです。単語を一つずつ覚えるのではなく、文章の流れを追う力を育てます。</p>
       <ul class="onboarding-points">
-        <li>読みやすいレベルから始める</li>
-        <li>読了語数と計測できた読む速さを記録</li>
-        <li>2,000篇を端末に保存すればオフラインでも読める</li>
+        <li>分からない単語は飛ばす</li>
+        <li>難しいと感じたらレベルを下げる</li>
+        <li>興味が持てない文章は途中でやめてよい</li>
       </ul>
+      <div class="onboarding-method-note">
+        <strong>日本語訳・単語帳・理解度テストはありません。</strong>
+        <span>調べるために立ち止まらず、英語を読み続けることを大切にしているためです。</span>
+      </div>
     </section>
 
     <section class="onboarding-step" data-onboarding-step="1" hidden>
       <p class="section-kicker">開始レベル</p>
       <h2 class="onboarding-title">読みやすい英文を選ぶ</h2>
-      <p class="onboarding-copy">単語を調べずに内容を追える英文を、1つ選んでください。</p>
+      <p class="onboarding-copy">単語を調べずに内容を追える英文を、1つ選んでください。知らない単語が多く、話の流れが分からない場合は、その文章が難しすぎます。</p>
       <fieldset class="level-sample-options">
         <legend class="sr-only">読みやすい英文を選択</legend>
         <label>
