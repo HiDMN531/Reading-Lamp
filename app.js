@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.0";
+const APP_VERSION = "2.10.1";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -1726,8 +1726,20 @@ function isLampStyleUnlocked(styleId, state = getRewardState()) {
   return Boolean(style && (!style.rewardId || hasOwn(state.earned, style.rewardId)));
 }
 
-function applyEquippedLampStyle(state = getRewardState()) {
+let lampStyleTransitionTimer = null;
+
+function applyEquippedLampStyle(state = getRewardState(), { animate = false } = {}) {
   const styleId = isLampStyleUnlocked(state.equippedLamp, state) ? state.equippedLamp : "classic";
+  if (animate) {
+    clearTimeout(lampStyleTransitionTimer);
+    document.body.classList.remove("lamp-style-transitioning");
+    void document.body.offsetWidth;
+    document.body.classList.add("lamp-style-transitioning");
+    lampStyleTransitionTimer = setTimeout(() => {
+      document.body.classList.remove("lamp-style-transitioning");
+      lampStyleTransitionTimer = null;
+    }, 1750);
+  }
   if (styleId === "classic") document.body.removeAttribute("data-lamp-style");
   else document.body.setAttribute("data-lamp-style", styleId);
   if (state.equippedLamp !== styleId) {
@@ -2392,7 +2404,7 @@ function renderLampStyleChoices(state, definitions = REWARD_DEFINITIONS) {
       latest.equippedLamp = styleId;
       latest.seenPrizes = [...new Set([...(latest.seenPrizes || []), styleId])];
       saveRewardState(latest);
-      applyEquippedLampStyle(latest);
+      applyEquippedLampStyle(latest, { animate: true });
       renderLampStyleChoices(latest);
       renderRecentPrizes(latest);
       document.getElementById("rewardCollectionStatus").textContent = `${style.label}の灯りに変更しました。`;

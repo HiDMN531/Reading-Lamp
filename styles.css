@@ -1,3 +1,15 @@
+@property --amber {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #E3A857;
+}
+
+@property --amber-soft {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #E3A85733;
+}
+
 :root {
   --bg: #1B1E27;
   --bg-raised: #23273312;
@@ -81,6 +93,11 @@ body {
   background:
     radial-gradient(ellipse 600px 400px at 50% -10%, var(--amber-glow), transparent 60%),
     var(--bg);
+}
+body.lamp-style-transitioning {
+  transition:
+    --amber 1600ms cubic-bezier(.22, .61, .36, 1),
+    --amber-soft 1600ms cubic-bezier(.22, .61, .36, 1);
 }
 body.modal-open { overflow: hidden; }
 
@@ -1534,6 +1551,7 @@ a { color: var(--amber); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body.lamp-style-transitioning { transition: none; }
   .offline-status.is-working .offline-status-dot,
   .reward-toast,
   .reward-toast::after,
