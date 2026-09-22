@@ -86,6 +86,7 @@ try {
   await graduated.addInitScript(() => {
     localStorage.setItem("rl_onboarding_done_v1", "1");
     localStorage.setItem("rl_level", "1");
+    localStorage.setItem("rl_seen_story_ids", JSON.stringify(Array.from({ length: 10 }, (_, index) => `s${2001 + index}`)));
     localStorage.setItem("rl_history", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({
       date: new Date(Date.now() - index * 86400000).toISOString(),
       topic: "Everyday life",
@@ -101,6 +102,7 @@ try {
   await graduatedPage.locator("#storyCandidateList .story-candidate").first().waitFor();
   assert.equal(await graduatedPage.locator("#storyCandidateList .story-candidate").count(), 3);
   assert.match(await graduatedPage.locator("#storyCandidatesTitle").textContent(), /この3篇/);
+  assert.match(await graduatedPage.locator("#storyCandidateList").textContent(), /The Blue Umbrella/);
   await graduated.close();
   await returning.close();
   await context.close();

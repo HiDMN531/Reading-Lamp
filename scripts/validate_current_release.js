@@ -18,10 +18,10 @@ const pkg = JSON.parse(read("package.json"));
 
 new vm.Script(app, { filename: "app.js" });
 new vm.Script(sw, { filename: "sw.js" });
-assert(pkg.version === "2.10.4", "package version mismatch");
+assert(pkg.version === "2.10.5", "package version mismatch");
 assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
 assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
-assert(sw.includes('const CACHE_NAME = "reading-lamp-v77"'), "service worker cache version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v78"'), "service worker cache version mismatch");
 assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
 assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
 
@@ -45,7 +45,7 @@ const topics = new Set([
   "History", "Science", "Mystery and adventure", "Travel and culture", "People and biography",
 ]);
 const metadata = ["subtopic", "contentType", "editorialStatus", "factChecked", "reviewedAt", "sourceWork", "vocabularyVersion"];
-assert(stories.length === 2010, `expected 2010 stories, found ${stories.length}`);
+assert(stories.length === 2050, `expected 2050 stories, found ${stories.length}`);
 let totalWords = 0;
 const cells = new Map();
 const titles = new Set();
@@ -70,14 +70,19 @@ for (const [index, story] of stories.entries()) {
   const cell = `${story.level}|${story.topic}`;
   cells.set(cell, (cells.get(cell) || 0) + 1);
 }
-assert(totalWords === 345860, `unexpected corpus word count: ${totalWords}`);
+assert(totalWords === 347694, `unexpected corpus word count: ${totalWords}`);
 assert(cells.size === 100 && Math.min(...cells.values()) >= 18, "level/topic coverage regressed");
 const starters = stories.filter((story) => Object.hasOwn(story, "starterOrder"));
-assert(starters.length === 10, "expected ten beginner stories");
-assert(starters.map((story) => story.starterOrder).join(",") === "1,2,3,4,5,6,7,8,9,10", "beginner story order is broken");
+assert(starters.length === 50, "expected fifty beginner stories");
+assert(starters.every((story, index) => story.starterOrder === index + 1), "beginner story order is broken");
 for (const story of starters) {
   assert(story.level === 1 && story.wordCount >= 30 && story.wordCount <= 60, `beginner story length or level: ${story.id}`);
   assert(story.reviewedAt === "2026-09-22", `beginner story review date: ${story.id}`);
 }
+const added = starters.slice(10);
+const addedTopicCounts = new Map();
+for (const story of added) addedTopicCounts.set(story.topic, (addedTopicCounts.get(story.topic) || 0) + 1);
+assert(addedTopicCounts.size === 5 && [...addedTopicCounts.values()].every((count) => count === 8), "new beginner stories are not balanced across five topics");
+assert(added.every((story) => story.wordCount >= 43 && story.wordCount <= 50), "new beginner story length is outside the edited range");
 assert(rewards.length === 100 && new Set(rewards.map((reward) => reward.id)).size === 100, "reward definitions changed");
-console.log(`Reading Lamp ${pkg.version}: ${stories.length} stories, ${totalWords} words, 10 beginner stories, 100 rewards — validated`);
+console.log(`Reading Lamp ${pkg.version}: ${stories.length} stories, ${totalWords} words, 50 beginner stories, 100 rewards — validated`);

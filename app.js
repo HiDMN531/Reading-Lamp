@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.4";
+const APP_VERSION = "2.10.5";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -1108,7 +1108,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 2010, rewardDefinitions: definitions.length },
+      corpus: { stories: 2050, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -3346,7 +3346,7 @@ async function renderOfflineStatus() {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
       if (status.current || typeof status.current !== "boolean") {
-        setOfflineStatus("ready", `2,010篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+        setOfflineStatus("ready", `2,050篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
       } else if (navigator.onLine) {
         setOfflineStatus("working", "以前の版を利用できます。更新版の文章を保存しています…");
         prepareOfflineContent(false);
@@ -3356,7 +3356,7 @@ async function renderOfflineStatus() {
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
-      setOfflineStatus("working", "2,010篇を端末に保存しています…");
+      setOfflineStatus("working", "2,050篇を端末に保存しています…");
       prepareOfflineContent(false);
     }
   } catch {
@@ -3367,7 +3367,7 @@ async function renderOfflineStatus() {
 async function prepareOfflineContent(requestPersistence = false) {
   if (offlinePreparing || !usingOfflineBank()) return;
   offlinePreparing = true;
-  setOfflineStatus("working", "2,010篇を端末に保存しています…");
+  setOfflineStatus("working", "2,050篇を端末に保存しています…");
   try {
     if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
       await navigator.storage.persist().catch(() => false);
@@ -3523,7 +3523,7 @@ function beginnerReadingCount(history = getHistory()) {
 }
 
 function beginnerCandidatePool(available, level) {
-  if (level !== 1 || beginnerReadingCount() >= 10 || !available.length) return null;
+  if (level !== 1 || beginnerReadingCount() >= 50 || !available.length) return null;
   const wordCount = (story) => Number(story.wordCount) || countWords(story.text);
   const short = available.filter((story) => wordCount(story) <= 60);
   return [...(short.length ? short : available)].sort((a, b) =>
@@ -3590,13 +3590,15 @@ function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = fals
     if (!available.length) available = levelPool;
   }
   const beginnerPool = beginnerCandidatePool(available, level);
-  if (beginnerPool) return beginnerPool.slice(0, 1);
-  const candidatePool = preferShort
+  if (beginnerPool && beginnerReadingCount() < 10) return beginnerPool.slice(0, 1);
+  const candidatePool = beginnerPool || (preferShort
     ? [...available]
         .sort((a, b) => (Number(a.wordCount) || countWords(a.text)) - (Number(b.wordCount) || countWords(b.text)))
         .slice(0, Math.max(count, Math.ceil(available.length * 0.35)))
-    : available;
-  const shuffled = topic === "random" && recommendationHasSignal()
+    : available);
+  const shuffled = beginnerPool
+    ? beginnerPool
+    : topic === "random" && recommendationHasSignal()
     ? rankStoriesForRecommendation(candidatePool)
     : [...candidatePool].sort(() => Math.random() - 0.5);
   const selected = [];
