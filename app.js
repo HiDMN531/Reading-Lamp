@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.1";
+const APP_VERSION = "2.10.2";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -802,6 +802,15 @@ settingsModal.addEventListener("click", (e) => { if (e.target === settingsModal)
 // ---------------------- Reading guide ----------------------
 
 const readingGuideModal = document.getElementById("readingGuideModal");
+const wpmGuideModal = document.getElementById("wpmGuideModal");
+function closeWpmGuide() { closeAccessibleModal(); }
+document.querySelectorAll("[data-open-wpm]").forEach((button) => {
+  button.addEventListener("click", () => openAccessibleModal(wpmGuideModal, document.getElementById("closeWpmGuideBtn"), closeWpmGuide));
+});
+document.getElementById("closeWpmGuideBtn").addEventListener("click", closeWpmGuide);
+wpmGuideModal.addEventListener("click", (event) => {
+  if (event.target === wpmGuideModal) closeWpmGuide();
+});
 const closeReadingGuideIconBtn = document.getElementById("closeReadingGuideIconBtn");
 
 function closeReadingGuide() {

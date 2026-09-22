@@ -92,6 +92,15 @@
       <p id="quickStartHint" class="quick-start-hint">今のレベルとテーマから、短めの文章を選びます。</p>
     </section>
 
+    <section class="reading-method-card" aria-labelledby="readingMethodCardTitle">
+      <div>
+        <p class="reading-method-kicker">Reading Lampの読み方</p>
+        <h2 id="readingMethodCardTitle">英語を、英語のまま読む練習</h2>
+        <p>辞書を使わず、分かるところから話の流れをつかみます。難しい場合はレベルを下げてください。</p>
+      </div>
+      <button id="openReadingGuideBtn" class="btn-text-quiet" type="button">詳しい使い方</button>
+    </section>
+
     <div class="counter-hero">
       <p class="counter-caption">これまでに読んだ語数</p>
       <p class="counter-value"><span id="totalWords">0</span><span class="counter-unit">語</span></p>
@@ -108,7 +117,7 @@
       </div>
       <div class="stat">
         <span class="stat-num" id="statWpm">—</span>
-        <span class="stat-label">語/分</span>
+        <button class="btn-text-quiet" type="button" data-open-wpm aria-haspopup="dialog" aria-controls="wpmGuideModal">語/分（WPM）とは？</button>
       </div>
       <div class="stat">
         <span class="stat-num" id="statLevel">5</span>
@@ -190,14 +199,6 @@
       <button id="openBackupSettingsBtn" class="btn-text-quiet" type="button">設定で保存</button>
     </section>
 
-      <section class="reading-method-card" aria-labelledby="readingMethodCardTitle">
-        <div>
-          <p class="reading-method-kicker">Reading Lampの読み方</p>
-          <h2 id="readingMethodCardTitle">英語を、英語のまま読む練習</h2>
-          <p>辞書を使わず、分かるところから話の流れをつかみます。難しい場合はレベルを下げてください。</p>
-        </div>
-        <button id="openReadingGuideBtn" class="btn-text-quiet" type="button">詳しい使い方</button>
-      </section>
 
     <details id="favoritesPanel" class="favorites-panel" hidden>
       <summary>お気に入り <span id="favoriteCount" class="favorites-count">0篇</span></summary>
@@ -236,7 +237,7 @@
         <a href="terms.html">利用規約</a>
         <a href="mailto:Reading.Lamp012@gmail.com?subject=Reading%20Lamp%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a>
       </nav>
-      <span>Reading Lamp v2.10.1</span>
+      <span>Reading Lamp v2.10.2</span>
     </footer>
   </section>
 
@@ -304,7 +305,7 @@
       </div>
       <div class="summary-cell">
         <span class="summary-num" id="summaryWpm">0</span>
-        <span class="summary-label">語/分</span>
+        <button class="btn-text-quiet" type="button" data-open-wpm aria-haspopup="dialog" aria-controls="wpmGuideModal">語/分（WPM）とは？</button>
       </div>
       <div class="summary-cell">
         <span class="summary-num" id="summaryTotal">0</span>
@@ -524,6 +525,18 @@
     <div class="modal-danger">
       <button id="resetHistoryBtn" class="btn-text-danger">読書履歴と既読判定を消去する</button>
     </div>
+  </div>
+</div>
+
+<div id="wpmGuideModal" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wpmGuideTitle">
+    <div class="modal-header">
+      <h2 id="wpmGuideTitle" class="modal-title">読む速さ（WPM）について</h2>
+      <button id="closeWpmGuideBtn" class="modal-close" type="button" aria-label="WPMの説明を閉じる">×</button>
+    </div>
+    <p class="reading-guide-lead">WPMは、1分間に読んだ英単語数の目安です。速さを競うものではありません。内容を追える、自分に合ったペースで読んでください。</p>
+    <p class="reading-guide-lead">たとえば、200語を2分で読むと100 WPMです。ホームには最近5回の有効な読書記録から、合計語数÷合計読書時間で計算した値を表示します。</p>
+    <p class="reading-guide-lead">画面ロック中や別のアプリを開いている時間は計測しません。10秒未満の読書など、計測条件を満たさない場合は「—」になります。文章の難しさでも数値は変わるので、毎回の上下を気にする必要はありません。</p>
   </div>
 </div>
 
