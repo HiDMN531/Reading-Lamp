@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.3";
+const APP_VERSION = "2.10.4";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -417,8 +417,8 @@ const LEVELS = [
   { n: 10, headwords: null,  label: "無制限",         desc: "簡略化なし。一般書・報道と同水準" },
 ];
 
-function levelInfo(n) { return LEVELS.find((l) => l.n === n) || LEVELS[4]; }
-function getLevel() { return Math.min(10, Math.max(1, getNum(LS.level, 5))); }
+function levelInfo(n) { return LEVELS.find((l) => l.n === n) || LEVELS[0]; }
+function getLevel() { return Math.min(10, Math.max(1, getNum(LS.level, 1))); }
 function setLevel(n) { set(LS.level, Math.min(10, Math.max(1, n))); }
 
 const EASY_STREAK_REQUIRED = 3;
@@ -447,7 +447,7 @@ function adjustLevelFromFeedback(feedback, before) {
       after,
       note: after < before
         ? `次からレベル ${after} に下げます。`
-        : "現在はレベル1です。難しい文章は別の文章に替えてください。",
+        : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びます。",
     };
   }
 
@@ -768,8 +768,8 @@ function openSettings() {
   renderLevelDescription(getLevel());
   wordCountInput.value = getNum(LS.wordCount, 800);
   wordCountValue.textContent = getNum(LS.wordCount, 800);
-  dailyGoalInput.value = getNum(LS.dailyGoal, 1500);
-  dailyGoalValue.textContent = getNum(LS.dailyGoal, 1500);
+  dailyGoalInput.value = getNum(LS.dailyGoal, 100);
+  dailyGoalValue.textContent = getNum(LS.dailyGoal, 100);
   weeklyGoalDaysInput.value = String(getWeeklyGoalDays());
   toggleOfflineBank.checked = usingOfflineBank();
   const displaySettings = getReadingDisplaySettings();
@@ -1108,7 +1108,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 2000, rewardDefinitions: definitions.length },
+      corpus: { stories: 2010, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -2880,7 +2880,7 @@ function renderHome() {
   const pct = Math.max(2, Math.min(100, ((total - prev) / (next - prev)) * 100));
   document.getElementById("milestoneFill").style.width = pct + "%";
 
-  const goal = getNum(LS.dailyGoal, 1500);
+  const goal = getNum(LS.dailyGoal, 100);
   const today = wordsToday(history);
   const caption = document.getElementById("milestoneCaption");
   if (today >= goal) {
@@ -3346,17 +3346,17 @@ async function renderOfflineStatus() {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
       if (status.current || typeof status.current !== "boolean") {
-        setOfflineStatus("ready", `2,000篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+        setOfflineStatus("ready", `2,010篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
       } else if (navigator.onLine) {
         setOfflineStatus("working", "以前の版を利用できます。更新版の文章を保存しています…");
         prepareOfflineContent(false);
       } else {
-        setOfflineStatus("ready", "以前の版の2,000篇をオフラインで利用できます。", "");
+        setOfflineStatus("ready", "以前の版の文章をオフラインで利用できます。", "");
       }
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
-      setOfflineStatus("working", "2,000篇を端末に保存しています…");
+      setOfflineStatus("working", "2,010篇を端末に保存しています…");
       prepareOfflineContent(false);
     }
   } catch {
@@ -3367,7 +3367,7 @@ async function renderOfflineStatus() {
 async function prepareOfflineContent(requestPersistence = false) {
   if (offlinePreparing || !usingOfflineBank()) return;
   offlinePreparing = true;
-  setOfflineStatus("working", "2,000篇を端末に保存しています…");
+  setOfflineStatus("working", "2,010篇を端末に保存しています…");
   try {
     if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
       await navigator.storage.persist().catch(() => false);
@@ -3518,6 +3518,20 @@ function rankStoriesForRecommendation(stories, history = getHistory(), random = 
     .map((item) => item.story);
 }
 
+function beginnerReadingCount(history = getHistory()) {
+  return history.filter((entry) => !entry.abandoned && Number(entry.words) > 0 && Number(entry.level) === 1).length;
+}
+
+function beginnerCandidatePool(available, level) {
+  if (level !== 1 || beginnerReadingCount() >= 10 || !available.length) return null;
+  const wordCount = (story) => Number(story.wordCount) || countWords(story.text);
+  const short = available.filter((story) => wordCount(story) <= 60);
+  return [...(short.length ? short : available)].sort((a, b) =>
+    (Number(a.starterOrder) || 999) - (Number(b.starterOrder) || 999)
+      || wordCount(a) - wordCount(b)
+  );
+}
+
 function pickStory(bank, topic, level, { preferShort = false } = {}) {
   const seen = getSeenIds();
 
@@ -3546,6 +3560,9 @@ function pickStory(bank, topic, level, { preferShort = false } = {}) {
     if (unseen.length === 0) unseen = levelPool; // group has only one story
   }
 
+  const beginnerPool = beginnerCandidatePool(unseen, level);
+  if (beginnerPool) return beginnerPool[0];
+
   const candidates = preferShort
     ? [...unseen]
         .sort((a, b) => (Number(a.wordCount) || countWords(a.text)) - (Number(b.wordCount) || countWords(b.text)))
@@ -3572,6 +3589,8 @@ function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = fals
     available = levelPool.filter((story) => story.id !== lastBankStoryId);
     if (!available.length) available = levelPool;
   }
+  const beginnerPool = beginnerCandidatePool(available, level);
+  if (beginnerPool) return beginnerPool.slice(0, 1);
   const candidatePool = preferShort
     ? [...available]
         .sort((a, b) => (Number(a.wordCount) || countWords(a.text)) - (Number(b.wordCount) || countWords(b.text)))
@@ -3604,7 +3623,12 @@ async function renderStoryCandidates() {
   const status = document.getElementById("storyCandidatesStatus");
   const list = document.getElementById("storyCandidateList");
   const useBank = usingOfflineBank();
+  const beginnerStep = getLevel() === 1 && beginnerReadingCount() < 10;
   section.hidden = !useBank;
+  document.getElementById("storyCandidatesTitle").textContent = beginnerStep
+    ? `はじめの10篇 ・ ${beginnerReadingCount() + 1}篇目`
+    : "この3篇から選ぶ";
+  document.getElementById("refreshCandidatesBtn").hidden = beginnerStep;
   if (!useBank) {
     list.innerHTML = "";
     return;
@@ -3617,7 +3641,7 @@ async function renderStoryCandidates() {
     const bank = await loadStoryBank();
     if (token !== storyCandidateRenderToken || !usingOfflineBank()) return;
     const returning = returningReaderState();
-    const candidates = pickStoryCandidates(bank, topicSelect.value, getLevel(), 3, { preferShort: returning.returning });
+    const candidates = pickStoryCandidates(bank, topicSelect.value, getLevel(), beginnerStep ? 1 : 3, { preferShort: returning.returning });
     const wpm = recentWpm() || 130;
     candidates.forEach((story) => {
       const words = Number(story.wordCount) || countWords(story.text);
@@ -3631,8 +3655,10 @@ async function renderStoryCandidates() {
       });
       list.appendChild(button);
     });
-    status.hidden = candidates.length === 3 && !returning.returning;
-    if (candidates.length && returning.returning) {
+    status.hidden = !beginnerStep && candidates.length === 3 && !returning.returning;
+    if (candidates.length && beginnerStep) {
+      status.textContent = "まずは短い一篇だけ。速さは気にせず読んでみましょう。";
+    } else if (candidates.length && returning.returning) {
       status.textContent = `短めの候補を${candidates.length}篇表示しています。`;
     } else if (candidates.length < 3 && candidates.length > 0) {
       status.textContent = `未読の候補があと${candidates.length}篇あります。読み切ると次の周が始まります。`;
@@ -4060,9 +4086,11 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();
   closeAccessibleModal({ restoreFocus: false, resumeReading: false });
-  startSession().then(() => {
+  startSession({ preferShort: abandonReason === "too-hard" && levelBefore === 1 }).then(() => {
     if (abandonReason === "too-hard") {
-      showError(`次の候補からレベルを${adjustment.after < adjustment.before ? "1つ下げました" : "確認しました"}。辞書が必要だと感じるときは、設定からさらに下げてもかまいません。`);
+      showError(adjustment.after < adjustment.before
+        ? `次の候補からレベルを1つ下げました。辞書が必要だと感じるときは、設定からさらに下げてもかまいません。`
+        : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びました。");
     }
   });
 }));
@@ -4119,15 +4147,21 @@ function finishSession(feedback) {
 
 function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   const total = totalWordsRead();
+  const completedCount = getHistory().filter((entry) => !entry.abandoned && Number(entry.words) > 0).length;
+  const gentleStart = adjustment.before === 1 && beginnerReadingCount() <= 5;
 
-  document.getElementById("summaryHeadline").textContent = `${fmt(words)} 語を読みました`;
+  document.getElementById("summaryHeadline").textContent = gentleStart && completedCount === 1
+    ? "英語だけで1篇読めました"
+    : `${fmt(words)} 語を読みました`;
   document.getElementById("summaryWords").textContent = fmt(words);
   document.getElementById("summaryWpm").textContent = wpm || "—";
+  document.getElementById("summaryWpmCell").hidden = gentleStart;
   document.getElementById("summaryTotal").textContent = fmt(total);
 
   const notes = [];
+  if (gentleStart) notes.push("速く読まなくて大丈夫です。分かる部分を楽しみましょう。");
   if (adjustment.note) notes.push(adjustment.note);
-  const goal = getNum(LS.dailyGoal, 1500);
+  const goal = getNum(LS.dailyGoal, 100);
   const today = wordsToday();
   if (today >= goal) notes.push(`今日の目標 ${fmt(goal)} 語を達成しました。`);
   const weeklyRhythm = weeklyReadingRhythm();
@@ -4140,15 +4174,14 @@ function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   const crossed = MILESTONES.find((m) => total >= m && total - words < m);
   if (crossed) notes.push(`累計 ${fmt(crossed)} 語に到達しました。`);
 
-  if (wpmInvalidReason === "too-short") {
+  if (!gentleStart && wpmInvalidReason === "too-short") {
     notes.push("読書時間が10秒未満だったため、読む速さは記録しませんでした。");
-  } else if (wpmInvalidReason) {
+  } else if (!gentleStart && wpmInvalidReason) {
     notes.push("計測値が通常範囲外だったため、読む速さは記録しませんでした。");
   }
 
   document.getElementById("summaryNote").textContent = notes.join(" ");
 
-  const completedCount = getHistory().filter((entry) => !entry.abandoned && Number(entry.words) > 0).length;
   document.getElementById("firstCompletionGuide").hidden = !(
     completedCount === 1 && !getBool(LS.firstCompletionGuideSeen, false)
   );
@@ -4204,9 +4237,9 @@ function openOnboarding() {
   const closestSample = [...onboardingLevelSamples]
     .sort((a, b) => Math.abs(Number(a.value) - getLevel()) - Math.abs(Number(b.value) - getLevel()))[0];
   onboardingLevelSamples.forEach((sample) => { sample.checked = sample === closestSample; });
-  onboardingGoalSelect.value = String(getNum(LS.dailyGoal, 1500));
+  onboardingGoalSelect.value = String(getNum(LS.dailyGoal, 100));
   if (![...onboardingGoalSelect.options].some((option) => option.value === onboardingGoalSelect.value)) {
-    onboardingGoalSelect.value = "1500";
+    onboardingGoalSelect.value = "100";
   }
   const preferred = get(LS.preferredTopic, topicSelect.value || "random");
   onboardingTopicSelect.value = [...onboardingTopicSelect.options].some((option) => option.value === preferred)

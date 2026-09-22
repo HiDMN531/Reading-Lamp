@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+"use strict";
+
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+const root = path.resolve(__dirname, "..");
+const read = (name) => fs.readFileSync(path.join(root, name), "utf8");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const app = read("app.js");
+const html = read("index.html");
+const sw = read("sw.js");
+const stories = JSON.parse(read("stories.json"));
+const rewards = JSON.parse(read("rewards.json"));
+const config = JSON.parse(read("config.json"));
+const pkg = JSON.parse(read("package.json"));
+
+new vm.Script(app, { filename: "app.js" });
+new vm.Script(sw, { filename: "sw.js" });
+assert(pkg.version === "2.10.4", "package version mismatch");
+assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
+assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v77"'), "service worker cache version mismatch");
+assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
+assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
+
+const htmlIds = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+assert(new Set(htmlIds).size === htmlIds.length, "duplicate HTML id");
+for (const [, id] of app.matchAll(/getElementById\("([^"]+)"\)/g)) {
+  assert(htmlIds.includes(id), `missing HTML id: ${id}`);
+}
+assert((html.match(/name="onboardingLevelSample"/g) || []).length === 3, "onboarding needs three options");
+for (const level of [1, 3, 5]) {
+  assert(html.includes(`name="onboardingLevelSample" value="${level}"`), `missing level ${level} option`);
+}
+assert(html.includes('id="onboardingLevelInput" min="1" max="10" step="1" value="1"'), "new reader must start at level 1");
+assert(html.includes('id="summaryWpmCell"'), "beginner summary must be able to hide speed");
+assert(app.includes('getNum(LS.level, 1)') && app.includes('getNum(LS.dailyGoal, 100)'), "beginner defaults missing");
+assert(app.includes("beginnerCandidatePool(available, level)"), "beginner candidate selection missing");
+assert(app.includes('startSession({ preferShort: abandonReason === "too-hard" && levelBefore === 1 })'), "level 1 difficulty support missing");
+
+const topics = new Set([
+  "Fantasy/stories", "Famous books", "Nature and animals", "World affairs", "Everyday life",
+  "History", "Science", "Mystery and adventure", "Travel and culture", "People and biography",
+]);
+const metadata = ["subtopic", "contentType", "editorialStatus", "factChecked", "reviewedAt", "sourceWork", "vocabularyVersion"];
+assert(stories.length === 2010, `expected 2010 stories, found ${stories.length}`);
+let totalWords = 0;
+const cells = new Map();
+const titles = new Set();
+const texts = new Set();
+for (const [index, story] of stories.entries()) {
+  const id = `s${String(index + 1).padStart(3, "0")}`;
+  assert(story.id === id, `story ID sequence broken at ${id}`);
+  assert(Number.isInteger(story.level) && story.level >= 1 && story.level <= 10, `invalid level: ${id}`);
+  assert(topics.has(story.topic), `invalid topic: ${id}`);
+  assert(typeof story.title === "string" && story.title.trim(), `missing title: ${id}`);
+  assert(typeof story.text === "string" && story.text.trim(), `missing text: ${id}`);
+  assert(!titles.has(story.title) && !texts.has(story.text), `duplicate story: ${id}`);
+  titles.add(story.title);
+  texts.add(story.text);
+  const words = story.text.trim().split(/\s+/).length;
+  assert(story.wordCount === words, `word count mismatch: ${id}`);
+  assert(metadata.every((field) => Object.hasOwn(story, field)), `missing metadata: ${id}`);
+  assert(story.editorialStatus === "published" && story.factChecked === true, `unreviewed story: ${id}`);
+  assert(/^\d{4}-\d{2}-\d{2}$/.test(story.reviewedAt), `invalid review date: ${id}`);
+  assert(story.vocabularyVersion === "v2", `unexpected vocabulary version: ${id}`);
+  totalWords += words;
+  const cell = `${story.level}|${story.topic}`;
+  cells.set(cell, (cells.get(cell) || 0) + 1);
+}
+assert(totalWords === 345860, `unexpected corpus word count: ${totalWords}`);
+assert(cells.size === 100 && Math.min(...cells.values()) >= 18, "level/topic coverage regressed");
+const starters = stories.filter((story) => Object.hasOwn(story, "starterOrder"));
+assert(starters.length === 10, "expected ten beginner stories");
+assert(starters.map((story) => story.starterOrder).join(",") === "1,2,3,4,5,6,7,8,9,10", "beginner story order is broken");
+for (const story of starters) {
+  assert(story.level === 1 && story.wordCount >= 30 && story.wordCount <= 60, `beginner story length or level: ${story.id}`);
+  assert(story.reviewedAt === "2026-09-22", `beginner story review date: ${story.id}`);
+}
+assert(rewards.length === 100 && new Set(rewards.map((reward) => reward.id)).size === 100, "reward definitions changed");
+console.log(`Reading Lamp ${pkg.version}: ${stories.length} stories, ${totalWords} words, 10 beginner stories, 100 rewards — validated`);

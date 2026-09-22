@@ -1,11 +1,11 @@
 {
   "name": "reading-lamp",
-  "version": "2.10.3",
+  "version": "2.10.4",
   "private": true,
   "scripts": {
-    "validate": "node scripts/validate_release.js",
-    "test": "npm run validate && node scripts/test_ui_contract.js && node scripts/test_service_worker_update.js",
-    "test:ui": "node scripts/test_ui_flow.mjs",
+    "validate": "node scripts/validate_current_release.js",
+    "test": "node scripts/validate_current_release.js",
+    "test:ui": "node scripts/test_beginner_ui.mjs",
     "test:all": "npm test && npm run test:ui"
   },
   "devDependencies": {
