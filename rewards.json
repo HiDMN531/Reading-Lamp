@@ -111,5 +111,9 @@
 
   { "id": "favorites-3", "category": "collection", "metric": "favorites", "threshold": 3, "icon": "✧", "title": "三篇のしおり", "description": "3篇をお気に入りにする" },
   { "id": "favorites-20", "category": "collection", "metric": "favorites", "threshold": 20, "icon": "🗂️", "title": "二十篇の選書", "description": "20篇をお気に入りにする" },
-  { "id": "favorites-50", "category": "collection", "metric": "favorites", "threshold": 50, "icon": "🏛️", "title": "五十篇の書斎", "description": "50篇をお気に入りにする" }
+  { "id": "favorites-50", "category": "collection", "metric": "favorites", "threshold": 50, "icon": "🏛️", "title": "五十篇の書斎", "description": "50篇をお気に入りにする" },
+
+  { "id": "autumn-reads-1", "category": "habits", "metric": "autumnReads", "threshold": 1, "icon": "🍂", "title": "秋の一灯", "description": "秋イベントの限定英文を1篇読む" },
+  { "id": "autumn-reads-5", "category": "habits", "metric": "autumnReads", "threshold": 5, "icon": "🌾", "title": "秋夜の読書家", "description": "秋イベントの限定英文を5篇読む" },
+  { "id": "autumn-reads-10", "category": "habits", "metric": "autumnReads", "threshold": 10, "icon": "🍁", "title": "Golden Equinox", "description": "秋イベントの限定英文を10篇読む", "unlock": { "type": "lamp-style", "value": "autumn-ember", "label": "灯りカラー：Autumn Ember" } }
 ]

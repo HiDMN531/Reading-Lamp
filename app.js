@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.6";
+const APP_VERSION = "2.10.7";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -84,6 +84,12 @@ const REPORT_QUEUE_LIMIT = 100;
 const ANALYTICS_DAY_LIMIT = 90;
 let serviceWorkerRegistration = null;
 let offlinePreparing = false;
+
+const AUTUMN_EVENT = {
+  start: "2026-09-23",
+  end: "2026-10-08",
+  storyIds: new Set(Array.from({ length: 20 }, (_, index) => `s${2051 + index}`)),
+};
 
 const get = (k, d) => {
   try {
@@ -1677,6 +1683,7 @@ const LAMP_STYLES = {
   sakura: { label: "Sakura", color: "#F3B6C6", rewardId: "favorites-10" },
   teal: { label: "Teal", color: "#55B6AC", rewardId: "short-reads-5" },
   silver: { label: "Silver", color: "#B8C2D1", rewardId: "days-100" },
+  "autumn-ember": { label: "Autumn Ember", color: "#E6A15B", rewardId: "autumn-reads-10" },
 };
 let REWARD_DEFINITIONS = null;
 let rewardLoadPromise = null;
@@ -1838,6 +1845,10 @@ function rewardMetrics(history = getHistory()) {
     nightReads: completed.filter((entry) => { const hour = new Date(entry.date).getHours(); return hour >= 21 || hour < 4; }).length,
     weekendReads: completed.filter((entry) => { const day = new Date(entry.date).getDay(); return day === 0 || day === 6; }).length,
     healthySkips: history.filter((entry) => entry.abandoned).length,
+    autumnReads: completed.filter((entry) => {
+      const dateKey = localDateKey(entry.date);
+      return AUTUMN_EVENT.storyIds.has(entry.storyId) && dateKey >= AUTUMN_EVENT.start && dateKey <= AUTUMN_EVENT.end;
+    }).length,
     favorites: getFavoriteIds().length,
   };
   TOPIC_POOL.forEach((topic) => { metrics[`topic:${topic}`] = knownTopics.has(topic) ? 1 : 0; });
@@ -2869,6 +2880,43 @@ function renderHistoryAnalysis(history) {
   renderAnalysisBars(document.getElementById("analysisAbandonReasons"), sortedReasons, (value) => `${fmt(value)}回`);
 }
 
+function autumnEventState(history = getHistory(), now = new Date()) {
+  const today = localDateKey(now);
+  return {
+    count: rewardMetrics(history).autumnReads,
+    preview: today === "2026-09-22",
+    active: today >= AUTUMN_EVENT.start && today <= AUTUMN_EVENT.end,
+  };
+}
+
+function renderAutumnEvent(history = getHistory()) {
+  const panel = document.getElementById("autumnEvent");
+  const state = autumnEventState(history);
+  panel.hidden = !(state.preview || state.active);
+  if (panel.hidden) return;
+  const capped = Math.min(10, state.count);
+  const progress = document.getElementById("autumnEventProgress");
+  progress.setAttribute("aria-valuenow", String(capped));
+  progress.querySelector("span").style.width = `${capped * 10}%`;
+  document.getElementById("autumnEventCount").textContent = `${capped} / 10篇`;
+  document.querySelectorAll("[data-autumn-step]").forEach((step) => {
+    step.classList.toggle("is-complete", state.count >= Number(step.dataset.autumnStep));
+  });
+  const button = document.getElementById("startAutumnEventBtn");
+  button.disabled = !state.active;
+  if (state.preview) {
+    document.getElementById("autumnEventMessage").textContent = "明日から、秋の夜に似合う限定英文を読めます。";
+    button.textContent = "9月23日から読めます";
+  } else if (state.count >= 10) {
+    document.getElementById("autumnEventMessage").textContent = "10篇達成。秋限定の灯り Autumn Ember を獲得しました。";
+    button.textContent = "もう一篇、秋を読む";
+  } else {
+    const next = state.count < 1 ? 1 : state.count < 5 ? 5 : 10;
+    document.getElementById("autumnEventMessage").textContent = `秋の限定英文を読み、${next}篇目の灯りを目指しましょう。`;
+    button.textContent = "秋の一篇を読む";
+  }
+}
+
 function renderHome() {
   const history = getHistory();
   const returning = returningReaderState(history);
@@ -2894,6 +2942,7 @@ function renderHome() {
   renderWeeklySummary(history);
   renderMonthlySummary(history);
   renderBackupStatus(history);
+  renderAutumnEvent(history);
   renderRewardHome();
   const wpm = recentWpm();
   document.getElementById("statWpm").textContent = wpm === null ? "—" : wpm;
@@ -3518,6 +3567,11 @@ function rankStoriesForRecommendation(stories, history = getHistory(), random = 
     .map((item) => item.story);
 }
 
+function storyBankForCurrentSeason(bank, { includeAutumn = false } = {}) {
+  if (includeAutumn || localDateKey(new Date()) > AUTUMN_EVENT.end) return bank;
+  return bank.filter((story) => !AUTUMN_EVENT.storyIds.has(story.id));
+}
+
 function beginnerReadingCount(history = getHistory()) {
   return history.filter((entry) => !entry.abandoned && Number(entry.words) > 0 && Number(entry.level) === 1).length;
 }
@@ -3532,13 +3586,14 @@ function beginnerCandidatePool(available, level) {
   );
 }
 
-function pickStory(bank, topic, level, { preferShort = false } = {}) {
+function pickStory(bank, topic, level, { preferShort = false, includeAutumn = false } = {}) {
   const seen = getSeenIds();
+  const availableBank = storyBankForCurrentSeason(bank, { includeAutumn });
 
   const matchesTopic = (s) => topic === "random" || topic === "custom" || s.topic === topic;
 
-  const byTopic = bank.filter(matchesTopic);
-  const pool = byTopic.length ? byTopic : [...bank]; // fall back to any topic
+  const byTopic = availableBank.filter(matchesTopic);
+  const pool = byTopic.length ? byTopic : [...availableBank]; // fall back to any topic
 
   // Stay at the requested level while that level still has stock for this
   // topic. Only fan out to nearby levels if this level has nothing at all.
@@ -3574,10 +3629,11 @@ function pickStory(bank, topic, level, { preferShort = false } = {}) {
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
-function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = false } = {}) {
+function pickStoryCandidates(bank, topic, level, count = 3, { preferShort = false, includeAutumn = false } = {}) {
   const seen = getSeenIds();
-  const byTopic = bank.filter((story) => topic === "random" || topic === "custom" || story.topic === topic);
-  const topicPool = byTopic.length ? byTopic : [...bank];
+  const availableBank = storyBankForCurrentSeason(bank, { includeAutumn });
+  const byTopic = availableBank.filter((story) => topic === "random" || topic === "custom" || story.topic === topic);
+  const topicPool = byTopic.length ? byTopic : [...availableBank];
   const atLevel = topicPool.filter((story) => story.level === level);
   const levelPool = atLevel.length
     ? atLevel
@@ -3684,6 +3740,25 @@ function beginOfflineStory(story, source = "random") {
   startReadingTimer();
   startActiveReadingAutosave();
 }
+
+async function startAutumnEventSession() {
+  if (blockNewReadingWhenDraftExists()) return;
+  if (!autumnEventState().active) return;
+  showView("loading");
+  document.getElementById("loadingText").textContent = "秋の文章を選んでいます…";
+  try {
+    const bank = await loadStoryBank();
+    const eventBank = bank.filter((story) => AUTUMN_EVENT.storyIds.has(story.id));
+    if (!eventBank.length) throw new Error("autumn event stories unavailable");
+    const story = pickStory(eventBank, "random", getLevel(), { includeAutumn: true });
+    beginOfflineStory(story, "autumn-event");
+  } catch {
+    showView("home");
+    showError("秋の文章を読み込めませんでした。オンラインでアプリを更新してから、もう一度お試しください。");
+  }
+}
+
+document.getElementById("startAutumnEventBtn").addEventListener("click", startAutumnEventSession);
 
 document.getElementById("refreshCandidatesBtn").addEventListener("click", renderStoryCandidates);
 

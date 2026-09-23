@@ -18,10 +18,10 @@ const pkg = JSON.parse(read("package.json"));
 
 new vm.Script(app, { filename: "app.js" });
 new vm.Script(sw, { filename: "sw.js" });
-assert(pkg.version === "2.10.6", "package version mismatch");
+assert(pkg.version === "2.10.7", "package version mismatch");
 assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
 assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
-assert(sw.includes('const CACHE_NAME = "reading-lamp-v79"'), "service worker cache version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v80"'), "service worker cache version mismatch");
 assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
 assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
 
@@ -39,6 +39,10 @@ assert(html.includes('id="summaryWpmCell"'), "beginner summary must be able to h
 assert(app.includes('getNum(LS.level, 1)') && app.includes('getNum(LS.dailyGoal, 100)'), "beginner defaults missing");
 assert(app.includes("beginnerCandidatePool(available, level)"), "beginner candidate selection missing");
 assert(app.includes('startSession({ preferShort: abandonReason === "too-hard" && levelBefore === 1 })'), "level 1 difficulty support missing");
+assert(html.includes('id="autumnEvent"') && html.includes('id="startAutumnEventBtn"'), "autumn event UI missing");
+assert(app.includes('start: "2026-09-23"') && app.includes('end: "2026-10-08"'), "autumn event dates missing");
+assert(app.includes('`s${2051 + index}`') && app.includes('function startAutumnEventSession()'), "autumn event story routing missing");
+assert(app.includes('"autumn-ember": { label: "Autumn Ember"'), "autumn lamp style missing");
 
 const topics = new Set([
   "Fantasy/stories", "Famous books", "Nature and animals", "World affairs", "Everyday life",
@@ -90,5 +94,10 @@ assert(autumnStories.every((story) => story.seasonalEvent === "autumn-reading-ni
 const autumnLevelCounts = new Map();
 for (const story of autumnStories) autumnLevelCounts.set(story.level, (autumnLevelCounts.get(story.level) || 0) + 1);
 assert(autumnLevelCounts.size === 10 && [...autumnLevelCounts.values()].every((count) => count === 2), "autumn stories are not balanced across levels");
-assert(rewards.length === 100 && new Set(rewards.map((reward) => reward.id)).size === 100, "reward definitions changed");
-console.log(`Reading Lamp ${pkg.version}: ${stories.length} stories, ${totalWords} words, 50 beginner stories, 20 autumn stories, 100 rewards — validated`);
+assert(rewards.length === 103 && new Set(rewards.map((reward) => reward.id)).size === 103, "reward definitions changed");
+for (const [id, threshold] of [["autumn-reads-1", 1], ["autumn-reads-5", 5], ["autumn-reads-10", 10]]) {
+  const reward = rewards.find((item) => item.id === id);
+  assert(reward?.metric === "autumnReads" && reward.threshold === threshold, `invalid autumn reward: ${id}`);
+}
+assert(rewards.find((reward) => reward.id === "autumn-reads-10")?.unlock?.value === "autumn-ember", "autumn lamp reward missing");
+console.log(`Reading Lamp ${pkg.version}: ${stories.length} stories, ${totalWords} words, 50 beginner stories, 20 autumn stories, 103 rewards — validated`);

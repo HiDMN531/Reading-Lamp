@@ -103,10 +103,42 @@ try {
   assert.equal(await graduatedPage.locator("#storyCandidateList .story-candidate").count(), 3);
   assert.match(await graduatedPage.locator("#storyCandidatesTitle").textContent(), /この3篇/);
   assert.match(await graduatedPage.locator("#storyCandidateList").textContent(), /The Blue Umbrella/);
+
+  const autumn = await browser.newContext({ serviceWorkers: "block" });
+  await autumn.addInitScript(() => {
+    const RealDate = Date;
+    const fixedTime = new RealDate(2026, 8, 23, 12, 0, 0).getTime();
+    class FixedDate extends RealDate {
+      constructor(...args) { super(...(args.length ? args : [fixedTime])); }
+      static now() { return fixedTime; }
+    }
+    window.Date = FixedDate;
+    localStorage.setItem("rl_onboarding_done_v1", "1");
+    localStorage.setItem("rl_level", "1");
+  });
+  const autumnPage = await autumn.newPage();
+  await autumnPage.goto(origin);
+  await autumnPage.locator("#autumnEvent:not([hidden])").waitFor();
+  await autumnPage.locator("#storyCandidateList .story-candidate").first().waitFor();
+  assert.match(await autumnPage.locator("#autumnEventMessage").textContent(), /1篇目/);
+  assert.doesNotMatch(await autumnPage.locator("#storyCandidateList").textContent(), /The Red Leaf|A Squirrel in the Park/);
+  await autumnPage.locator("#startAutumnEventBtn").click();
+  await autumnPage.locator("#view-reading:not([hidden])").waitFor();
+  assert.match(await autumnPage.locator("#readingTitle").textContent(), /The Red Leaf|A Squirrel in the Park/);
+  await autumnPage.locator("#finishReadingBtn").click();
+  await autumnPage.locator('.calibrate-btn[data-fb="just"]').click();
+  await autumnPage.locator("#view-summary:not([hidden])").waitFor();
+  for (let index = 0; index < 5 && !await autumnPage.locator("#rewardToast").isHidden(); index += 1) {
+    await autumnPage.locator("#rewardToastNextBtn").click();
+  }
+  await autumnPage.locator("#homeBtn").click({ force: true });
+  assert.equal(await autumnPage.locator("#autumnEventCount").textContent(), "1 / 10篇");
+  assert.equal(await autumnPage.locator('[data-autumn-step="1"]').getAttribute("class"), "is-complete");
+  await autumn.close();
   await graduated.close();
   await returning.close();
   await context.close();
-  console.log("Beginner UI: onboarding, first story, gentle summary, difficult story, saved settings, tenth-story transition — passed");
+  console.log("Reading UI: beginner flow, saved settings, tenth-story transition, autumn event start and progress — passed");
 } finally {
   if (browser) await browser.close();
   server.close();
