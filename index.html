@@ -84,13 +84,6 @@
       </div>
 
       <p class="level-note" id="levelNote"></p>
-      <p class="mode-note" id="modeNote"></p>
-
-      <div id="offlineStatus" class="offline-status" role="status" aria-live="polite" hidden>
-        <span id="offlineStatusDot" class="offline-status-dot" aria-hidden="true"></span>
-        <span id="offlineStatusText">オフライン準備を確認しています…</span>
-        <button id="prepareOfflineBtn" class="btn-text-quiet" type="button" hidden>端末に保存</button>
-      </div>
 
       <section id="storyCandidates" class="story-candidates" aria-labelledby="storyCandidatesTitle" hidden>
         <div class="story-candidates-header">
@@ -254,7 +247,7 @@
         <a href="terms.html">利用規約</a>
         <a href="mailto:Reading.Lamp012@gmail.com?subject=Reading%20Lamp%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a>
       </nav>
-      <span>Reading Lamp v2.10.7</span>
+      <span>Reading Lamp v2.10.8</span>
     </footer>
   </section>
 
@@ -386,6 +379,13 @@
         <input type="checkbox" id="toggleOfflineBank" aria-describedby="modeDescription" />
       </label>
       <p id="modeDescription" class="modal-hint mode-description"></p>
+      <p class="mode-note settings-mode-note" id="modeNote"></p>
+
+      <div id="offlineStatus" class="offline-status settings-offline-status" role="status" aria-live="polite" hidden>
+        <span id="offlineStatusDot" class="offline-status-dot" aria-hidden="true"></span>
+        <span id="offlineStatusText">オフライン準備を確認しています…</span>
+        <button id="prepareOfflineBtn" class="btn-text-quiet" type="button" hidden>端末に保存</button>
+      </div>
     </div>
 
     <div id="apiKeySection">

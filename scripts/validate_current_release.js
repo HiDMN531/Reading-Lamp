@@ -18,10 +18,10 @@ const pkg = JSON.parse(read("package.json"));
 
 new vm.Script(app, { filename: "app.js" });
 new vm.Script(sw, { filename: "sw.js" });
-assert(pkg.version === "2.10.7", "package version mismatch");
+assert(pkg.version === "2.10.8", "package version mismatch");
 assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
 assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
-assert(sw.includes('const CACHE_NAME = "reading-lamp-v80"'), "service worker cache version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v81"'), "service worker cache version mismatch");
 assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
 assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
 
@@ -43,6 +43,10 @@ assert(html.includes('id="autumnEvent"') && html.includes('id="startAutumnEventB
 assert(app.includes('start: "2026-09-23"') && app.includes('end: "2026-10-08"'), "autumn event dates missing");
 assert(app.includes('`s${2051 + index}`') && app.includes('function startAutumnEventSession()'), "autumn event story routing missing");
 assert(app.includes('"autumn-ember": { label: "Autumn Ember"'), "autumn lamp style missing");
+const homeMarkup = html.slice(html.indexOf('id="view-home"'), html.indexOf('<!-- ============ READING'));
+const settingsMarkup = html.slice(html.indexOf('id="settingsModal"'), html.indexOf('<!-- ============ READING GUIDE'));
+assert(!homeMarkup.includes('id="modeNote"') && !homeMarkup.includes('id="offlineStatus"'), "offline details remain on home");
+assert(settingsMarkup.includes('id="modeNote"') && settingsMarkup.includes('id="offlineStatus"'), "offline details are missing from settings");
 
 const topics = new Set([
   "Fantasy/stories", "Famous books", "Nature and animals", "World affairs", "Everyday life",

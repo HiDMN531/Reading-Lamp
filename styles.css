@@ -614,7 +614,6 @@ a { color: var(--amber); }
 .home-start-area { padding-top: 20px; }
 .home-start-area .option-panel { margin-bottom: 14px; }
 .home-start-area .level-note { margin-bottom: 16px; }
-.home-start-area .mode-note { margin: -8px auto 16px; }
 .autumn-event {
   position: relative;
   overflow: hidden;
@@ -1836,6 +1835,12 @@ input[type="range"] {
 
 .mode-description {
   margin-top: 2px;
+}
+.settings-mode-note {
+  margin: 12px 0 10px;
+}
+.settings-offline-status {
+  margin: 0;
 }
 
 .reading-method-card {

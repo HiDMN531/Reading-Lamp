@@ -46,6 +46,12 @@ try {
   assert.equal(await page.locator("#storyCandidateList .story-candidate").count(), 1);
   assert.match(await page.locator("#storyCandidatesTitle").textContent(), /1篇目/);
   assert.match(await page.locator("#storyCandidateList").textContent(), /A Cup for Two/);
+  assert.equal(await page.locator("#view-home #modeNote, #view-home #offlineStatus").count(), 0);
+  await page.locator("#settingsBtn").click();
+  await page.locator("#settingsModal:not([hidden])").waitFor();
+  assert.match(await page.locator("#settingsModal #modeNote").textContent(), /オフライン文章バンク/);
+  assert.equal(await page.locator("#settingsModal #offlineStatus").isVisible(), true);
+  await page.locator("#closeSettingsIconBtn").click();
 
   await page.locator("#storyCandidateList .story-candidate").click();
   await page.locator("#view-reading:not([hidden])").waitFor();
@@ -138,7 +144,7 @@ try {
   await graduated.close();
   await returning.close();
   await context.close();
-  console.log("Reading UI: beginner flow, saved settings, tenth-story transition, autumn event start and progress — passed");
+  console.log("Reading UI: compact home, offline settings, beginner flow, tenth-story transition, autumn event — passed");
 } finally {
   if (browser) await browser.close();
   server.close();
