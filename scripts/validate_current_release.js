@@ -18,10 +18,10 @@ const pkg = JSON.parse(read("package.json"));
 
 new vm.Script(app, { filename: "app.js" });
 new vm.Script(sw, { filename: "sw.js" });
-assert(pkg.version === "2.10.8", "package version mismatch");
+assert(pkg.version === "2.10.9", "package version mismatch");
 assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
 assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
-assert(sw.includes('const CACHE_NAME = "reading-lamp-v81"'), "service worker cache version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v82"'), "service worker cache version mismatch");
 assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
 assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
 

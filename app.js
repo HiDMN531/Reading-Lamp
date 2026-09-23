@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.8";
+const APP_VERSION = "2.10.9";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
