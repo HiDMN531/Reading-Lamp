@@ -17,3 +17,5 @@
 アップロード鍵はリポジトリへ保存しません。予定保存先はプロジェクト直下の`.secrets/reading-lamp-upload.keystore`、鍵の別名は`readinglamp`です。`.secrets/`はGitの対象外です。
 
 Google Playへ初めて登録する前にアップロード鍵を作成し、安全な場所へバックアップしてください。Play App Signingを有効にした後は、Play Consoleに表示されるアプリ署名証明書のSHA-256をWebサイトのDigital Asset Linksへ追加します。
+
+2026年9月24日にアップロード鍵と署名済みAABを作成しました。AABは`play-store/build/reading-lamp-1.0.0.aab`、アップロード証明書は`play-store/build/upload-certificate.pem`にあります。いずれもGitの対象外です。

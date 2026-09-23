@@ -5,5 +5,6 @@ android-twa/local.properties
 android-twa/app/build/
 android-twa/build/
 android-twa/hs_err_pid*.log
+play-store/build/
 *.keystore
 *.jks

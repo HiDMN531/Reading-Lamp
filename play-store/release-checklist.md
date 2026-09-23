@@ -9,12 +9,15 @@
 
 ## 2. Androidアプリ
 
-- [ ] アプリID`io.github.hidmn531.readinglamp`を確定する
-- [ ] Android App Bundle（AAB）を作成する
-- [ ] ターゲットAPIレベル36を確認する
+- [x] アプリID`io.github.hidmn531.readinglamp`でAndroidプロジェクトを作成する
+- [x] 署名済みAndroid App Bundle（AAB）を作成する
+- [x] ターゲットAPIレベル36を確認する
 - [ ] Play App Signingを有効にする
-- [ ] アップロード鍵を安全な場所に保管する
+- [x] アップロード鍵をGitの対象外となる`.secrets/`へ作成する
+- [ ] `.secrets/reading-lamp-upload.keystore`とパスワードファイルを別の安全な場所へバックアップする
 - [ ] Play App Signing証明書のSHA-256フィンガープリントを取得する
+
+署名済みファイルは`play-store/build/reading-lamp-1.0.0.aab`です。このフォルダーはGitの対象外です。アップロード証明書のSHA-256は`FF:C3:9C:D5:B6:33:80:12:14:4A:6F:50:3B:5A:47:31:77:BF:E6:BF:C6:DD:F1:1F:CF:12:19:CB:5D:DD:B5:7A`です。
 
 ## 3. Webアプリとの関連付け
 
