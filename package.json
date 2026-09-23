@@ -1,6 +1,6 @@
 {
   "name": "reading-lamp",
-  "version": "2.10.5",
+  "version": "2.10.6",
   "private": true,
   "scripts": {
     "validate": "node scripts/validate_current_release.js",

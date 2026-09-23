@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.5";
+const APP_VERSION = "2.10.6";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -1108,7 +1108,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 2050, rewardDefinitions: definitions.length },
+      corpus: { stories: 2070, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -3346,7 +3346,7 @@ async function renderOfflineStatus() {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
       if (status.current || typeof status.current !== "boolean") {
-        setOfflineStatus("ready", `2,050篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+        setOfflineStatus("ready", `2,070篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
       } else if (navigator.onLine) {
         setOfflineStatus("working", "以前の版を利用できます。更新版の文章を保存しています…");
         prepareOfflineContent(false);
@@ -3356,7 +3356,7 @@ async function renderOfflineStatus() {
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
-      setOfflineStatus("working", "2,050篇を端末に保存しています…");
+      setOfflineStatus("working", "2,070篇を端末に保存しています…");
       prepareOfflineContent(false);
     }
   } catch {
@@ -3367,7 +3367,7 @@ async function renderOfflineStatus() {
 async function prepareOfflineContent(requestPersistence = false) {
   if (offlinePreparing || !usingOfflineBank()) return;
   offlinePreparing = true;
-  setOfflineStatus("working", "2,050篇を端末に保存しています…");
+  setOfflineStatus("working", "2,070篇を端末に保存しています…");
   try {
     if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
       await navigator.storage.persist().catch(() => false);
