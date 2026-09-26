@@ -1,12 +1,13 @@
 {
   "name": "reading-lamp",
-  "version": "2.10.9",
+  "version": "2.11.9",
   "private": true,
   "scripts": {
     "validate": "node scripts/validate_current_release.js",
-    "test": "node scripts/validate_current_release.js",
+    "test": "node scripts/validate_current_release.js && node scripts/validate_corpus.js && node scripts/test_service_worker_update.js && node scripts/test_learning_policy.js && node scripts/test_merge.js && node scripts/test_review_release_gate.js",
     "test:ui": "node scripts/test_beginner_ui.mjs",
-    "test:all": "npm test && npm run test:ui"
+    "test:all": "npm test && npm run test:ui",
+    "review:gate": "node scripts/review_release_gate.js"
   },
   "devDependencies": {
     "playwright": "1.62.1"

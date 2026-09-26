@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.10.9";
+const APP_VERSION = "2.11.9";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -514,6 +514,8 @@ const views = {
 };
 
 function showView(name) {
+  // A reward earned on the previous story must not cover reading controls.
+  if (name === "reading") dismissRewardNotifications();
   Object.entries(views).forEach(([k, el]) => { el.hidden = k !== name; });
   window.scrollTo(0, 0);
 }
@@ -1037,6 +1039,7 @@ function createBackupPackage() {
   const exportedAt = new Date().toISOString();
   return {
     schemaVersion: 5,
+    corpusVersion: "merged-2.11.9",
     exportedAt,
     history: getHistory(),
     favoriteStoryIds: getFavoriteIds(),
@@ -1114,7 +1117,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 2070, rewardDefinitions: definitions.length },
+      corpus: { stories: 2570, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -3807,6 +3810,7 @@ async function startFavoriteSession(storyId) {
 
 function readableError(err) {
   const m = String((err && err.message) || err);
+  if (m.includes("LEARNING_QUALITY_CHECK")) return "生成文が長さ・読みやすさの基準に合いませんでした。文章バンクを使うか、再試行してください。再生成にはAPI料金がかかる場合があります。";
   if (m.includes("401") || m.includes("403") || /authentication/i.test(m)) return "APIキーが正しくないか、利用権限がありません。キーを消去したため、設定から再入力してください。";
   if (m.includes("429")) return "リクエストが混み合っています。少し待ってから再試行してください。";
   if (m.includes("400")) return "リクエストが受け付けられませんでした。設定の語数を減らして試してみてください。";
@@ -3815,10 +3819,8 @@ function readableError(err) {
   return "生成中にエラーが発生しました: " + m;
 }
 
-function buildSystemPrompt() {
-  const level = getLevel();
+function buildSystemPrompt({ level = getLevel(), words = getNum(LS.wordCount, 800) } = {}) {
   const info = levelInfo(level);
-  const words = getNum(LS.wordCount, 800);
 
   const vocabRule = info.headwords
     ? `Restrict yourself to roughly the most frequent ${fmt(info.headwords)} words of English (a graded-reader band). Beyond that band, allow at most 1-2 unfamiliar words per 100 words of text, and only where surrounding context makes the meaning guessable without a dictionary.`
@@ -3826,10 +3828,12 @@ function buildSystemPrompt() {
 
   return `You write original English material for a Japanese adult's extensive reading (多読) practice.
 
-The single most important rule: THE TEXT MUST BE COMFORTABLE TO READ WITHOUT A DICTIONARY. Extensive reading only works when the reader recognises around 98% of the words and can move forward without stopping. A text that is slightly too easy is correct; a text that is slightly too hard is a failure.
+The single most important rule: THE TEXT MUST BE COMFORTABLE TO READ WITHOUT A DICTIONARY. Aim for easy reading with very few unfamiliar words, supported by context; actual familiarity depends on the reader. A text that is slightly too easy is correct; a text that is slightly too hard is a failure.
 
 Level: ${level} of 10 (${info.label}).
 ${vocabRule}
+
+${ReadingLampLearning.instructions(level)}
 
 Other requirements:
 - Length: approximately ${words} words (within 15%).
@@ -3848,6 +3852,8 @@ Respond with ONLY a single JSON object, no markdown fences and no commentary:
 }
 
 async function generate({ topic, apiKey }) {
+  const requestLevel = getLevel();
+  const requestWords = getNum(LS.wordCount, 800);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 45000);
   let res;
@@ -3868,7 +3874,7 @@ async function generate({ topic, apiKey }) {
       body: JSON.stringify({
         model: "claude-sonnet-5",
         max_tokens: 4000,
-        system: buildSystemPrompt(),
+        system: buildSystemPrompt({ level: requestLevel, words: requestWords }),
         messages: [{ role: "user", content: `Topic: ${topic}` }],
       }),
     });
@@ -3893,7 +3899,13 @@ async function generate({ topic, apiKey }) {
   if (!parsed || typeof parsed.text !== "string" || parsed.text.length < 50) {
     throw new Error("生成結果の形式が想定と異なります。もう一度お試しください。");
   }
-  return parsed;
+  const review = ReadingLampLearning.inspect(parsed, {
+    level: requestLevel, topic, targetWords: requestWords,
+  });
+  if (review.errors.length || review.warnings.length) {
+    throw new Error("LEARNING_QUALITY_CHECK");
+  }
+  return { topic, title: parsed.title.trim(), text: parsed.text.trim() };
 }
 
 function parseJsonLoose(raw) {

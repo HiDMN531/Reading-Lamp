@@ -18,10 +18,10 @@ const pkg = JSON.parse(read("package.json"));
 
 new vm.Script(app, { filename: "app.js" });
 new vm.Script(sw, { filename: "sw.js" });
-assert(pkg.version === "2.10.9", "package version mismatch");
+assert(pkg.version === "2.11.9", "package version mismatch");
 assert(app.includes(`const APP_VERSION = "${pkg.version}"`), "app version mismatch");
 assert(html.includes(`Reading Lamp v${pkg.version}`), "displayed version mismatch");
-assert(sw.includes('const CACHE_NAME = "reading-lamp-v82"'), "service worker cache version mismatch");
+assert(sw.includes('const CACHE_NAME = "reading-lamp-v92"'), "service worker cache version mismatch");
 assert(read("RELEASE_CHECKLIST.md").includes(`対象版: ${pkg.version}`), "release checklist version mismatch");
 assert(config.analyticsEndpoint === "" && config.storyReportEndpoint === "", "unexpected collection endpoint");
 
@@ -53,7 +53,7 @@ const topics = new Set([
   "History", "Science", "Mystery and adventure", "Travel and culture", "People and biography",
 ]);
 const metadata = ["subtopic", "contentType", "editorialStatus", "factChecked", "reviewedAt", "sourceWork", "vocabularyVersion"];
-assert(stories.length === 2070, `expected 2070 stories, found ${stories.length}`);
+assert(stories.length === 2570, `expected 2570 stories, found ${stories.length}`);
 let totalWords = 0;
 const cells = new Map();
 const titles = new Set();
@@ -73,26 +73,26 @@ for (const [index, story] of stories.entries()) {
   assert(metadata.every((field) => Object.hasOwn(story, field)), `missing metadata: ${id}`);
   assert(story.editorialStatus === "published" && story.factChecked === true, `unreviewed story: ${id}`);
   assert(/^\d{4}-\d{2}-\d{2}$/.test(story.reviewedAt), `invalid review date: ${id}`);
-  assert(story.vocabularyVersion === "v2", `unexpected vocabulary version: ${id}`);
+  assert(["v2", "v3"].includes(story.vocabularyVersion), `unexpected vocabulary version: ${id}`);
   totalWords += words;
   const cell = `${story.level}|${story.topic}`;
   cells.set(cell, (cells.get(cell) || 0) + 1);
 }
-assert(totalWords === 348748, `unexpected corpus word count: ${totalWords}`);
+assert(totalWords === JSON.parse(read('learning_audit_summary.json')).words, `audit word count mismatch: ${totalWords}`);
 assert(cells.size === 100 && Math.min(...cells.values()) >= 18, "level/topic coverage regressed");
 const starters = stories.filter((story) => Object.hasOwn(story, "starterOrder"));
 assert(starters.length === 50, "expected fifty beginner stories");
 assert(starters.every((story, index) => story.starterOrder === index + 1), "beginner story order is broken");
 for (const story of starters) {
   assert(story.level === 1 && story.wordCount >= 30 && story.wordCount <= 60, `beginner story length or level: ${story.id}`);
-  assert(story.reviewedAt === "2026-09-22", `beginner story review date: ${story.id}`);
+  assert(story.reviewedAt >= "2026-09-22", `beginner story review date: ${story.id}`);
 }
 const added = starters.slice(10);
 const addedTopicCounts = new Map();
 for (const story of added) addedTopicCounts.set(story.topic, (addedTopicCounts.get(story.topic) || 0) + 1);
 assert(addedTopicCounts.size === 5 && [...addedTopicCounts.values()].every((count) => count === 8), "new beginner stories are not balanced across five topics");
 assert(added.every((story) => story.wordCount >= 43 && story.wordCount <= 50), "new beginner story length is outside the edited range");
-const autumnStories = stories.slice(2050);
+const autumnStories = stories.slice(2050,2070);
 assert(autumnStories.length === 20, "expected twenty autumn stories");
 assert(autumnStories.every((story) => story.seasonalEvent === "autumn-reading-nights-2026"), "autumn story event metadata mismatch");
 const autumnLevelCounts = new Map();

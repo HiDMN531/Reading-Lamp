@@ -5,7 +5,7 @@
   "lang": "ja",
   "dir": "ltr",
   "categories": ["education", "books"],
-  "description": "AI生成と2,070篇・10ジャンルのオフライン文章バンクに対応した、英語多読(Extensive Reading)の練習アプリ",
+  "description": "AI生成と2,570篇・10ジャンルのオフライン文章バンクに対応した、英語多読(Extensive Reading)の練習アプリ",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

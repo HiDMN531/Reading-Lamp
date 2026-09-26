@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+'use strict';
+const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');
+const policy=require('../learning-policy'),{validateBatch,contentDigest}=require('./import_stories');
+const drafts=require('../content/additions-500.json'),reviews=require('../content/reviews-500.json'),bank=require('../stories.json').slice(0,2070);
+const clone=x=>JSON.parse(JSON.stringify(x));
+assert.equal(validateBatch(bank,drafts,reviews).length,500);
+let bad=clone(drafts);bad[0].text+=' This is a changed ending.';bad[0].wordCount=policy.countWords(bad[0].text);assert.throws(()=>validateBatch(bank,bad,reviews),/stale review/);
+bad=clone(drafts);bad[0].level=2;assert.throws(()=>validateBatch(bank,bad,reviews),/stale review/);
+bad=clone(drafts);bad[0].title=bank[0].title;assert.throws(()=>validateBatch(bank,bad,reviews),/Duplicate/);
+assert(policy.inspect({...drafts[0],text:'She should of gone. The the room is empty.'}).errors.includes('malformed-phrase'));
+assert(policy.inspect({...drafts[0],text:'これは英語ではありません。 End.'}).errors.includes('non-English'));
+assert(policy.inspect({...drafts[0],text:'<script>alert(1)</script>. End.'}).errors.includes('markup'));
+assert(policy.inspect({...drafts[0],text:'The room is quiet. An unfinished ending'}).errors.includes('unfinished'));
+assert(policy.inspect({...drafts[0],text:'"The room is quiet. She goes home.'}).errors.includes('quotation'));
+assert(policy.inspect({...drafts[0],text:'The room is quiet. She goes home.'},{level:1,targetWords:800}).errors.includes('requested-length'));
+assert.deepEqual(policy.sentences('Mr. Chen waits. "Are you ready?" he asks. She nods.').length,3);
+assert.equal(policy.sentences('It costs 1.5 coins. She pays.').length,2);
+const app=fs.readFileSync(require.resolve('../app.js'),'utf8');
+const snippet=app.slice(app.indexOf('function buildSystemPrompt('),app.indexOf('// ---------------------- Reading',app.indexOf('function buildSystemPrompt(')));
+let response={topic:'Everyday life',title:'An Evening Cup',text:'I make tea in the kitchen. My sister brings two cups. We sit near the open window and talk about our day. The street is quiet now. We wash the cups before we go to bed.'};
+let calls=0,payload;
+const context={ReadingLampLearning:policy,getLevel:()=>1,getNum:()=>40,LS:{wordCount:'x'},levelInfo:()=>({headwords:300,label:'Easy'}),fmt:String,AbortController,setTimeout,clearTimeout,fetch:async(u,o)=>{calls++;payload=JSON.parse(o.body);return {ok:true,json:async()=>({content:[{type:'text',text:JSON.stringify(response)}]})}}};
+vm.createContext(context);vm.runInContext(snippet,context);
+(async()=>{
+ const result=await context.generate({topic:'Everyday life',apiKey:'test-not-a-real-key'});assert.equal(result.title,response.title);assert(payload.system.includes(policy.version));assert(payload.system.includes('Present simple'));assert.equal(calls,1);
+ response={...response,text:'I make tea in the kitchen. My sister brings two cups and we sit near the window without finishing this sentence'};await assert.rejects(context.generate({topic:'Everyday life',apiKey:'test-not-a-real-key'}),/LEARNING_QUALITY_CHECK/);assert.equal(calls,2,'No automatic paid retry');
+ response={...response,text:'I make tea in the kitchen. My sister brings two cups. We sit near the open window and talk about our day. The street is quiet now. We wash the cups before we go to bed.',topic:'Science'};await assert.rejects(context.generate({topic:'Everyday life',apiKey:'test-not-a-real-key'}),/LEARNING_QUALITY_CHECK/);
+ console.log('Learning policy, stale-review protection, import validation and mocked AI generation: passed');
+})().catch(e=>{console.error(e);process.exitCode=1});

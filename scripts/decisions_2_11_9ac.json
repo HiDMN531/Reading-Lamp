@@ -1,0 +1,63 @@
+{
+  "s659": {
+    "reason": "Approved the complete density and displaced-water explanation after comparison with OpenStax's buoyancy treatment. It correctly balances upward force and ship weight.",
+    "sources": ["https://openstax.org/books/college-physics/pages/11-7-archimedes-principle"]
+  },
+  "s660": {
+    "reason": "The physics text is misfiled under biology and medicine; identify charge transfer and distinguish a neutral material from opposite net charges without implying every balloon experiment is identical.",
+    "title": "Static Electricity on a Dry Day",
+    "subtopic": "electric charge",
+    "text": "On a dry day, rub a balloon against dry hair. Electrons can move between the two materials. After rubbing, the balloon and hair may have opposite electric charges. The hair can be drawn toward the balloon.\n\nA small charge can also build up when a person walks across a carpet. If the person touches a metal handle, some charge may move quickly. A tiny spark or brief shock can result.\n\nThese effects are called static electricity. Whether you see them depends on the materials and conditions, including how damp the air is.",
+    "sources": ["https://www.physicsclassroom.com/Class/estatics/u8l2a.html"]
+  },
+  "s679": {
+    "reason": "Approved this bounded Pinocchio episode against Collodi's Fox, Cat and Field of Miracles. The gold-coin tree is their deceit, not a factual claim.",
+    "sources": ["https://www.gutenberg.org/cache/epub/500/pg500-images.html"]
+  },
+  "s680": {
+    "reason": "In Andersen's source the creature is a toad, not a frog, and the fish bite through the leaf's stem. Correct the animal while retaining the first escape episode.",
+    "title": "Thumbelina Floats Away",
+    "text": "Thumbelina was a tiny girl who slept in a small bed made from a shell. She lived with a woman who cared for her.\n\nOne night, a toad came through the window. The toad carried Thumbelina to a leaf in a pond and wanted her to stay with its family. Thumbelina was frightened and wished to go home.\n\nFish in the pond saw her crying. They bit through the stem of the leaf. Soon it floated away with Thumbelina on it.\n\nShe was free of the toad, but the water carried her farther from home. She looked at the wide river ahead and wondered where the leaf would go.",
+    "sources": ["https://www.gutenberg.org/files/19993/19993-h/19993-h.htm"]
+  },
+  "s725": {
+    "reason": "The invented Hana-and-grandfather conversation is presented as an observed nonfiction event. Recast as explanatory prose, preserving the supported low-heat light and species-specific communication.",
+    "title": "Why Fireflies Flash",
+    "text": "On warm nights, some fireflies make small flashes of light. A chemical reaction inside the insect produces the light without much heat.\n\nDifferent kinds of fireflies can flash in different patterns. In some species, the pattern helps a firefly find a mate of the same kind. A flash may also serve another purpose, depending on the species and the situation.\n\nWhen many fireflies appear near a field or river, their flashes may look like tiny lights answering one another. The insects are using signals, not little lamps.",
+    "sources": ["https://www.nps.gov/grsm/learn/nature/fireflies.htm"],
+    "subtopic": "firefly signals"
+  },
+  "s726": {
+    "reason": "The source varies by seal species; a pup does not necessarily learn by following its mother underwater, and some are swim-ready soon after birth. Name the harbor seal and limit developmental claims.",
+    "title": "A Harbor Seal Pup in the Water",
+    "text": "A harbor seal pup can swim soon after it is born. It still needs its mother's milk while it grows. The pair often rests on a shore between trips into the water.\n\nA mother may sometimes leave her pup on the shore while she searches for food. A pup alone there is not always abandoned. As it grows and is weaned, it begins to find food on its own.\n\nThe pup can already move in water, but feeding itself takes practice. Its first weeks are different from those of some other kinds of seal.",
+    "sources": ["https://www.fisheries.noaa.gov/feature-story/14-seal-secrets","https://www.fisheries.noaa.gov/feature-story/share-shore-harbor-seal-pups"],
+    "subtopic": "harbor seal pups"
+  },
+  "s727": {
+    "reason": "Urban trees can shade and intercept runoff, but the socioeconomic contrast is not universal. Qualify it to some neighborhoods and stress planning and maintenance.",
+    "title": "Why Cities Plant Trees",
+    "text": "Trees along a street can shade people, buildings and roads on hot days. Their leaves release water into the air, which can also cool the area nearby. Trees may slow some rainwater and provide places for wildlife.\n\nPlanting is only a first step. A young tree needs water, enough space for its roots and care when it is damaged. Some streets are too narrow for a large tree, so planners must choose a suitable place and kind.\n\nIn some cities, neighborhoods have very different amounts of shade. A city can use maps and local requests to decide where more trees are needed. The trees will not solve every heat or flooding problem, but a well-cared-for tree can make a useful difference.",
+    "sources": ["https://www.epa.gov/water-research/urban-street-trees-and-green-infrastructure","https://www.epa.gov/heatislands/local-governments-and-trees"],
+    "subtopic": "urban trees"
+  },
+  "s728": {
+    "reason": "The island's multi-year road project and its success in the next storm are invented but were framed as nonfiction. Mark the scenario as fiction and keep the trade-off and partial result.",
+    "title": "A Road to the Island Clinic",
+    "contentType": "narrative-fiction",
+    "text": "This island and its road project are imagined. During storms, waves sometimes covered the low road to the island's only clinic. Local leaders wanted to raise the most important part.\n\nSome residents asked for the money to go toward housing instead. Engineers showed where the road flooded most often and what a first section might cost. At a meeting, the leaders agreed to start with the route to the clinic and improve its drainage.\n\nAfter the work, another storm reached the island. Water still crossed several roads, but the new clinic route stayed open that day. The community still needed plans for stronger storms and for homes near the water.",
+    "subtopic": "coastal roads"
+  },
+  "s731": {
+    "reason": "The Smithsonian confirms Inka messenger relays and khipus; remove the generic lesson about modern machines and avoid suggesting horses or wheeled carts as the sole alternatives.",
+    "title": "Messengers on Inka Roads",
+    "contentType": "explanatory-nonfiction",
+    "text": "The Inka built a large road network across mountains, valleys and dry land in the Andes. Runners called chaskis used stations along the roads.\n\nOne runner carried a message for part of the way, then passed it to the next. A message might be spoken or recorded with knots on cords called khipus. Runners could also carry small goods.\n\nThe roads linked settlements and important centers. Officials, armies and other travelers used parts of the network too. Stations and many workers helped keep this long system in use.",
+    "sources": ["https://americanindian.si.edu/inkaroad/inkauniverse/inkaroadexpansion/road-administration.html"],
+    "subtopic": "Inka road network"
+  },
+  "s732": {
+    "reason": "Approved the complete bounded history against Library of Congress materials. Gutenberg's European movable-metal-type system and wider copying effects are distinguished from earlier printing elsewhere.",
+    "sources": ["https://www.loc.gov/exhibits/bibles/the-gutenberg-bible.html","https://blogs.loc.gov/international-collections/2021/06/the-history-of-printing-in-asia-according-to-library-of-congress-asian-collections-part-1/"]
+  }
+}

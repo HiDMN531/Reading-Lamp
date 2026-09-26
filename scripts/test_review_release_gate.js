@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('assert/strict'),crypto=require('crypto');
+const {assess,reviewDigest}=require('./review_release_gate');
+const story={id:'s001',title:'The Test',text:'A boy opens a book. He reads a story.',level:1,topic:'Everyday life',contentType:'narrative-fiction'};
+const audit={id:story.id,text_sha256:crypto.createHash('sha256').update(story.text).digest('hex'),errors:'',flags:''};
+const review={id:story.id,contentDigest:reviewDigest(story),language:'approved',facts:'approved',method:'AI-assisted-editorial',reviewedAt:'2026-09-24',note:'Read the complete fictional scene for grammar and sequence.',evidence:'editorial-note.json#s001'};
+const proof={status:'passed',assetDigest:'current-assets',evidence:'test log'};
+const verification={automatedTests:proof,browserTests:proof};
+const run=(s=story,r=review,a=audit,v=verification)=>assess([s],r?[r]:[],[a],v,'current-assets');
+assert.equal(run().ready,true);
+assert.equal(run(story,null).ready,false,'No record is not a completed review');
+assert.equal(run({...story,level:2}).ready,false,'Level changes invalidate review');
+assert.equal(run({...story,text:'A boy opens a book. He closes it.'}).ready,false,'Text changes invalidate review and audit');
+assert.equal(run(story,{...review,facts:'pending'}).ready,false,'Facts must be reviewed');
+assert.equal(run(story,review,{...audit,flags:'low-frequency'}).ready,false,'Warnings require an editorial decision');
+assert.equal(run(story,review,audit,{...verification,browserTests:{...proof,assetDigest:'old-assets'}}).ready,false,'Old browser run is not evidence for current build');
+assert.equal(run(story,review,{...audit,errors:'unfinished'}).ready,false,'Structural errors cannot be waived');
+console.log('Review release gate: incomplete, stale, unreviewed-warning and old-test evidence blocked.');

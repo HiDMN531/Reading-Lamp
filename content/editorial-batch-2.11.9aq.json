@@ -1,0 +1,121 @@
+[
+  {
+    "id": "s354",
+    "level": 4,
+    "title": "How Fish Use Gills",
+    "before": {
+      "level": 4,
+      "topic": "Nature and animals",
+      "title": "How Fish Breathe",
+      "text": "Humans and other land animals breathe air with lungs. Fish get the oxygen they need in a different way. They use special organs called gills.\n\nWater enters a fish's mouth and flows over its gills. Tiny blood vessels in the gills take oxygen from the water. At the same time, they release carbon dioxide into the water.\n\nWater contains less oxygen than air. Even so, fish gills can collect enough oxygen for the fish to live.\n\nMany fish keep water moving over their gills by swimming forward. They often swim with their mouths slightly open. Some kinds of fish can pump water over their gills while staying still.\n\nA few unusual fish can also survive outside water for a short time. Some store water in special spaces near their gills. Others have extra organs that can take oxygen from the air.\n\nFish gills work so well that engineers study them. Their design may help people create better equipment for getting oxygen from water.\n\nLearning about gills shows how animals fit their environments. Land animals live in air, while fish have bodies made for life in water.",
+      "wordCount": 186,
+      "id": "s354",
+      "subtopic": "marine biology",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "level": 4,
+      "topic": "Nature and animals",
+      "title": "How Fish Use Gills",
+      "text": "Most fish obtain oxygen from water with organs called gills. They do not take the oxygen atom out of a water molecule. Instead, they use oxygen gas that is dissolved in the water.\n\nWater passes over thin gill tissue containing many small blood vessels. Oxygen moves from the water into the blood. Carbon dioxide moves from the blood into the water. This exchange works because water and blood flow across a large surface inside the gills.\n\nWater holds much less available oxygen than air. A fish therefore needs water to keep moving across its gills. How that movement happens varies among fish, so not every species breathes in exactly the same way.\n\nThe amount of dissolved oxygen in water can also change. Temperature, water movement and decaying material can affect it. When the level becomes too low, fish may have difficulty surviving.\n\nGills are well suited to exchanging gases in water, but they are delicate. For most fish, they cannot perform the same job after the gill surfaces dry or collapse outside water.",
+      "wordCount": 173,
+      "id": "s354",
+      "subtopic": "marine biology",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-26",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "The core description of dissolved oxygen crossing thin, blood-rich gill tissue is supported by NPS and USGS. Remove broad claims about air-breathing fish and engineering devices, which the checked sources do not establish, and explain that oxygen is dissolved in water rather than taken from the water molecule.",
+    "sources": [
+      "https://www.nps.gov/articles/blue-in-the-face-breathing-underwater.htm",
+      "https://www.usgs.gov/water-science-school/science/dissolved-oxygen-and-water"
+    ],
+    "review": "AI-assisted individual complete-text language review and claim-by-claim comparison against listed official sources; not human certification",
+    "beforeFlags": "",
+    "afterAudit": {
+      "id": "s354",
+      "level": 4,
+      "topic": "Nature and animals",
+      "title": "How Fish Use Gills",
+      "text_sha256": "02ea798b4e4db4a13e075fb1bead84409daf8aeb19cf6cfd6556952bf8e4bd70",
+      "words": 173,
+      "sentences": 15,
+      "maxSentence": 18,
+      "averageSentence": 11.53,
+      "low_frequency_pct": 9.25,
+      "very_low_frequency_pct": 0.0,
+      "frequency_terms": "gills (4); dissolved (2); gill (2); atom (1); molecule (1); dioxide (1); varies (1); breathes (1); decaying (1); exchanging (1); gases (1)",
+      "errors": "",
+      "flags": "",
+      "status": "automated-screen-clear"
+    }
+  },
+  {
+    "id": "s400",
+    "level": 4,
+    "title": "Why the Sky Looks Blue",
+    "before": {
+      "level": 4,
+      "topic": "Science",
+      "title": "Why the Sky Is Blue",
+      "text": "On a clear day, the sky above us appears a beautiful shade of blue, a color so familiar that most people rarely stop to wonder why the sky isn't some other color instead, like green or purple.\n\nThe answer involves understanding how sunlight actually interacts with Earth's atmosphere. Although sunlight appears white to our eyes, it contains a mixture of many different colors, each corresponding to a different wavelength of light.\n\nAs sunlight enters Earth's atmosphere, it collides with tiny gas molecules present in the air. This caused the light to scatter in various different directions rather than continuing perfectly straight.\n\nBlue light, having a much shorter wavelength compared to other colors, scatters much more easily than colors like red or orange, which have longer wavelengths.\n\nBecause blue light scatters so extensively throughout the atmosphere, it reaches our eyes from seemingly every direction across the entire sky, creating the impression that the whole sky is colored blue.\n\nInterestingly, during sunrise and sunset, sunlight must travel through much more atmosphere to reach our eyes. This caused most blue light to scatter away before reaching us. This allowed the longer wavelength reds and oranges to become clearly visible instead.\n\nThis explains why sunsets often display beautiful orange and red colors, while the sky during the rest of the day generally appears its familiar, comforting shade of blue.",
+      "wordCount": 225,
+      "id": "s400",
+      "subtopic": "physics and space",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "level": 4,
+      "topic": "Science",
+      "title": "Why the Sky Looks Blue",
+      "text": "Sunlight looks white, but it contains many colors. Each color travels as waves with a different wavelength. Blue light has a shorter wavelength than red light.\n\nWhen sunlight enters Earth's atmosphere, it meets molecules and small particles in the air. The light is scattered in many directions. Blue light is scattered more strongly than colors with longer wavelengths, so blue light reaches our eyes from across the sky.\n\nThis does not mean that the air itself is blue. The color we see comes from sunlight interacting with the atmosphere. Near the horizon, light travels through more air, and repeated scattering can make the sky look paler.\n\nAt sunset, sunlight follows a longer path through the atmosphere before reaching us. Much of the blue light is scattered away from the direct path. More red and yellow light continues toward our eyes, so the Sun and the nearby sky can appear orange or red.\n\nDust and other small particles can change the colors too. The appearance of the sky depends on both the light and what it passes through.",
+      "wordCount": 177,
+      "id": "s400",
+      "subtopic": "physics and space",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-26",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "NASA supports the white-sunlight, wavelength, atmospheric scattering and sunset claims. Correct the original tense shifts (“This caused/allowed”), remove padding and state the mechanism without implying blue is the shortest visible wavelength.",
+    "sources": [
+      "https://spaceplace.nasa.gov/blue-sky/en/"
+    ],
+    "review": "AI-assisted individual complete-text language review and claim-by-claim comparison against listed official sources; not human certification",
+    "beforeFlags": "long-sentence;dense-syntax",
+    "afterAudit": {
+      "id": "s400",
+      "level": 4,
+      "topic": "Science",
+      "title": "Why the Sky Looks Blue",
+      "text_sha256": "a409c42bb4cf8bd701f8ad1bf4e6400829f7d3d75bcf59aa4de75931dc1a6faa",
+      "words": 177,
+      "sentences": 14,
+      "maxSentence": 21,
+      "averageSentence": 12.64,
+      "low_frequency_pct": 8.47,
+      "very_low_frequency_pct": 0.56,
+      "frequency_terms": "sunlight (4); scattered (3); wavelength (2); earth's (1); molecules (1); wavelengths (1); interacting (1); scattering (1); paler (1)",
+      "errors": "",
+      "flags": "",
+      "status": "automated-screen-clear"
+    }
+  }
+]

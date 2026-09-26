@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v82";
+const CACHE_NAME = "reading-lamp-v92";
 const OWN_CACHE_NAME = /^reading-lamp-v(\d+)$/;
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
@@ -9,6 +9,7 @@ const SHELL_FILES = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./learning-policy.js",
   "./manifest.json",
   "./config.json",
   "./privacy.html",

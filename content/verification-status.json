@@ -1,0 +1,25 @@
+{
+  "automatedTests": {
+    "status": "passed",
+    "assetDigest": "7272e80fbe80aeb1451cd1079c7a0a7627579dc4ab3b40a48b5ad2180635ebc9",
+    "evidence": "2026-09-26: s033 full text read, revised, then re-read against Cornell, Marzluff and Pecoraro original paper. Learning audit: 2,570 stories, 374,734 words, zero structural errors, 899 warnings corpus-wide; similarity maximum 0.5203, none over 0.8. npm test passed on final bb corpus."
+  },
+  "browserTests": {
+    "status": "passed",
+    "assetDigest": "7272e80fbe80aeb1451cd1079c7a0a7627579dc4ab3b40a48b5ad2180635ebc9",
+    "evidence": "2026-09-26: actual Chromium 153 npm run test:ui passed on final bb corpus: compact home, offline settings, beginner flow, tenth-story transition and autumn event."
+  },
+  "automation": {
+    "status": "active",
+    "checkedAt": "2026-09-26",
+    "reason": "1,265 current approvals, 1,305 pending; continue complete individual review before final release certification."
+  },
+  "physicalAndroid": {
+    "status": "not-tested",
+    "scope": "Separate Play release check; not silently counted as passed."
+  },
+  "githubUpload": {
+    "status": "not-uploaded",
+    "condition": "All story reviews current and both required test gates passed; recheck remote changes before non-force update."
+  }
+}

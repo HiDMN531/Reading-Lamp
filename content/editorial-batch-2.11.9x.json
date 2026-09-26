@@ -1,0 +1,258 @@
+[
+  {
+    "id": "s1822",
+    "level": 2,
+    "title": "How a Duck Keeps Its Feathers",
+    "before": {
+      "id": "s1822",
+      "level": 2,
+      "topic": "Nature and animals",
+      "title": "A Duck Stays Dry",
+      "text": "A duck has many feathers. It uses its bill to put oil on them. The outer feathers help keep water away from the skin. Air under the feathers also helps the duck stay warm. The duck still needs clean water and time to care for its body.",
+      "wordCount": 47,
+      "subtopic": "duck feathers and water",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1822",
+      "level": 2,
+      "topic": "Nature and animals",
+      "title": "How a Duck Keeps Its Feathers",
+      "text": "A duck spends time caring for its feathers. It uses its bill to put the feathers back in place. Their small parts fit closely together and help keep water away from its skin.\n\nAs it cleans its feathers, the duck also spreads oil from a small gland near its tail. The oil helps the feathers stay in good condition. Air held by the feathers helps keep the duck warm.\n\nA duck needs water and time to clean and arrange its feathers. Feathers do more than cover its body; their condition matters when it swims.",
+      "wordCount": 94,
+      "subtopic": "duck feathers and water",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-25",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "Oil alone does not explain waterproof plumage. Explain feather structure, preening and oil in a bounded description and preserve the clean-water need.",
+    "sources": [
+      "https://academy.allaboutbirds.org/features/all-about-feathers/how-feathers-are-built.php",
+      "https://www.vet.cornell.edu/animal-health-diagnostic-center/programs/duck-research-laboratory/basic-duck-care"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": ""
+  },
+  {
+    "id": "s1825",
+    "level": 2,
+    "title": "Layers in a Roman Road",
+    "before": {
+      "id": "s1825",
+      "level": 2,
+      "topic": "History",
+      "title": "Roads Built in Layers",
+      "text": "Roman road builders often prepared the ground before placing the top stones. The exact design changed from place to place. Some roads had several layers, side ditches, and a raised center that helped water move away. These roads linked towns, forts, farms, and ports across the empire.",
+      "wordCount": 47,
+      "subtopic": "Roman road construction",
+      "contentType": "historical-narrative",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1825",
+      "level": 2,
+      "topic": "History",
+      "title": "Layers in a Roman Road",
+      "text": "Roman builders made roads in different ways. The materials depended on the land and on what was nearby.\n\nOn some roads, workers raised the middle of the road. They laid stones or gravel in layers to make a firm path. Ditches at the sides helped carry water away.\n\nThese roads linked towns and other places. Parts remain today, but one surviving road cannot show how every Roman road was built.",
+      "wordCount": 70,
+      "subtopic": "Roman road construction",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-25",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "The road structure varied and stone top surfaces were not universal. Describe a possible layered gravel road with drainage rather than a single standard construction.",
+    "sources": [
+      "https://www.english-heritage.org.uk/learn/story-of-england/romans/roman-roads/"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": ""
+  },
+  {
+    "id": "s1827",
+    "level": 2,
+    "title": "Dorothy Follows the Yellow Road",
+    "before": {
+      "id": "s1827",
+      "level": 2,
+      "topic": "Famous books",
+      "title": "Dorothy Follows the Yellow Road",
+      "text": "A great wind carries Dorothy and her house to Oz. She wants to return home. On a yellow road, she meets a scarecrow, a tin man, and a lion. Each wants something too. They face danger together. In the end, Dorothy learns that her silver shoes can carry her home.",
+      "wordCount": 50,
+      "subtopic": "home and courage",
+      "contentType": "classic-retelling",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": "The Wonderful Wizard of Oz",
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1827",
+      "level": 2,
+      "topic": "Famous books",
+      "title": "Dorothy Follows the Yellow Road",
+      "text": "A great wind carries Dorothy and her house to Oz. She wants to return home. On a yellow road, she meets a scarecrow, a tin man, and a lion. Each wants something too. They face danger together. In the end, Dorothy learns that her silver shoes can carry her home.",
+      "wordCount": 50,
+      "subtopic": "home and courage",
+      "contentType": "classic-retelling",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": "The Wonderful Wizard of Oz",
+      "vocabularyVersion": "v2"
+    },
+    "changed": false,
+    "reason": "Approved after comparison with Baum’s original: the cyclone, Scarecrow, Tin Woodman, Lion and silver shoes are present. No ruby-shoe substitution.",
+    "sources": [
+      "https://www.gutenberg.org/files/43936/43936-h/43936-h"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": "low-frequency"
+  },
+  {
+    "id": "s1921",
+    "level": 2,
+    "title": "A Bat Finds an Insect",
+    "before": {
+      "id": "s1921",
+      "level": 2,
+      "topic": "Nature and animals",
+      "title": "A Bat Listens for Dinner",
+      "text": "A bat can find small insects by making high sounds. The sound hits a thing and comes back. The bat uses the sound that comes back to learn where the thing is. It can do this in the dark. A bat can also see. It does not use sound because it is blind.",
+      "wordCount": 53,
+      "subtopic": "bat echolocation",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1921",
+      "level": 2,
+      "topic": "Nature and animals",
+      "title": "A Bat Finds an Insect",
+      "text": "Many bats find insects by sending out high sounds. When a sound reaches an insect, part of it comes back to the bat.\n\nThe bat listens to the returning sound. It can use that sound to find an insect in the dark. This way of finding things is called echolocation.\n\nBats can also see. They do not use sound because they are blind. Different bats use their senses in different ways.",
+      "wordCount": 71,
+      "subtopic": "bat echolocation",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-25",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "Make clear that echolocation applies to many, not every, bats; explain reflected sound in everyday language and retain the correction that bats can see.",
+    "sources": [
+      "https://www.batcon.org/about-bats/faq/",
+      "https://www.batcon.org/hearing-like-a-bat/"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": ""
+  },
+  {
+    "id": "s1924",
+    "level": 2,
+    "title": "Pompeii under Ash",
+    "before": {
+      "id": "s1924",
+      "level": 2,
+      "topic": "History",
+      "title": "Pompeii under Ash",
+      "text": "In the year 79, Mount Vesuvius sent hot rock, ash, and gas into the air. The material covered Pompeii and places near it. Many streets, homes, and things were left under the ground. Much later, people began to find parts of Pompeii again. The site helps us learn about life in a Roman town.",
+      "wordCount": 54,
+      "subtopic": "Pompeii and Vesuvius",
+      "contentType": "historical-narrative",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1924",
+      "level": 2,
+      "topic": "History",
+      "title": "Pompeii under Ash",
+      "text": "In the year 79, Mount Vesuvius erupted near the Roman town of Pompeii. Pumice stones and ash fell on the town. Later, very hot clouds of gas and ash reached it.\n\nThe eruption killed many people and covered streets, homes and everyday objects. Long afterward, people began to uncover parts of the town.\n\nToday, the remains help us study how people lived there. They also show how suddenly the eruption changed their lives.",
+      "wordCount": 73,
+      "subtopic": "Pompeii and Vesuvius",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-25",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "Keep the date and excavation claim grounded in the Pompeii Archaeological Park account. Replace “hot rock” and the ambiguous assertion that objects were left underground.",
+    "sources": [
+      "https://pompeiisites.org/en/pompeii-map/analysis/the-casts/",
+      "https://pompeiisites.org/en/archaeological-park-of-pompeii/press-kit/"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": "very-low-frequency"
+  },
+  {
+    "id": "s1925",
+    "level": 2,
+    "title": "Why the Moon Looks Different",
+    "before": {
+      "id": "s1925",
+      "level": 2,
+      "topic": "Science",
+      "title": "Why the Moon Looks Different",
+      "text": "The Sun always lights one half of the Moon. The Moon moves around Earth. As it moves, we see more or less of its bright side. This is why its shape seems to change through the month. Earth's shadow is not the cause of these daily changes. It covers the Moon only at special times.",
+      "wordCount": 55,
+      "subtopic": "moon phases",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "id": "s1925",
+      "level": 2,
+      "topic": "Science",
+      "title": "Why the Moon Looks Different",
+      "text": "Sunlight usually lights one half of the Moon. As the Moon moves around Earth, we see different amounts of that lit half.\n\nSometimes we see only a thin bright curve. On other nights, we see nearly the whole bright side. The Moon has not changed its shape.\n\nEarth’s shadow does not cause these regular changes. When the Moon passes into that shadow, it is a lunar eclipse. That is a different event.",
+      "wordCount": 72,
+      "subtopic": "moon phases",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-25",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "The Sun usually lights half the Moon, with the eclipse as an exception; the phases depend on viewing the lit part as the Moon orbits Earth. Bound that statement and avoid suggesting Earth’s shadow causes ordinary phases.",
+    "sources": [
+      "https://science.nasa.gov/resource/phases-of-the-moon-2/",
+      "https://www.jpl.nasa.gov/edu/resources/project/watch-and-measure-a-total-lunar-eclipse/"
+    ],
+    "review": "Individual full-text reading for language, source fidelity, logical order, level fit and fiction scope; AI-assisted editorial",
+    "beforeFlags": ""
+  }
+]

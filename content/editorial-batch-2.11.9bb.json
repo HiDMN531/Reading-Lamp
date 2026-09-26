@@ -1,0 +1,61 @@
+[
+  {
+    "id": "s033",
+    "level": 5,
+    "title": "How Crows Learn a Dangerous Face",
+    "before": {
+      "level": 5,
+      "topic": "Nature and animals",
+      "title": "The Crow Who Remembered Faces",
+      "text": "Crows are known among scientists for having excellent memories, especially when it comes to remembering people's faces. One research team decided to test exactly how good this memory really was.\n\nThe researchers wore special rubber masks while catching wild crows to measure and study them before releasing them again. The crows did not enjoy this experience, understandably, and made loud warning calls whenever they saw the mask again afterward.\n\nWeeks later, the researchers walked through the same area wearing the same masks, but this time they did nothing threatening at all. The crows still recognized the masks immediately and called out warnings, flying away or scolding loudly from nearby trees.\n\nWhat surprised the scientists most was what happened next. Crows that had never actually been caught, but had simply seen other crows react fearfully to the mask, also began treating it as dangerous. The warning had spread from crow to crow, passed along like an important piece of local news.\n\nEven more surprising, years later, crows in the same area still reacted strongly to the mask, even birds that had hatched long after the original study ended. Somehow, the information had continued passing from older crows to younger ones.\n\nThis research showed that crows do not just remember danger individually. They also share what they know with each other, creating a kind of memory that survives far longer than any single bird's own lifetime.",
+      "wordCount": 234,
+      "id": "s033",
+      "subtopic": "plants and fungi",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-14",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "after": {
+      "level": 5,
+      "topic": "Nature and animals",
+      "title": "How Crows Learn a Dangerous Face",
+      "text": "Researchers near Seattle studied how American crows react to a person they had learned to fear. They wore a particular face mask while catching a small number of wild crows. After placing bands on the birds, they released them.\n\nDuring later walks, people wore the same mask without catching any birds. Some crows gave loud warning calls when they saw it. The researchers also walked with other masks or no mask so they could compare the birds' reactions.\n\nCrows that had been caught learned to recognize the mask. Some crows that had not been caught later called at it too. The study found evidence that birds could learn about the danger by seeing other crows react. Young crows also learned to respond while watching their parents.\n\nAt one study site, the warning response spread farther through the area over five years. More crows called at the mask as time passed. This does not mean every crow understood the same event or that the birds told one another a story in words.\n\nThe experiment showed two ways to learn: through a crow's own experience and through the reactions of other crows. A face that had once been linked to capture could still cause warning calls long afterward.",
+      "wordCount": 206,
+      "id": "s033",
+      "subtopic": "crows and social learning",
+      "contentType": "explanatory-nonfiction",
+      "editorialStatus": "published",
+      "factChecked": true,
+      "reviewedAt": "2026-09-26",
+      "sourceWork": null,
+      "vocabularyVersion": "v2"
+    },
+    "changed": true,
+    "reason": "The original is generally based on a real field study but dramatizes immediate recognition, calls all masks rubber without need, and leaps from five years of observations to a claim that the information outlives any individual crow. The original study distinguished crows captured by masked researchers, uncaptured adults learning in groups, and young birds learning from parents. Rewrite the account with measured observations and the study's limits; correct the unrelated plants-and-fungi subtopic. Short clauses, chronological sequencing and clear referents suit Level 5.",
+    "sources": [
+      "https://faculty.washington.edu/wirsinga/Cornell2011.pdf"
+    ],
+    "review": "AI-assisted individual complete-text and original-source review; not human certification",
+    "beforeFlags": "",
+    "afterAudit": {
+      "id": "s033",
+      "level": 5,
+      "topic": "Nature and animals",
+      "title": "How Crows Learn a Dangerous Face",
+      "text_sha256": "dbbf000e5fc703d78e6e9aacf841a1c8c6b238ab8e5aea3fa14493af9ebd50d0",
+      "words": 206,
+      "sentences": 15,
+      "maxSentence": 21,
+      "averageSentence": 13.73,
+      "low_frequency_pct": 6.8,
+      "very_low_frequency_pct": 0.49,
+      "frequency_terms": "crows (9); masks (1); farther (1); crow (1); crow's (1); afterward (1)",
+      "errors": "",
+      "flags": "",
+      "status": "automated-screen-clear"
+    }
+  }
+]

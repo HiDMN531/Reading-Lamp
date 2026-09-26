@@ -1,0 +1,3007 @@
+{
+  "method": "TF-IDF unigram+bigram cosine; English stop words; all additions against full corpus, no self matches",
+  "maxSimilarity": 0.5203,
+  "over08": 0,
+  "nearest": [
+    {
+      "id": "s2071",
+      "closest": "s2013",
+      "similarity": 0.2038,
+      "title": "A Cloud in the Kitchen"
+    },
+    {
+      "id": "s2072",
+      "closest": "s838",
+      "similarity": 0.1769,
+      "title": "The Door Under the Rug"
+    },
+    {
+      "id": "s2073",
+      "closest": "s2043",
+      "similarity": 0.2327,
+      "title": "The Moon's Lost Shoe"
+    },
+    {
+      "id": "s2074",
+      "closest": "s2097",
+      "similarity": 0.1268,
+      "title": "The Paper Horse"
+    },
+    {
+      "id": "s2075",
+      "closest": "s1489",
+      "similarity": 0.172,
+      "title": "A Song for the Stone"
+    },
+    {
+      "id": "s2076",
+      "closest": "s1016",
+      "similarity": 0.1261,
+      "title": "The Quiet Gate"
+    },
+    {
+      "id": "s2077",
+      "closest": "s396",
+      "similarity": 0.1509,
+      "title": "One Red Leaf"
+    },
+    {
+      "id": "s2078",
+      "closest": "s343",
+      "similarity": 0.2579,
+      "title": "The Cat's New Place"
+    },
+    {
+      "id": "s2079",
+      "closest": "s2044",
+      "similarity": 0.112,
+      "title": "Rain on the Path"
+    },
+    {
+      "id": "s2080",
+      "closest": "s345",
+      "similarity": 0.2261,
+      "title": "A View of the Tree"
+    },
+    {
+      "id": "s2081",
+      "closest": "s357",
+      "similarity": 0.1274,
+      "title": "A Seat for the Bags"
+    },
+    {
+      "id": "s2082",
+      "closest": "s617",
+      "similarity": 0.0959,
+      "title": "The Late Meeting"
+    },
+    {
+      "id": "s2083",
+      "closest": "s1919",
+      "similarity": 0.1143,
+      "title": "Two Ways to Read"
+    },
+    {
+      "id": "s2084",
+      "closest": "s1547",
+      "similarity": 0.3579,
+      "title": "The Open Field"
+    },
+    {
+      "id": "s2085",
+      "closest": "s2031",
+      "similarity": 0.0692,
+      "title": "The Water Table"
+    },
+    {
+      "id": "s2086",
+      "closest": "s1918",
+      "similarity": 0.0955,
+      "title": "Breakfast on the Step"
+    },
+    {
+      "id": "s2087",
+      "closest": "s1914",
+      "similarity": 0.2032,
+      "title": "The Blue Sock Game"
+    },
+    {
+      "id": "s2088",
+      "closest": "s2001",
+      "similarity": 0.2271,
+      "title": "A Cup with a Line"
+    },
+    {
+      "id": "s2089",
+      "closest": "s2004",
+      "similarity": 0.2044,
+      "title": "The Last Clean Shirt"
+    },
+    {
+      "id": "s2090",
+      "closest": "s2092",
+      "similarity": 0.0804,
+      "title": "A Small Place to Write"
+    },
+    {
+      "id": "s2091",
+      "closest": "s2034",
+      "similarity": 0.2643,
+      "title": "The Old Shop Bell"
+    },
+    {
+      "id": "s2092",
+      "closest": "s843",
+      "similarity": 0.1,
+      "title": "A Letter by the Fire"
+    },
+    {
+      "id": "s2093",
+      "closest": "s1615",
+      "similarity": 0.1112,
+      "title": "The Baker's Wooden Mark"
+    },
+    {
+      "id": "s2094",
+      "closest": "s1734",
+      "similarity": 0.118,
+      "title": "A Coat for Market Day"
+    },
+    {
+      "id": "s2095",
+      "closest": "s857",
+      "similarity": 0.1268,
+      "title": "The Cart at the Well"
+    },
+    {
+      "id": "s2096",
+      "closest": "s2196",
+      "similarity": 0.0944,
+      "title": "The Rolling Test"
+    },
+    {
+      "id": "s2097",
+      "closest": "s2074",
+      "similarity": 0.1268,
+      "title": "Two Paper Bridges"
+    },
+    {
+      "id": "s2098",
+      "closest": "s2001",
+      "similarity": 0.1476,
+      "title": "A Shadow on the Wall"
+    },
+    {
+      "id": "s2099",
+      "closest": "s2088",
+      "similarity": 0.2142,
+      "title": "The Full Spoon"
+    },
+    {
+      "id": "s2100",
+      "closest": "s1294",
+      "similarity": 0.1271,
+      "title": "The Warm Window Test"
+    },
+    {
+      "id": "s2101",
+      "closest": "s403",
+      "similarity": 0.5203,
+      "title": "The Mouse Opens the Net"
+    },
+    {
+      "id": "s2102",
+      "closest": "s475",
+      "similarity": 0.2998,
+      "title": "Grapes Above the Fox"
+    },
+    {
+      "id": "s2103",
+      "closest": "s1521",
+      "similarity": 0.1693,
+      "title": "Stones in the Water Jar"
+    },
+    {
+      "id": "s2104",
+      "closest": "s392",
+      "similarity": 0.1173,
+      "title": "The Coat Stays On"
+    },
+    {
+      "id": "s2105",
+      "closest": "s2345",
+      "similarity": 0.1117,
+      "title": "One Stick at a Time"
+    },
+    {
+      "id": "s2106",
+      "closest": "s2139",
+      "similarity": 0.0698,
+      "title": "The Wet Circle"
+    },
+    {
+      "id": "s2107",
+      "closest": "s2026",
+      "similarity": 0.2885,
+      "title": "The Moving Red Dot"
+    },
+    {
+      "id": "s2108",
+      "closest": "s1018",
+      "similarity": 0.1606,
+      "title": "Who Took the Spoon"
+    },
+    {
+      "id": "s2109",
+      "closest": "s2048",
+      "similarity": 0.1508,
+      "title": "The Light Under the Bed"
+    },
+    {
+      "id": "s2110",
+      "closest": "s427",
+      "similarity": 0.1118,
+      "title": "Three Green Steps"
+    },
+    {
+      "id": "s2111",
+      "closest": "s2162",
+      "similarity": 0.0778,
+      "title": "A Map on the Table"
+    },
+    {
+      "id": "s2112",
+      "closest": "s2298",
+      "similarity": 0.0905,
+      "title": "The Room with Two Beds"
+    },
+    {
+      "id": "s2113",
+      "closest": "s740",
+      "similarity": 0.0777,
+      "title": "The New Dance Step"
+    },
+    {
+      "id": "s2114",
+      "closest": "s1613",
+      "similarity": 0.0845,
+      "title": "An Empty Postcard"
+    },
+    {
+      "id": "s2115",
+      "closest": "s334",
+      "similarity": 0.2172,
+      "title": "A Ticket in My Hat"
+    },
+    {
+      "id": "s2116",
+      "closest": "s1820",
+      "similarity": 0.1235,
+      "title": "Rosa's First Loaf"
+    },
+    {
+      "id": "s2117",
+      "closest": "s2128",
+      "similarity": 0.0918,
+      "title": "The Man Who Draws Doors"
+    },
+    {
+      "id": "s2118",
+      "closest": "s2013",
+      "similarity": 0.1513,
+      "title": "A New Job for Lin"
+    },
+    {
+      "id": "s2119",
+      "closest": "s1415",
+      "similarity": 0.1158,
+      "title": "Omar Learns to Float"
+    },
+    {
+      "id": "s2120",
+      "closest": "s1307",
+      "similarity": 0.1288,
+      "title": "The Singer at the Window"
+    },
+    {
+      "id": "s2121",
+      "closest": "s2048",
+      "similarity": 0.0945,
+      "title": "The Sleepy Streetlamp"
+    },
+    {
+      "id": "s2122",
+      "closest": "s1018",
+      "similarity": 0.1456,
+      "title": "The Spoon That Loved Soup"
+    },
+    {
+      "id": "s2123",
+      "closest": "s2013",
+      "similarity": 0.1241,
+      "title": "The Rain Seller's Day Off"
+    },
+    {
+      "id": "s2124",
+      "closest": "s2303",
+      "similarity": 0.1664,
+      "title": "A Tail for the Kite"
+    },
+    {
+      "id": "s2125",
+      "closest": "s2018",
+      "similarity": 0.1628,
+      "title": "The Tiny Winter"
+    },
+    {
+      "id": "s2126",
+      "closest": "s1521",
+      "similarity": 0.1317,
+      "title": "The Bird behind the Curtain"
+    },
+    {
+      "id": "s2127",
+      "closest": "s2302",
+      "similarity": 0.1275,
+      "title": "The Garden after Dark"
+    },
+    {
+      "id": "s2128",
+      "closest": "s396",
+      "similarity": 0.1065,
+      "title": "Leaves in the Notebook"
+    },
+    {
+      "id": "s2129",
+      "closest": "s392",
+      "similarity": 0.092,
+      "title": "The Dog Chooses Shade"
+    },
+    {
+      "id": "s2130",
+      "closest": "s2047",
+      "similarity": 0.1275,
+      "title": "A Slow Look at the Pond"
+    },
+    {
+      "id": "s2131",
+      "closest": "s1713",
+      "similarity": 0.1156,
+      "title": "The Second Meeting Box"
+    },
+    {
+      "id": "s2132",
+      "closest": "s1823",
+      "similarity": 0.1422,
+      "title": "A Bus Stop with a Roof"
+    },
+    {
+      "id": "s2133",
+      "closest": "s714",
+      "similarity": 0.127,
+      "title": "A Quieter Hour"
+    },
+    {
+      "id": "s2134",
+      "closest": "s151",
+      "similarity": 0.0746,
+      "title": "The Shared Ball"
+    },
+    {
+      "id": "s2135",
+      "closest": "s2056",
+      "similarity": 0.0745,
+      "title": "The Sign beside the Steps"
+    },
+    {
+      "id": "s2136",
+      "closest": "s2099",
+      "similarity": 0.1413,
+      "title": "The Lunch with No Fork"
+    },
+    {
+      "id": "s2137",
+      "closest": "s206",
+      "similarity": 0.1153,
+      "title": "A Shelf for Small Things"
+    },
+    {
+      "id": "s2138",
+      "closest": "s343",
+      "similarity": 0.1765,
+      "title": "The Wrong Shopping Bag"
+    },
+    {
+      "id": "s2139",
+      "closest": "s2053",
+      "similarity": 0.1378,
+      "title": "One More Place at Dinner"
+    },
+    {
+      "id": "s2140",
+      "closest": "s702",
+      "similarity": 0.1935,
+      "title": "The Alarm on Sunday"
+    },
+    {
+      "id": "s2141",
+      "closest": "s855",
+      "similarity": 0.1219,
+      "title": "The Spare Candle"
+    },
+    {
+      "id": "s2142",
+      "closest": "s1072",
+      "similarity": 0.0888,
+      "title": "The Printer's Dirty Thumb"
+    },
+    {
+      "id": "s2143",
+      "closest": "s857",
+      "similarity": 0.1489,
+      "title": "The Basket by the Ferry"
+    },
+    {
+      "id": "s2144",
+      "closest": "s2142",
+      "similarity": 0.0801,
+      "title": "The School Slate"
+    },
+    {
+      "id": "s2145",
+      "closest": "s2242",
+      "similarity": 0.0848,
+      "title": "A Package without a Name"
+    },
+    {
+      "id": "s2146",
+      "closest": "s2296",
+      "similarity": 0.0648,
+      "title": "A Longer Paper Strip"
+    },
+    {
+      "id": "s2147",
+      "closest": "s2193",
+      "similarity": 0.0978,
+      "title": "Counting the Bounces"
+    },
+    {
+      "id": "s2148",
+      "closest": "s1466",
+      "similarity": 0.1596,
+      "title": "The Cup with a Lid"
+    },
+    {
+      "id": "s2149",
+      "closest": "s656",
+      "similarity": 0.1719,
+      "title": "A Magnet and a Box"
+    },
+    {
+      "id": "s2150",
+      "closest": "s2296",
+      "similarity": 0.1336,
+      "title": "The Bent Paper Plane"
+    },
+    {
+      "id": "s2151",
+      "closest": "s2153",
+      "similarity": 0.1705,
+      "title": "Meat beneath the Tree"
+    },
+    {
+      "id": "s2152",
+      "closest": "s404",
+      "similarity": 0.2526,
+      "title": "The Race past the Sleeping Hare"
+    },
+    {
+      "id": "s2153",
+      "closest": "s707",
+      "similarity": 0.3906,
+      "title": "The Dog's Second Dinner"
+    },
+    {
+      "id": "s2154",
+      "closest": "s2034",
+      "similarity": 0.1746,
+      "title": "The Bell No Mouse Can Carry"
+    },
+    {
+      "id": "s2155",
+      "closest": "s576",
+      "similarity": 0.2084,
+      "title": "The Leaf That Carried an Ant"
+    },
+    {
+      "id": "s2156",
+      "closest": "s1041",
+      "similarity": 0.1042,
+      "title": "The Sound in the Empty Room"
+    },
+    {
+      "id": "s2157",
+      "closest": "s1724",
+      "similarity": 0.1672,
+      "title": "The Missing Cake Corner"
+    },
+    {
+      "id": "s2158",
+      "closest": "s346",
+      "similarity": 0.0969,
+      "title": "Footprints toward the Shed"
+    },
+    {
+      "id": "s2159",
+      "closest": "s2023",
+      "similarity": 0.0742,
+      "title": "A Page That Whistles"
+    },
+    {
+      "id": "s2160",
+      "closest": "s2232",
+      "similarity": 0.1576,
+      "title": "The Warm Bench Mystery"
+    },
+    {
+      "id": "s2161",
+      "closest": "s2083",
+      "similarity": 0.0863,
+      "title": "The Platform on the Other Side"
+    },
+    {
+      "id": "s2162",
+      "closest": "s1583",
+      "similarity": 0.1098,
+      "title": "A Word on the Menu"
+    },
+    {
+      "id": "s2163",
+      "closest": "s2044",
+      "similarity": 0.0657,
+      "title": "The Museum's Small Door"
+    },
+    {
+      "id": "s2164",
+      "closest": "s1122",
+      "similarity": 0.0514,
+      "title": "A Song from the Square"
+    },
+    {
+      "id": "s2165",
+      "closest": "s2088",
+      "similarity": 0.0992,
+      "title": "The Market Bag I Can Carry"
+    },
+    {
+      "id": "s2166",
+      "closest": "s2094",
+      "similarity": 0.1109,
+      "title": "Nell's First Repair"
+    },
+    {
+      "id": "s2167",
+      "closest": "s1750",
+      "similarity": 0.0731,
+      "title": "The Driver Who Learned Names"
+    },
+    {
+      "id": "s2168",
+      "closest": "s1242",
+      "similarity": 0.1329,
+      "title": "Iris and the Empty Stage"
+    },
+    {
+      "id": "s2169",
+      "closest": "s1300",
+      "similarity": 0.0628,
+      "title": "A Gardener's First Winter"
+    },
+    {
+      "id": "s2170",
+      "closest": "s1611",
+      "similarity": 0.1061,
+      "title": "The Girl Who Kept Receipts"
+    },
+    {
+      "id": "s2171",
+      "closest": "s357",
+      "similarity": 0.0933,
+      "title": "The Shop for Lost Echoes"
+    },
+    {
+      "id": "s2172",
+      "closest": "s1619",
+      "similarity": 0.084,
+      "title": "The Dragon's Small Apron"
+    },
+    {
+      "id": "s2173",
+      "closest": "s1620",
+      "similarity": 0.0726,
+      "title": "A Staircase for the Stars"
+    },
+    {
+      "id": "s2174",
+      "closest": "s2028",
+      "similarity": 0.1203,
+      "title": "The River's Forgotten Name"
+    },
+    {
+      "id": "s2175",
+      "closest": "s1731",
+      "similarity": 0.0944,
+      "title": "The Clock That Waited"
+    },
+    {
+      "id": "s2176",
+      "closest": "s697",
+      "similarity": 0.0938,
+      "title": "The Nest beyond the Glass"
+    },
+    {
+      "id": "s2177",
+      "closest": "s1942",
+      "similarity": 0.0729,
+      "title": "The Fallen Branch Survey"
+    },
+    {
+      "id": "s2178",
+      "closest": "s707",
+      "similarity": 0.1601,
+      "title": "The Patient Animal Sketch"
+    },
+    {
+      "id": "s2179",
+      "closest": "s1055",
+      "similarity": 0.0498,
+      "title": "Seeds in Separate Envelopes"
+    },
+    {
+      "id": "s2180",
+      "closest": "s2223",
+      "similarity": 0.0818,
+      "title": "The Change in the Bird Count"
+    },
+    {
+      "id": "s2181",
+      "closest": "s041",
+      "similarity": 0.0965,
+      "title": "The Library Cart Trial"
+    },
+    {
+      "id": "s2182",
+      "closest": "s2385",
+      "similarity": 0.0641,
+      "title": "A Playground with a Quiet Corner"
+    },
+    {
+      "id": "s2183",
+      "closest": "s2331",
+      "similarity": 0.0716,
+      "title": "The Evening Repair Table"
+    },
+    {
+      "id": "s2184",
+      "closest": "s1335",
+      "similarity": 0.1406,
+      "title": "The Market Map Vote"
+    },
+    {
+      "id": "s2185",
+      "closest": "s1318",
+      "similarity": 0.0724,
+      "title": "A Crossing near the Hall"
+    },
+    {
+      "id": "s2186",
+      "closest": "s1004",
+      "similarity": 0.0983,
+      "title": "The Recipe on a Sticky Note"
+    },
+    {
+      "id": "s2187",
+      "closest": "s2206",
+      "similarity": 0.1132,
+      "title": "The Neighbor's Spare Key"
+    },
+    {
+      "id": "s2188",
+      "closest": "s137",
+      "similarity": 0.0656,
+      "title": "The Chair That Scraped"
+    },
+    {
+      "id": "s2189",
+      "closest": "s435",
+      "similarity": 0.0777,
+      "title": "A Different Route to Work"
+    },
+    {
+      "id": "s2190",
+      "closest": "s1674",
+      "similarity": 0.0511,
+      "title": "The Photo We Almost Deleted"
+    },
+    {
+      "id": "s2191",
+      "closest": "s2444",
+      "similarity": 0.0791,
+      "title": "The Watchmaker's Waiting Chair"
+    },
+    {
+      "id": "s2192",
+      "closest": "s2092",
+      "similarity": 0.0875,
+      "title": "The Seam in the Sail"
+    },
+    {
+      "id": "s2193",
+      "closest": "s2293",
+      "similarity": 0.1048,
+      "title": "The Innkeeper's Pebble Count"
+    },
+    {
+      "id": "s2194",
+      "closest": "s2143",
+      "similarity": 0.0828,
+      "title": "The Letter Carrier's Shortcut"
+    },
+    {
+      "id": "s2195",
+      "closest": "s2295",
+      "similarity": 0.0928,
+      "title": "The Weaver's Color Note"
+    },
+    {
+      "id": "s2196",
+      "closest": "s2019",
+      "similarity": 0.1013,
+      "title": "The Stopwatch Argument"
+    },
+    {
+      "id": "s2197",
+      "closest": "s2199",
+      "similarity": 0.0675,
+      "title": "The Wet Cloth Comparison"
+    },
+    {
+      "id": "s2198",
+      "closest": "s2296",
+      "similarity": 0.0626,
+      "title": "The Quiet Phone Box"
+    },
+    {
+      "id": "s2199",
+      "closest": "s2197",
+      "similarity": 0.0675,
+      "title": "A Plant Label Mix-Up"
+    },
+    {
+      "id": "s2200",
+      "closest": "s1322",
+      "similarity": 0.0803,
+      "title": "The Long Straw Bridge"
+    },
+    {
+      "id": "s2201",
+      "closest": "s408",
+      "similarity": 0.3226,
+      "title": "The Country Mouse Goes Home"
+    },
+    {
+      "id": "s2202",
+      "closest": "s555",
+      "similarity": 0.1066,
+      "title": "The Jar with the Narrow Neck"
+    },
+    {
+      "id": "s2203",
+      "closest": "s656",
+      "similarity": 0.0583,
+      "title": "The Crowded Hand"
+    },
+    {
+      "id": "s2204",
+      "closest": "s2032",
+      "similarity": 0.0711,
+      "title": "The Star Watcher's Step"
+    },
+    {
+      "id": "s2205",
+      "closest": "s1525",
+      "similarity": 0.1529,
+      "title": "The Crab's Walking Lesson"
+    },
+    {
+      "id": "s2206",
+      "closest": "s2187",
+      "similarity": 0.1132,
+      "title": "The Key in the Freezer"
+    },
+    {
+      "id": "s2207",
+      "closest": "s2034",
+      "similarity": 0.0941,
+      "title": "The Repeated Doorbell"
+    },
+    {
+      "id": "s2208",
+      "closest": "s1056",
+      "similarity": 0.0547,
+      "title": "The Light in the Empty Tent"
+    },
+    {
+      "id": "s2209",
+      "closest": "s656",
+      "similarity": 0.0724,
+      "title": "The Mark on Every Envelope"
+    },
+    {
+      "id": "s2210",
+      "closest": "s1099",
+      "similarity": 0.0693,
+      "title": "The Path That Ends at a Fence"
+    },
+    {
+      "id": "s2211",
+      "closest": "s1176",
+      "similarity": 0.1107,
+      "title": "The Guide's Blank Minute"
+    },
+    {
+      "id": "s2212",
+      "closest": "s004",
+      "similarity": 0.0775,
+      "title": "A Seat Facing Backward"
+    },
+    {
+      "id": "s2213",
+      "closest": "s2262",
+      "similarity": 0.0765,
+      "title": "The Guesthouse Shoe Shelf"
+    },
+    {
+      "id": "s2214",
+      "closest": "s2114",
+      "similarity": 0.053,
+      "title": "A Photograph before Breakfast"
+    },
+    {
+      "id": "s2215",
+      "closest": "s2041",
+      "similarity": 0.0995,
+      "title": "The Festival Schedule in Pencil"
+    },
+    {
+      "id": "s2216",
+      "closest": "s621",
+      "similarity": 0.0618,
+      "title": "The Baker Who Started Late"
+    },
+    {
+      "id": "s2217",
+      "closest": "s2312",
+      "similarity": 0.0585,
+      "title": "Evan's Useful Questions"
+    },
+    {
+      "id": "s2218",
+      "closest": "s1568",
+      "similarity": 0.0771,
+      "title": "The Runner at the Back"
+    },
+    {
+      "id": "s2219",
+      "closest": "s1296",
+      "similarity": 0.1088,
+      "title": "The Carpenter's Small Box"
+    },
+    {
+      "id": "s2220",
+      "closest": "s1860",
+      "similarity": 0.0742,
+      "title": "The Translator's First Audience"
+    },
+    {
+      "id": "s2221",
+      "closest": "s1817",
+      "similarity": 0.0975,
+      "title": "The Library of Unfinished Dreams"
+    },
+    {
+      "id": "s2222",
+      "closest": "s1616",
+      "similarity": 0.0611,
+      "title": "The Giant's Teacup Garden"
+    },
+    {
+      "id": "s2223",
+      "closest": "s2180",
+      "similarity": 0.0818,
+      "title": "A Letter from Next Tuesday"
+    },
+    {
+      "id": "s2224",
+      "closest": "s1816",
+      "similarity": 0.1418,
+      "title": "The Shadow with a Hobby"
+    },
+    {
+      "id": "s2225",
+      "closest": "s2110",
+      "similarity": 0.061,
+      "title": "The Wizard's Ordinary Broom"
+    },
+    {
+      "id": "s2226",
+      "closest": "s1936",
+      "similarity": 0.0775,
+      "title": "The Unnamed Garden Visitor"
+    },
+    {
+      "id": "s2227",
+      "closest": "s2128",
+      "similarity": 0.0677,
+      "title": "The Same Tree in Four Drawings"
+    },
+    {
+      "id": "s2228",
+      "closest": "s331",
+      "similarity": 0.1114,
+      "title": "The Dog Walk Diary"
+    },
+    {
+      "id": "s2229",
+      "closest": "s2330",
+      "similarity": 0.0811,
+      "title": "The Feather That Stayed Outside"
+    },
+    {
+      "id": "s2230",
+      "closest": "s2430",
+      "similarity": 0.0927,
+      "title": "The Pond through Two Lenses"
+    },
+    {
+      "id": "s2231",
+      "closest": "s2333",
+      "similarity": 0.0701,
+      "title": "The Empty Suggestion Form"
+    },
+    {
+      "id": "s2232",
+      "closest": "s2160",
+      "similarity": 0.1576,
+      "title": "A Bench in the Right Place"
+    },
+    {
+      "id": "s2233",
+      "closest": "s2331",
+      "similarity": 0.0473,
+      "title": "The Tool Library's Waiting List"
+    },
+    {
+      "id": "s2234",
+      "closest": "s2032",
+      "similarity": 0.0484,
+      "title": "The Community Kitchen Labels"
+    },
+    {
+      "id": "s2235",
+      "closest": "s023",
+      "similarity": 0.1087,
+      "title": "A Budget for Both Teams"
+    },
+    {
+      "id": "s2236",
+      "closest": "s1940",
+      "similarity": 0.1217,
+      "title": "The List on the Fridge Door"
+    },
+    {
+      "id": "s2237",
+      "closest": "s1073",
+      "similarity": 0.1303,
+      "title": "The Jacket with the Loose Button"
+    },
+    {
+      "id": "s2238",
+      "closest": "s2373",
+      "similarity": 0.0585,
+      "title": "The Sunday Phone Call"
+    },
+    {
+      "id": "s2239",
+      "closest": "s1839",
+      "similarity": 0.0718,
+      "title": "The Spare Room Table"
+    },
+    {
+      "id": "s2240",
+      "closest": "s2157",
+      "similarity": 0.1544,
+      "title": "The Birthday Cake Detour"
+    },
+    {
+      "id": "s2241",
+      "closest": "s2292",
+      "similarity": 0.0823,
+      "title": "The Mapmaker's Erased Road"
+    },
+    {
+      "id": "s2242",
+      "closest": "s2343",
+      "similarity": 0.1175,
+      "title": "The Potter's Customer Sample"
+    },
+    {
+      "id": "s2243",
+      "closest": "s2144",
+      "similarity": 0.0629,
+      "title": "The Lantern at the Stable"
+    },
+    {
+      "id": "s2244",
+      "closest": "s2292",
+      "similarity": 0.0771,
+      "title": "The Bookbinder's Extra Page"
+    },
+    {
+      "id": "s2245",
+      "closest": "s2295",
+      "similarity": 0.1185,
+      "title": "The Tailor's Chalk Line"
+    },
+    {
+      "id": "s2246",
+      "closest": "s2149",
+      "similarity": 0.0745,
+      "title": "A Scale That Needs Checking"
+    },
+    {
+      "id": "s2247",
+      "closest": "s2150",
+      "similarity": 0.0747,
+      "title": "The Bridge and the Uneven Table"
+    },
+    {
+      "id": "s2248",
+      "closest": "s2348",
+      "similarity": 0.0945,
+      "title": "The Mystery of the Heavy Sponge"
+    },
+    {
+      "id": "s2249",
+      "closest": "s705",
+      "similarity": 0.0764,
+      "title": "The Timer and the Open Door"
+    },
+    {
+      "id": "s2250",
+      "closest": "s2248",
+      "similarity": 0.0598,
+      "title": "A Graph with a Missing Day"
+    },
+    {
+      "id": "s2251",
+      "closest": "s426",
+      "similarity": 0.0847,
+      "title": "The Tree That Would Not Bend"
+    },
+    {
+      "id": "s2252",
+      "closest": "s403",
+      "similarity": 0.2145,
+      "title": "Footprints Facing Only Inward"
+    },
+    {
+      "id": "s2253",
+      "closest": "s405",
+      "similarity": 0.2487,
+      "title": "The Boy's Unanswered Shout"
+    },
+    {
+      "id": "s2254",
+      "closest": "s406",
+      "similarity": 0.1375,
+      "title": "A Meal for Winter"
+    },
+    {
+      "id": "s2255",
+      "closest": "s707",
+      "similarity": 0.1419,
+      "title": "The Dish No One Could Reach"
+    },
+    {
+      "id": "s2256",
+      "closest": "s2175",
+      "similarity": 0.075,
+      "title": "The Photograph with the Wrong Time"
+    },
+    {
+      "id": "s2257",
+      "closest": "s1159",
+      "similarity": 0.0565,
+      "title": "The Parcel That Came Back"
+    },
+    {
+      "id": "s2258",
+      "closest": "s1077",
+      "similarity": 0.0936,
+      "title": "The Rattle in the Bicycle Basket"
+    },
+    {
+      "id": "s2259",
+      "closest": "s1716",
+      "similarity": 0.1154,
+      "title": "The Light That Moved Upstairs"
+    },
+    {
+      "id": "s2260",
+      "closest": "s2187",
+      "similarity": 0.0514,
+      "title": "The Unopened Birthday Letter"
+    },
+    {
+      "id": "s2261",
+      "closest": "s1304",
+      "similarity": 0.0669,
+      "title": "The Walking Tour I Left Early"
+    },
+    {
+      "id": "s2262",
+      "closest": "s2213",
+      "similarity": 0.0765,
+      "title": "The Host's Favorite Breakfast"
+    },
+    {
+      "id": "s2263",
+      "closest": "s2361",
+      "similarity": 0.0553,
+      "title": "An Audio Guide at My Own Speed"
+    },
+    {
+      "id": "s2264",
+      "closest": "s1158",
+      "similarity": 0.0958,
+      "title": "The Window Seat Negotiation"
+    },
+    {
+      "id": "s2265",
+      "closest": "s2012",
+      "similarity": 0.1001,
+      "title": "A Souvenir with a Story Attached"
+    },
+    {
+      "id": "s2266",
+      "closest": "s2418",
+      "similarity": 0.0678,
+      "title": "The Mechanic's Listening Habit"
+    },
+    {
+      "id": "s2267",
+      "closest": "s1289",
+      "similarity": 0.0662,
+      "title": "The Librarian's First Display"
+    },
+    {
+      "id": "s2268",
+      "closest": "s2370",
+      "similarity": 0.0606,
+      "title": "The Swimmer's Small Notebook"
+    },
+    {
+      "id": "s2269",
+      "closest": "s004",
+      "similarity": 0.055,
+      "title": "The Cook Who Asked for Silence"
+    },
+    {
+      "id": "s2270",
+      "closest": "s1265",
+      "similarity": 0.1334,
+      "title": "The Photographer's Rejected Picture"
+    },
+    {
+      "id": "s2271",
+      "closest": "s389",
+      "similarity": 0.0603,
+      "title": "The Town That Borrowed Dawn"
+    },
+    {
+      "id": "s2272",
+      "closest": "s317",
+      "similarity": 0.0869,
+      "title": "The Mirror's New Question"
+    },
+    {
+      "id": "s2273",
+      "closest": "s2038",
+      "similarity": 0.1086,
+      "title": "A Dragon at the Lost Property Desk"
+    },
+    {
+      "id": "s2274",
+      "closest": "s2325",
+      "similarity": 0.1532,
+      "title": "The Spell with a Spare Word"
+    },
+    {
+      "id": "s2275",
+      "closest": "s794",
+      "similarity": 0.111,
+      "title": "The Island That Needed Company"
+    },
+    {
+      "id": "s2276",
+      "closest": "s2326",
+      "similarity": 0.0506,
+      "title": "The Garden Camera's Empty Hours"
+    },
+    {
+      "id": "s2277",
+      "closest": "s396",
+      "similarity": 0.0682,
+      "title": "The Wildflower Drawing Circle"
+    },
+    {
+      "id": "s2278",
+      "closest": "s1020",
+      "similarity": 0.0736,
+      "title": "The Bird with the Unclear Mark"
+    },
+    {
+      "id": "s2279",
+      "closest": "s1055",
+      "similarity": 0.0847,
+      "title": "A Path around the Fallen Tree"
+    },
+    {
+      "id": "s2280",
+      "closest": "s2411",
+      "similarity": 0.0552,
+      "title": "The Walk without a Species List"
+    },
+    {
+      "id": "s2281",
+      "closest": "s2132",
+      "similarity": 0.0435,
+      "title": "The Survey at the Wrong Hour"
+    },
+    {
+      "id": "s2282",
+      "closest": "s2183",
+      "similarity": 0.044,
+      "title": "The Shared Freezer Schedule"
+    },
+    {
+      "id": "s2283",
+      "closest": "s2335",
+      "similarity": 0.0618,
+      "title": "The Street Name Debate"
+    },
+    {
+      "id": "s2284",
+      "closest": "s2435",
+      "similarity": 0.0541,
+      "title": "A Grant for Maintenance"
+    },
+    {
+      "id": "s2285",
+      "closest": "s2132",
+      "similarity": 0.0551,
+      "title": "The Public Notice Test"
+    },
+    {
+      "id": "s2286",
+      "closest": "s988",
+      "similarity": 0.0935,
+      "title": "The Drawer I Did Not Empty"
+    },
+    {
+      "id": "s2287",
+      "closest": "s2139",
+      "similarity": 0.0589,
+      "title": "An Invitation with an Easy No"
+    },
+    {
+      "id": "s2288",
+      "closest": "s1754",
+      "similarity": 0.062,
+      "title": "The Shared Calendar Surprise"
+    },
+    {
+      "id": "s2289",
+      "closest": "s2156",
+      "similarity": 0.0678,
+      "title": "The Repair That Changed the Sound"
+    },
+    {
+      "id": "s2290",
+      "closest": "s2162",
+      "similarity": 0.0592,
+      "title": "The Meal We Ate in Courses"
+    },
+    {
+      "id": "s2291",
+      "closest": "s2244",
+      "similarity": 0.0738,
+      "title": "The Shop Ledger's Quiet Margin"
+    },
+    {
+      "id": "s2292",
+      "closest": "s1081",
+      "similarity": 0.0857,
+      "title": "The Apprentice's Practice Window"
+    },
+    {
+      "id": "s2293",
+      "closest": "s2193",
+      "similarity": 0.1048,
+      "title": "The Traveler's Two Accounts"
+    },
+    {
+      "id": "s2294",
+      "closest": "s2342",
+      "similarity": 0.0673,
+      "title": "The Bell Ringer's Replacement"
+    },
+    {
+      "id": "s2295",
+      "closest": "s2245",
+      "similarity": 0.1185,
+      "title": "The Cloth Seller's Unequal Samples"
+    },
+    {
+      "id": "s2296",
+      "closest": "s2150",
+      "similarity": 0.1336,
+      "title": "The Experiment with Two Changes"
+    },
+    {
+      "id": "s2297",
+      "closest": "s2498",
+      "similarity": 0.0736,
+      "title": "The Average That Hid a Delay"
+    },
+    {
+      "id": "s2298",
+      "closest": "s2347",
+      "similarity": 0.1053,
+      "title": "The Thermometer's Different Places"
+    },
+    {
+      "id": "s2299",
+      "closest": "s2349",
+      "similarity": 0.0874,
+      "title": "The Filter That Looked Clean"
+    },
+    {
+      "id": "s2300",
+      "closest": "s2246",
+      "similarity": 0.0653,
+      "title": "The Search for a Fair Test Surface"
+    },
+    {
+      "id": "s2301",
+      "closest": "s2105",
+      "similarity": 0.0688,
+      "title": "The Treasure beneath the Field"
+    },
+    {
+      "id": "s2302",
+      "closest": "s2127",
+      "similarity": 0.1275,
+      "title": "The Two Pots in the River"
+    },
+    {
+      "id": "s2303",
+      "closest": "s555",
+      "similarity": 0.2161,
+      "title": "The Tail-Less Fashion Advice"
+    },
+    {
+      "id": "s2304",
+      "closest": "s931",
+      "similarity": 0.0796,
+      "title": "The Cup of Milk and the Future"
+    },
+    {
+      "id": "s2305",
+      "closest": "s2414",
+      "similarity": 0.0363,
+      "title": "The Wall Built from One Trade"
+    },
+    {
+      "id": "s2306",
+      "closest": "s2456",
+      "similarity": 0.0593,
+      "title": "The Message Sent Tomorrow"
+    },
+    {
+      "id": "s2307",
+      "closest": "s1050",
+      "similarity": 0.0564,
+      "title": "The Painting That Changed Color"
+    },
+    {
+      "id": "s2308",
+      "closest": "s2140",
+      "similarity": 0.0931,
+      "title": "The Silent Alarm Clock"
+    },
+    {
+      "id": "s2309",
+      "closest": "s751",
+      "similarity": 0.0659,
+      "title": "The Library Book's Hidden Journey"
+    },
+    {
+      "id": "s2310",
+      "closest": "s2007",
+      "similarity": 0.1264,
+      "title": "The Room Number on the Key"
+    },
+    {
+      "id": "s2311",
+      "closest": "s418",
+      "similarity": 0.0406,
+      "title": "The Museum Bench Visit"
+    },
+    {
+      "id": "s2312",
+      "closest": "s2215",
+      "similarity": 0.0701,
+      "title": "The Festival Volunteer Who Did Not Know"
+    },
+    {
+      "id": "s2313",
+      "closest": "s2319",
+      "similarity": 0.0456,
+      "title": "The Phrasebook's Too-Formal Greeting"
+    },
+    {
+      "id": "s2314",
+      "closest": "s1212",
+      "similarity": 0.0733,
+      "title": "A View Reserved for Rain"
+    },
+    {
+      "id": "s2315",
+      "closest": "s515",
+      "similarity": 0.0446,
+      "title": "The Shared Table Conversation"
+    },
+    {
+      "id": "s2316",
+      "closest": "s1407",
+      "similarity": 0.0938,
+      "title": "The Designer's Uncomfortable Chair"
+    },
+    {
+      "id": "s2317",
+      "closest": "s2387",
+      "similarity": 0.0568,
+      "title": "The Editor Who Read Aloud"
+    },
+    {
+      "id": "s2318",
+      "closest": "s697",
+      "similarity": 0.0971,
+      "title": "The Teacher's Unfinished Example"
+    },
+    {
+      "id": "s2319",
+      "closest": "s2369",
+      "similarity": 0.0929,
+      "title": "The Shopkeeper's Shorter Opening Hours"
+    },
+    {
+      "id": "s2320",
+      "closest": "s1005",
+      "similarity": 0.0466,
+      "title": "The Pianist's Listening Week"
+    },
+    {
+      "id": "s2321",
+      "closest": "s616",
+      "similarity": 0.0478,
+      "title": "The Weather in the Wardrobe"
+    },
+    {
+      "id": "s2322",
+      "closest": "s2221",
+      "similarity": 0.0465,
+      "title": "The Mountain's Quiet Request"
+    },
+    {
+      "id": "s2323",
+      "closest": "s486",
+      "similarity": 0.0459,
+      "title": "The Map That Followed Wishes"
+    },
+    {
+      "id": "s2324",
+      "closest": "s242",
+      "similarity": 0.1037,
+      "title": "The Borrowed Voice Returns"
+    },
+    {
+      "id": "s2325",
+      "closest": "s2274",
+      "similarity": 0.1532,
+      "title": "The Last Page of the Spellbook"
+    },
+    {
+      "id": "s2326",
+      "closest": "s2276",
+      "similarity": 0.0506,
+      "title": "The Camera beyond the Usual Path"
+    },
+    {
+      "id": "s2327",
+      "closest": "s207",
+      "similarity": 0.0492,
+      "title": "The Garden's Untidy Border"
+    },
+    {
+      "id": "s2328",
+      "closest": "s2278",
+      "similarity": 0.0411,
+      "title": "The Sound No One Could Name"
+    },
+    {
+      "id": "s2329",
+      "closest": "s709",
+      "similarity": 0.0653,
+      "title": "The Familiar Tree from Below"
+    },
+    {
+      "id": "s2330",
+      "closest": "s1525",
+      "similarity": 0.0862,
+      "title": "The Beach Collection Left Behind"
+    },
+    {
+      "id": "s2331",
+      "closest": "s2183",
+      "similarity": 0.0716,
+      "title": "The Free Service with a Long Queue"
+    },
+    {
+      "id": "s2332",
+      "closest": "s2431",
+      "similarity": 0.0495,
+      "title": "The Park Rule with an Exception"
+    },
+    {
+      "id": "s2333",
+      "closest": "s199",
+      "similarity": 0.0709,
+      "title": "The Translation at the Meeting"
+    },
+    {
+      "id": "s2334",
+      "closest": "s2434",
+      "similarity": 0.0541,
+      "title": "A Pilot Project without a Promise"
+    },
+    {
+      "id": "s2335",
+      "closest": "s2235",
+      "similarity": 0.0683,
+      "title": "The Community Room's Invisible Work"
+    },
+    {
+      "id": "s2336",
+      "closest": "s2137",
+      "similarity": 0.0586,
+      "title": "The Helpful Reminder That Was Not Helpful"
+    },
+    {
+      "id": "s2337",
+      "closest": "s2088",
+      "similarity": 0.0636,
+      "title": "The Old Table's New Marks"
+    },
+    {
+      "id": "s2338",
+      "closest": "s1158",
+      "similarity": 0.0628,
+      "title": "A Weekend with One Fixed Plan"
+    },
+    {
+      "id": "s2339",
+      "closest": "s1784",
+      "similarity": 0.0587,
+      "title": "The Email I Read in a Hurry"
+    },
+    {
+      "id": "s2340",
+      "closest": "s2136",
+      "similarity": 0.0328,
+      "title": "The Suitcase I Packed Twice"
+    },
+    {
+      "id": "s2341",
+      "closest": "s2395",
+      "similarity": 0.0813,
+      "title": "The Archivist's Uncertain Date"
+    },
+    {
+      "id": "s2342",
+      "closest": "s2294",
+      "similarity": 0.0673,
+      "title": "The Mill's Written Routine"
+    },
+    {
+      "id": "s2343",
+      "closest": "s2242",
+      "similarity": 0.1175,
+      "title": "The Portrait's Unusual Background"
+    },
+    {
+      "id": "s2344",
+      "closest": "s2223",
+      "similarity": 0.0744,
+      "title": "The Merchant's Delayed News"
+    },
+    {
+      "id": "s2345",
+      "closest": "s2105",
+      "similarity": 0.1117,
+      "title": "The Workshop's Shared Measure"
+    },
+    {
+      "id": "s2346",
+      "closest": "s2150",
+      "similarity": 0.094,
+      "title": "The Result That Would Not Repeat"
+    },
+    {
+      "id": "s2347",
+      "closest": "s2298",
+      "similarity": 0.1053,
+      "title": "The Sensor beside the Heater"
+    },
+    {
+      "id": "s2348",
+      "closest": "s2248",
+      "similarity": 0.0945,
+      "title": "The Hidden Empty Container"
+    },
+    {
+      "id": "s2349",
+      "closest": "s1706",
+      "similarity": 0.1029,
+      "title": "A Model with an Open Edge"
+    },
+    {
+      "id": "s2350",
+      "closest": "s2397",
+      "similarity": 0.0656,
+      "title": "The Software Counter's Extra Click"
+    },
+    {
+      "id": "s2351",
+      "closest": "s791",
+      "similarity": 0.0485,
+      "title": "The Gold That Was Never Used"
+    },
+    {
+      "id": "s2352",
+      "closest": "s555",
+      "similarity": 0.067,
+      "title": "The Goat's Missing Exit"
+    },
+    {
+      "id": "s2353",
+      "closest": "s343",
+      "similarity": 0.2042,
+      "title": "The Cat with One Escape"
+    },
+    {
+      "id": "s2354",
+      "closest": "s403",
+      "similarity": 0.2263,
+      "title": "The Sculpture's Other Maker"
+    },
+    {
+      "id": "s2355",
+      "closest": "s192",
+      "similarity": 0.0414,
+      "title": "The Medicine and the Missing Furniture"
+    },
+    {
+      "id": "s2356",
+      "closest": "s2310",
+      "similarity": 0.0915,
+      "title": "The Meeting Room Booked Twice"
+    },
+    {
+      "id": "s2357",
+      "closest": "s1123",
+      "similarity": 0.0445,
+      "title": "The Vanishing Spreadsheet Row"
+    },
+    {
+      "id": "s2358",
+      "closest": "s1577",
+      "similarity": 0.0479,
+      "title": "The Two Receipts for One Lunch"
+    },
+    {
+      "id": "s2359",
+      "closest": "s1067",
+      "similarity": 0.0566,
+      "title": "The Note behind the Calendar"
+    },
+    {
+      "id": "s2360",
+      "closest": "s2399",
+      "similarity": 0.054,
+      "title": "The Song Heard through the Wall"
+    },
+    {
+      "id": "s2361",
+      "closest": "s2263",
+      "similarity": 0.0553,
+      "title": "The Guidebook's Closed Cafe"
+    },
+    {
+      "id": "s2362",
+      "closest": "s2565",
+      "similarity": 0.0842,
+      "title": "A Local Invitation with Conditions"
+    },
+    {
+      "id": "s2363",
+      "closest": "s2410",
+      "similarity": 0.0651,
+      "title": "The Route Chosen for Rest Stops"
+    },
+    {
+      "id": "s2364",
+      "closest": "s2515",
+      "similarity": 0.0839,
+      "title": "The Craft Demonstration's Failed Piece"
+    },
+    {
+      "id": "s2365",
+      "closest": "s2314",
+      "similarity": 0.0611,
+      "title": "A Conversation beyond the Landmark"
+    },
+    {
+      "id": "s2366",
+      "closest": "s1272",
+      "similarity": 0.0752,
+      "title": "The Engineer's Paper Prototype"
+    },
+    {
+      "id": "s2367",
+      "closest": "s2569",
+      "similarity": 0.0658,
+      "title": "The Nurse in the Theater Group"
+    },
+    {
+      "id": "s2368",
+      "closest": "s1437",
+      "similarity": 0.1044,
+      "title": "The Translator's Uncertain Word"
+    },
+    {
+      "id": "s2369",
+      "closest": "s2319",
+      "similarity": 0.0929,
+      "title": "The Baker's Smaller Menu"
+    },
+    {
+      "id": "s2370",
+      "closest": "s2118",
+      "similarity": 0.0854,
+      "title": "The Researcher's Corrected Talk"
+    },
+    {
+      "id": "s2371",
+      "closest": "s379",
+      "similarity": 0.0446,
+      "title": "The Opera for Sleeping Houses"
+    },
+    {
+      "id": "s2372",
+      "closest": "s379",
+      "similarity": 0.0923,
+      "title": "The Ghost's Forwarding Address"
+    },
+    {
+      "id": "s2373",
+      "closest": "s2059",
+      "similarity": 0.0602,
+      "title": "The Forest's Spare Tuesday"
+    },
+    {
+      "id": "s2374",
+      "closest": "s369",
+      "similarity": 0.0689,
+      "title": "The Umbrella That Collected Skies"
+    },
+    {
+      "id": "s2375",
+      "closest": "s2038",
+      "similarity": 0.116,
+      "title": "The Dragon's Retirement Party"
+    },
+    {
+      "id": "s2376",
+      "closest": "s2076",
+      "similarity": 0.0678,
+      "title": "The Garden Gate's Small Audience"
+    },
+    {
+      "id": "s2377",
+      "closest": "s1130",
+      "similarity": 0.0464,
+      "title": "The Winter Walk's Unexpected Colors"
+    },
+    {
+      "id": "s2378",
+      "closest": "s396",
+      "similarity": 0.0522,
+      "title": "The Damaged Leaf Gallery"
+    },
+    {
+      "id": "s2379",
+      "closest": "s2435",
+      "similarity": 0.0658,
+      "title": "The Animal Track That Was a Tool"
+    },
+    {
+      "id": "s2380",
+      "closest": "s2442",
+      "similarity": 0.0897,
+      "title": "The Tree Kept in the Drawing"
+    },
+    {
+      "id": "s2381",
+      "closest": "s2231",
+      "similarity": 0.055,
+      "title": "The Volunteer Role Nobody Advertised"
+    },
+    {
+      "id": "s2382",
+      "closest": "s2181",
+      "similarity": 0.0567,
+      "title": "The Consultation after the Design"
+    },
+    {
+      "id": "s2383",
+      "closest": "s1335",
+      "similarity": 0.0634,
+      "title": "The Market's Uncounted Visitors"
+    },
+    {
+      "id": "s2384",
+      "closest": "s023",
+      "similarity": 0.0915,
+      "title": "The Digital Noticeboard's Paper Twin"
+    },
+    {
+      "id": "s2385",
+      "closest": "s271",
+      "similarity": 0.0743,
+      "title": "The Playground Opening without a Photo"
+    },
+    {
+      "id": "s2386",
+      "closest": "s093",
+      "similarity": 0.069,
+      "title": "The Recipe I Stopped Defending"
+    },
+    {
+      "id": "s2387",
+      "closest": "s1210",
+      "similarity": 0.0609,
+      "title": "A Desk Facing the Wrong View"
+    },
+    {
+      "id": "s2388",
+      "closest": "s617",
+      "similarity": 0.0406,
+      "title": "The Apology without an Explanation First"
+    },
+    {
+      "id": "s2389",
+      "closest": "s1927",
+      "similarity": 0.0621,
+      "title": "The Last Box after the Move"
+    },
+    {
+      "id": "s2390",
+      "closest": "s1824",
+      "similarity": 0.0664,
+      "title": "The Dinner Where We Put the Phones Away"
+    },
+    {
+      "id": "s2391",
+      "closest": "s2343",
+      "similarity": 0.0733,
+      "title": "The Map's Decorative Empty Space"
+    },
+    {
+      "id": "s2392",
+      "closest": "s2441",
+      "similarity": 0.0909,
+      "title": "The Household Book's Other Writer"
+    },
+    {
+      "id": "s2393",
+      "closest": "s2242",
+      "similarity": 0.0859,
+      "title": "The Clockmaker's Borrowed Part"
+    },
+    {
+      "id": "s2394",
+      "closest": "s2545",
+      "similarity": 0.065,
+      "title": "The Theater's Handwritten Change"
+    },
+    {
+      "id": "s2395",
+      "closest": "s2341",
+      "similarity": 0.0813,
+      "title": "The Cargo List and the Empty Crate"
+    },
+    {
+      "id": "s2396",
+      "closest": "s1019",
+      "similarity": 0.0549,
+      "title": "The Chart with a Narrow Scale"
+    },
+    {
+      "id": "s2397",
+      "closest": "s2350",
+      "similarity": 0.0656,
+      "title": "The Missing Unsuccessful Trials"
+    },
+    {
+      "id": "s2398",
+      "closest": "s2298",
+      "similarity": 0.07,
+      "title": "A Prediction Written Before the Test"
+    },
+    {
+      "id": "s2399",
+      "closest": "s2450",
+      "similarity": 0.0976,
+      "title": "The App That Measured a Proxy"
+    },
+    {
+      "id": "s2400",
+      "closest": "s2347",
+      "similarity": 0.0607,
+      "title": "The Repaired Sensor's New Baseline"
+    },
+    {
+      "id": "s2401",
+      "closest": "s405",
+      "similarity": 0.1624,
+      "title": "The Freedom beneath the Collar"
+    },
+    {
+      "id": "s2402",
+      "closest": "s2043",
+      "similarity": 0.0709,
+      "title": "The Boast That Needed No Witness"
+    },
+    {
+      "id": "s2403",
+      "closest": "s707",
+      "similarity": 0.0993,
+      "title": "The Brass Bell's Real Meaning"
+    },
+    {
+      "id": "s2404",
+      "closest": "s707",
+      "similarity": 0.0992,
+      "title": "The Traveler and the Already-Ready Dog"
+    },
+    {
+      "id": "s2405",
+      "closest": "s2202",
+      "similarity": 0.1038,
+      "title": "The Peacock's Answer in the Sky"
+    },
+    {
+      "id": "s2406",
+      "closest": "s1998",
+      "similarity": 0.051,
+      "title": "The Disappearing Signature"
+    },
+    {
+      "id": "s2407",
+      "closest": "s1032",
+      "similarity": 0.0801,
+      "title": "The Door Locked from Both Sides"
+    },
+    {
+      "id": "s2408",
+      "closest": "s2204",
+      "similarity": 0.0565,
+      "title": "The Duplicate Photograph"
+    },
+    {
+      "id": "s2409",
+      "closest": "s521",
+      "similarity": 0.0905,
+      "title": "The Complaint from an Empty Apartment"
+    },
+    {
+      "id": "s2410",
+      "closest": "s2363",
+      "similarity": 0.0651,
+      "title": "The Trail Marker Facing Backward"
+    },
+    {
+      "id": "s2411",
+      "closest": "s2280",
+      "similarity": 0.0552,
+      "title": "The Tour That Asked Us to Draw"
+    },
+    {
+      "id": "s2412",
+      "closest": "s1789",
+      "similarity": 0.0734,
+      "title": "The Dish with Several Home Versions"
+    },
+    {
+      "id": "s2413",
+      "closest": "s1341",
+      "similarity": 0.0438,
+      "title": "The Photograph I Asked Not to Take"
+    },
+    {
+      "id": "s2414",
+      "closest": "s2305",
+      "similarity": 0.0363,
+      "title": "The Wrong Season's Walking Advice"
+    },
+    {
+      "id": "s2415",
+      "closest": "s2562",
+      "similarity": 0.0449,
+      "title": "The Return Visit without a Checklist"
+    },
+    {
+      "id": "s2416",
+      "closest": "s2418",
+      "similarity": 0.0685,
+      "title": "The Architect's Unsuccessful Shortcut"
+    },
+    {
+      "id": "s2417",
+      "closest": "s486",
+      "similarity": 0.0943,
+      "title": "The Musician's Quiet Audience"
+    },
+    {
+      "id": "s2418",
+      "closest": "s2318",
+      "similarity": 0.0722,
+      "title": "The Manager Who Changed Her Question"
+    },
+    {
+      "id": "s2419",
+      "closest": "s1258",
+      "similarity": 0.0556,
+      "title": "The Conservator's Visible Repair"
+    },
+    {
+      "id": "s2420",
+      "closest": "s1397",
+      "similarity": 0.108,
+      "title": "The Poet's Unpublished Folder"
+    },
+    {
+      "id": "s2421",
+      "closest": "s2521",
+      "similarity": 0.0488,
+      "title": "The Bureau of Misplaced Endings"
+    },
+    {
+      "id": "s2422",
+      "closest": "s476",
+      "similarity": 0.06,
+      "title": "The Witch's Unreliable Reputation"
+    },
+    {
+      "id": "s2423",
+      "closest": "s1984",
+      "similarity": 0.0831,
+      "title": "The Clockwork Whale's Shore Leave"
+    },
+    {
+      "id": "s2424",
+      "closest": "s838",
+      "similarity": 0.0953,
+      "title": "The Library Card for a Cloud"
+    },
+    {
+      "id": "s2425",
+      "closest": "s1014",
+      "similarity": 0.1167,
+      "title": "The King Who Rented His Crown"
+    },
+    {
+      "id": "s2426",
+      "closest": "s2221",
+      "similarity": 0.043,
+      "title": "The Field Notebook's Second Reader"
+    },
+    {
+      "id": "s2427",
+      "closest": "s207",
+      "similarity": 0.0643,
+      "title": "The Garden's Unphotographed Corner"
+    },
+    {
+      "id": "s2428",
+      "closest": "s1817",
+      "similarity": 0.043,
+      "title": "The Bird Count and the Birthday Party"
+    },
+    {
+      "id": "s2429",
+      "closest": "s2330",
+      "similarity": 0.0431,
+      "title": "The Landscape Remembered Too Green"
+    },
+    {
+      "id": "s2430",
+      "closest": "s2230",
+      "similarity": 0.0927,
+      "title": "The Quiet Position beside the Hide"
+    },
+    {
+      "id": "s2431",
+      "closest": "s2332",
+      "similarity": 0.0495,
+      "title": "The Indicator That Became the Goal"
+    },
+    {
+      "id": "s2432",
+      "closest": "s2334",
+      "similarity": 0.0527,
+      "title": "The Meeting Minutes without the Disagreement"
+    },
+    {
+      "id": "s2433",
+      "closest": "s2482",
+      "similarity": 0.0583,
+      "title": "The Accessible Entrance Used by Everyone"
+    },
+    {
+      "id": "s2434",
+      "closest": "s2181",
+      "similarity": 0.0555,
+      "title": "The Petition with Two Different Requests"
+    },
+    {
+      "id": "s2435",
+      "closest": "s2379",
+      "similarity": 0.0658,
+      "title": "The Grant Report after the Celebration"
+    },
+    {
+      "id": "s2436",
+      "closest": "s615",
+      "similarity": 0.1341,
+      "title": "The Gift That Needed Instructions"
+    },
+    {
+      "id": "s2437",
+      "closest": "s2336",
+      "similarity": 0.0518,
+      "title": "The Favor with an Unspoken Deadline"
+    },
+    {
+      "id": "s2438",
+      "closest": "s1718",
+      "similarity": 0.0611,
+      "title": "The Photo Album's Ordinary Pages"
+    },
+    {
+      "id": "s2439",
+      "closest": "s1616",
+      "similarity": 0.0486,
+      "title": "The Productivity List with Rest on It"
+    },
+    {
+      "id": "s2440",
+      "closest": "s1297",
+      "similarity": 0.0426,
+      "title": "The Neighbor I Knew through Parcels"
+    },
+    {
+      "id": "s2441",
+      "closest": "s2392",
+      "similarity": 0.0909,
+      "title": "The Inventory That Counted Chairs but Not Work"
+    },
+    {
+      "id": "s2442",
+      "closest": "s2380",
+      "similarity": 0.0897,
+      "title": "The Harbor Sketch's Changed Shoreline"
+    },
+    {
+      "id": "s2443",
+      "closest": "s2294",
+      "similarity": 0.0584,
+      "title": "The School Register's Missing Winter"
+    },
+    {
+      "id": "s2444",
+      "closest": "s2345",
+      "similarity": 0.0871,
+      "title": "The Craft Mark Shared by Several Hands"
+    },
+    {
+      "id": "s2445",
+      "closest": "s2092",
+      "similarity": 0.0816,
+      "title": "The Feast Described by a Guest"
+    },
+    {
+      "id": "s2446",
+      "closest": "s2500",
+      "similarity": 0.0785,
+      "title": "The Training Examples That Looked Too Similar"
+    },
+    {
+      "id": "s2447",
+      "closest": "s2397",
+      "similarity": 0.0636,
+      "title": "The Percentage without Its Starting Number"
+    },
+    {
+      "id": "s2448",
+      "closest": "s1896",
+      "similarity": 0.0878,
+      "title": "The Estimate with Honest Edges"
+    },
+    {
+      "id": "s2449",
+      "closest": "s2347",
+      "similarity": 0.0685,
+      "title": "The Experiment That Changed Its Question"
+    },
+    {
+      "id": "s2450",
+      "closest": "s2399",
+      "similarity": 0.0976,
+      "title": "The Simulation's Convenient Assumption"
+    },
+    {
+      "id": "s2451",
+      "closest": "s263",
+      "similarity": 0.0807,
+      "title": "The Bellows and the Same Mouth"
+    },
+    {
+      "id": "s2452",
+      "closest": "s2453",
+      "similarity": 0.0543,
+      "title": "The Donkey beneath the Statue"
+    },
+    {
+      "id": "s2453",
+      "closest": "s2503",
+      "similarity": 0.0673,
+      "title": "The Fly on the Axle"
+    },
+    {
+      "id": "s2454",
+      "closest": "s656",
+      "similarity": 0.0563,
+      "title": "The Empty Net and the Heavy Catch"
+    },
+    {
+      "id": "s2455",
+      "closest": "s2093",
+      "similarity": 0.048,
+      "title": "The Two Daughters' Weather"
+    },
+    {
+      "id": "s2456",
+      "closest": "s2506",
+      "similarity": 0.0717,
+      "title": "The Email That Seemed to Predict the Future"
+    },
+    {
+      "id": "s2457",
+      "closest": "s1798",
+      "similarity": 0.0443,
+      "title": "The Identical Error in Three Reports"
+    },
+    {
+      "id": "s2458",
+      "closest": "s137",
+      "similarity": 0.0682,
+      "title": "The Empty Seat in Every Photograph"
+    },
+    {
+      "id": "s2459",
+      "closest": "s2479",
+      "similarity": 0.0819,
+      "title": "The Footstep in the Recording"
+    },
+    {
+      "id": "s2460",
+      "closest": "s2556",
+      "similarity": 0.0491,
+      "title": "The Locked Document's Missing Revision"
+    },
+    {
+      "id": "s2461",
+      "closest": "s1779",
+      "similarity": 0.0471,
+      "title": "The Heritage Tour's Acknowledged Gap"
+    },
+    {
+      "id": "s2462",
+      "closest": "s2183",
+      "similarity": 0.0366,
+      "title": "The Festival Seen from the Cleanup Crew"
+    },
+    {
+      "id": "s2463",
+      "closest": "s263",
+      "similarity": 0.0822,
+      "title": "The Map Drawn for a Particular Walker"
+    },
+    {
+      "id": "s2464",
+      "closest": "s2265",
+      "similarity": 0.0407,
+      "title": "The Souvenir I Chose Not to Buy"
+    },
+    {
+      "id": "s2465",
+      "closest": "s643",
+      "similarity": 0.05,
+      "title": "The Familiar Word in an Unfamiliar Setting"
+    },
+    {
+      "id": "s2466",
+      "closest": "s2467",
+      "similarity": 0.0628,
+      "title": "The Curator's Missing Attribution"
+    },
+    {
+      "id": "s2467",
+      "closest": "s2370",
+      "similarity": 0.085,
+      "title": "The Developer's Unused Button"
+    },
+    {
+      "id": "s2468",
+      "closest": "s2367",
+      "similarity": 0.0656,
+      "title": "The Conductor's Rehearsal Recording"
+    },
+    {
+      "id": "s2469",
+      "closest": "s2369",
+      "similarity": 0.069,
+      "title": "The Organizer's Cancelled Event"
+    },
+    {
+      "id": "s2470",
+      "closest": "s2517",
+      "similarity": 0.0557,
+      "title": "The Writer's More Specific Sentence"
+    },
+    {
+      "id": "s2471",
+      "closest": "s1038",
+      "similarity": 0.0617,
+      "title": "The Museum of Things That Almost Happened"
+    },
+    {
+      "id": "s2472",
+      "closest": "s2430",
+      "similarity": 0.033,
+      "title": "The City with a Detachable Horizon"
+    },
+    {
+      "id": "s2473",
+      "closest": "s667",
+      "similarity": 0.0425,
+      "title": "The Alchemist's Successful Failure"
+    },
+    {
+      "id": "s2474",
+      "closest": "s379",
+      "similarity": 0.0755,
+      "title": "The House That Dreamed of Tenants"
+    },
+    {
+      "id": "s2475",
+      "closest": "s1313",
+      "similarity": 0.0546,
+      "title": "The Oracle's Gardening Leave"
+    },
+    {
+      "id": "s2476",
+      "closest": "s2251",
+      "similarity": 0.0584,
+      "title": "The Observation Hidden by a Familiar Name"
+    },
+    {
+      "id": "s2477",
+      "closest": "s2230",
+      "similarity": 0.0396,
+      "title": "The Photograph beyond the Chosen Frame"
+    },
+    {
+      "id": "s2478",
+      "closest": "s2495",
+      "similarity": 0.0582,
+      "title": "The Long Gap in the Garden Diary"
+    },
+    {
+      "id": "s2479",
+      "closest": "s2459",
+      "similarity": 0.0819,
+      "title": "The Soundscape without the Favorite Bird"
+    },
+    {
+      "id": "s2480",
+      "closest": "s2279",
+      "similarity": 0.0833,
+      "title": "The Unpopular Patch of Nettles"
+    },
+    {
+      "id": "s2481",
+      "closest": "s2431",
+      "similarity": 0.0451,
+      "title": "The Metric That Counted Repeat Problems"
+    },
+    {
+      "id": "s2482",
+      "closest": "s2433",
+      "similarity": 0.0583,
+      "title": "The Consultation's Absent Participants"
+    },
+    {
+      "id": "s2483",
+      "closest": "s2432",
+      "similarity": 0.045,
+      "title": "The Temporary Rule That Never Expired"
+    },
+    {
+      "id": "s2484",
+      "closest": "s2334",
+      "similarity": 0.0411,
+      "title": "The Partnership with Unequal Visibility"
+    },
+    {
+      "id": "s2485",
+      "closest": "s064",
+      "similarity": 0.0462,
+      "title": "The Public Dashboard's Missing Footnote"
+    },
+    {
+      "id": "s2486",
+      "closest": "s855",
+      "similarity": 0.0517,
+      "title": "The Family Story with Two Endings"
+    },
+    {
+      "id": "s2487",
+      "closest": "s1728",
+      "similarity": 0.0757,
+      "title": "The Habit I Mistook for a Preference"
+    },
+    {
+      "id": "s2488",
+      "closest": "s2061",
+      "similarity": 0.0438,
+      "title": "The Conversation after the Advice"
+    },
+    {
+      "id": "s2489",
+      "closest": "s2236",
+      "similarity": 0.0497,
+      "title": "The Object I Returned to Use"
+    },
+    {
+      "id": "s2490",
+      "closest": "s771",
+      "similarity": 0.0493,
+      "title": "The Plan That Survived Being Shortened"
+    },
+    {
+      "id": "s2491",
+      "closest": "s2341",
+      "similarity": 0.0688,
+      "title": "The Letter Preserved by Accident"
+    },
+    {
+      "id": "s2492",
+      "closest": "s2545",
+      "similarity": 0.0533,
+      "title": "The Public Monument's Private Draft"
+    },
+    {
+      "id": "s2493",
+      "closest": "s2395",
+      "similarity": 0.0609,
+      "title": "The Passenger List with an Empty Column"
+    },
+    {
+      "id": "s2494",
+      "closest": "s2544",
+      "similarity": 0.0648,
+      "title": "The Restored Room's New Paint"
+    },
+    {
+      "id": "s2495",
+      "closest": "s2478",
+      "similarity": 0.0582,
+      "title": "The Diary Written for a Reader"
+    },
+    {
+      "id": "s2496",
+      "closest": "s598",
+      "similarity": 0.0452,
+      "title": "The Correlation in the Classroom Chart"
+    },
+    {
+      "id": "s2497",
+      "closest": "s2446",
+      "similarity": 0.0779,
+      "title": "The Evaluation That Used the Answer Key"
+    },
+    {
+      "id": "s2498",
+      "closest": "s2297",
+      "similarity": 0.0736,
+      "title": "The Missing Boundary in the Model"
+    },
+    {
+      "id": "s2499",
+      "closest": "s2346",
+      "similarity": 0.0697,
+      "title": "The Null Result Worth Keeping"
+    },
+    {
+      "id": "s2500",
+      "closest": "s2446",
+      "similarity": 0.0785,
+      "title": "The Benchmark with a Familiar Pattern"
+    },
+    {
+      "id": "s2501",
+      "closest": "s2253",
+      "similarity": 0.0386,
+      "title": "The Statue Included Free of Charge"
+    },
+    {
+      "id": "s2502",
+      "closest": "s392",
+      "similarity": 0.0516,
+      "title": "The Lamp after a Gust of Wind"
+    },
+    {
+      "id": "s2503",
+      "closest": "s2453",
+      "similarity": 0.0673,
+      "title": "The Small Passenger on the Horn"
+    },
+    {
+      "id": "s2504",
+      "closest": "s1480",
+      "similarity": 0.1045,
+      "title": "The Fisherman's Certain Small Catch"
+    },
+    {
+      "id": "s2505",
+      "closest": "s359",
+      "similarity": 0.0687,
+      "title": "The Bird That Waited for the Farmer"
+    },
+    {
+      "id": "s2506",
+      "closest": "s2456",
+      "similarity": 0.0717,
+      "title": "The Report Dated before the Interview"
+    },
+    {
+      "id": "s2507",
+      "closest": "s1062",
+      "similarity": 0.0454,
+      "title": "The Map Pin on the Wrong Entrance"
+    },
+    {
+      "id": "s2508",
+      "closest": "s2520",
+      "similarity": 0.0701,
+      "title": "The Quote That Crossed a Page Break"
+    },
+    {
+      "id": "s2509",
+      "closest": "s124",
+      "similarity": 0.0394,
+      "title": "The Certificate with the Unfamiliar Name"
+    },
+    {
+      "id": "s2510",
+      "closest": "s720",
+      "similarity": 0.0424,
+      "title": "The Pattern Created by the Search"
+    },
+    {
+      "id": "s2511",
+      "closest": "s2220",
+      "similarity": 0.0524,
+      "title": "The Translation beside the Original Label"
+    },
+    {
+      "id": "s2512",
+      "closest": "s2081",
+      "similarity": 0.0415,
+      "title": "The Scenic Route as Someone's Commute"
+    },
+    {
+      "id": "s2513",
+      "closest": "s1319",
+      "similarity": 0.0387,
+      "title": "The Performance without a Single Meaning"
+    },
+    {
+      "id": "s2514",
+      "closest": "s1620",
+      "similarity": 0.0543,
+      "title": "The Return Ticket That Changed the Day"
+    },
+    {
+      "id": "s2515",
+      "closest": "s2364",
+      "similarity": 0.0839,
+      "title": "The Workshop Demonstration's Invisible Preparation"
+    },
+    {
+      "id": "s2516",
+      "closest": "s2566",
+      "similarity": 0.1022,
+      "title": "The Analyst's Changed Denominator"
+    },
+    {
+      "id": "s2517",
+      "closest": "s1890",
+      "similarity": 0.0814,
+      "title": "The Historian's Unresolved Footnote"
+    },
+    {
+      "id": "s2518",
+      "closest": "s2319",
+      "similarity": 0.0783,
+      "title": "The Entrepreneur's Smaller Promise"
+    },
+    {
+      "id": "s2519",
+      "closest": "s2418",
+      "similarity": 0.0664,
+      "title": "The Actor's Unnoticed Preparation"
+    },
+    {
+      "id": "s2520",
+      "closest": "s2508",
+      "similarity": 0.0701,
+      "title": "The Editor's Decision to Leave a Gap"
+    },
+    {
+      "id": "s2521",
+      "closest": "s1871",
+      "similarity": 0.0905,
+      "title": "The Committee for Impossible Bridges"
+    },
+    {
+      "id": "s2522",
+      "closest": "s2038",
+      "similarity": 0.0493,
+      "title": "The Last Dragon's Incorrect Biography"
+    },
+    {
+      "id": "s2523",
+      "closest": "s963",
+      "similarity": 0.0745,
+      "title": "The Planet That Wanted a Nickname"
+    },
+    {
+      "id": "s2524",
+      "closest": "s820",
+      "similarity": 0.0233,
+      "title": "The Magician's Perfect Duplicate"
+    },
+    {
+      "id": "s2525",
+      "closest": "s2044",
+      "similarity": 0.0693,
+      "title": "The Door That Opened Only Once"
+    },
+    {
+      "id": "s2526",
+      "closest": "s2341",
+      "similarity": 0.0504,
+      "title": "The Nature Journal's Editorial Choice"
+    },
+    {
+      "id": "s2527",
+      "closest": "s1688",
+      "similarity": 0.0507,
+      "title": "The Landscape Survey's Convenient Boundary"
+    },
+    {
+      "id": "s2528",
+      "closest": "s2128",
+      "similarity": 0.0766,
+      "title": "The Familiar Path after an Absence"
+    },
+    {
+      "id": "s2529",
+      "closest": "s860",
+      "similarity": 0.052,
+      "title": "The Unsuccessful Wildlife Photograph"
+    },
+    {
+      "id": "s2530",
+      "closest": "s2279",
+      "similarity": 0.048,
+      "title": "The Garden Designed for More Than a Photograph"
+    },
+    {
+      "id": "s2531",
+      "closest": "s1939",
+      "similarity": 0.0484,
+      "title": "The Policy Success with Several Explanations"
+    },
+    {
+      "id": "s2532",
+      "closest": "s2483",
+      "similarity": 0.0344,
+      "title": "The Emergency Procedure after the Emergency"
+    },
+    {
+      "id": "s2533",
+      "closest": "s2482",
+      "similarity": 0.05,
+      "title": "The Public Argument over Different Questions"
+    },
+    {
+      "id": "s2534",
+      "closest": "s603",
+      "similarity": 0.0606,
+      "title": "The Shared Resource's Quiet Depletion"
+    },
+    {
+      "id": "s2535",
+      "closest": "s614",
+      "similarity": 0.0398,
+      "title": "The Accountability Report with a Real Audience"
+    },
+    {
+      "id": "s2536",
+      "closest": "s2116",
+      "similarity": 0.0467,
+      "title": "The Expertise I Could Not Transfer in One Conversation"
+    },
+    {
+      "id": "s2537",
+      "closest": "s989",
+      "similarity": 0.0387,
+      "title": "The Annual Tradition We Renegotiated"
+    },
+    {
+      "id": "s2538",
+      "closest": "s2387",
+      "similarity": 0.0417,
+      "title": "The Possession with an Expired Purpose"
+    },
+    {
+      "id": "s2539",
+      "closest": "s2116",
+      "similarity": 0.0431,
+      "title": "The Opinion I Had Borrowed Unnoticed"
+    },
+    {
+      "id": "s2540",
+      "closest": "s1036",
+      "similarity": 0.0628,
+      "title": "The Week That Looked Empty on Paper"
+    },
+    {
+      "id": "s2541",
+      "closest": "s1698",
+      "similarity": 0.0494,
+      "title": "The Archive's Order Was Not the Past's Order"
+    },
+    {
+      "id": "s2542",
+      "closest": "s2548",
+      "similarity": 0.0545,
+      "title": "The Translation That Modernized a Dispute"
+    },
+    {
+      "id": "s2543",
+      "closest": "s2291",
+      "similarity": 0.0633,
+      "title": "The Workshop Account's Apparent Efficiency"
+    },
+    {
+      "id": "s2544",
+      "closest": "s2494",
+      "similarity": 0.0648,
+      "title": "The Historical Room with Two Valid Dates"
+    },
+    {
+      "id": "s2545",
+      "closest": "s2394",
+      "similarity": 0.065,
+      "title": "The Famous Speech and the Later Copy"
+    },
+    {
+      "id": "s2546",
+      "closest": "s2399",
+      "similarity": 0.0373,
+      "title": "The Optimized System and Its Unmeasured Cost"
+    },
+    {
+      "id": "s2547",
+      "closest": "s2449",
+      "similarity": 0.054,
+      "title": "The Confidence of a Small Sample"
+    },
+    {
+      "id": "s2548",
+      "closest": "s2542",
+      "similarity": 0.0545,
+      "title": "The Explanation That Arrived after the Outcome"
+    },
+    {
+      "id": "s2549",
+      "closest": "s2312",
+      "similarity": 0.0521,
+      "title": "The Interface That Hid the Uncertainty"
+    },
+    {
+      "id": "s2550",
+      "closest": "s2450",
+      "similarity": 0.0452,
+      "title": "The Reproduction with Documented Differences"
+    },
+    {
+      "id": "s2551",
+      "closest": "s357",
+      "similarity": 0.059,
+      "title": "The Bags That Face Different Directions"
+    },
+    {
+      "id": "s2552",
+      "closest": "s555",
+      "similarity": 0.097,
+      "title": "The Fox's Shelter and the Woodcutter's Hand"
+    },
+    {
+      "id": "s2553",
+      "closest": "s2515",
+      "similarity": 0.0485,
+      "title": "The Boar Sharpening Its Tusks"
+    },
+    {
+      "id": "s2554",
+      "closest": "s2352",
+      "similarity": 0.0413,
+      "title": "The Axe Handle Requested from the Trees"
+    },
+    {
+      "id": "s2555",
+      "closest": "s1028",
+      "similarity": 0.0618,
+      "title": "The Shadow Included in the Hire"
+    },
+    {
+      "id": "s2556",
+      "closest": "s2460",
+      "similarity": 0.0491,
+      "title": "The Evidence File's Invisible Conversion"
+    },
+    {
+      "id": "s2557",
+      "closest": "s2467",
+      "similarity": 0.0397,
+      "title": "The Witnesses Who Shared One Story"
+    },
+    {
+      "id": "s2558",
+      "closest": "s2447",
+      "similarity": 0.0543,
+      "title": "The Anomaly at the Day's Boundary"
+    },
+    {
+      "id": "s2559",
+      "closest": "s1808",
+      "similarity": 0.0484,
+      "title": "The Missing Page That Was Never Printed"
+    },
+    {
+      "id": "s2560",
+      "closest": "s2508",
+      "similarity": 0.0409,
+      "title": "The Search Result That Remembered an Old Claim"
+    },
+    {
+      "id": "s2561",
+      "closest": "s2412",
+      "similarity": 0.0366,
+      "title": "The Authenticity Asked of One Afternoon"
+    },
+    {
+      "id": "s2562",
+      "closest": "s2415",
+      "similarity": 0.0449,
+      "title": "The City Seen through Its Maintenance"
+    },
+    {
+      "id": "s2563",
+      "closest": "s1176",
+      "similarity": 0.0551,
+      "title": "The Guide's Account and the Resident's Memory"
+    },
+    {
+      "id": "s2564",
+      "closest": "s2464",
+      "similarity": 0.0402,
+      "title": "The Return Journey's Unplanned Conversation"
+    },
+    {
+      "id": "s2565",
+      "closest": "s2362",
+      "similarity": 0.0842,
+      "title": "The Photograph Explained by Its Absence"
+    },
+    {
+      "id": "s2566",
+      "closest": "s2516",
+      "similarity": 0.1022,
+      "title": "The Statistician's Refusal to Rank"
+    },
+    {
+      "id": "s2567",
+      "closest": "s2419",
+      "similarity": 0.0534,
+      "title": "The Biographer's Unavailable Interior"
+    },
+    {
+      "id": "s2568",
+      "closest": "s2418",
+      "similarity": 0.0611,
+      "title": "The Designer's Discovery after Delivery"
+    },
+    {
+      "id": "s2569",
+      "closest": "s2367",
+      "similarity": 0.0658,
+      "title": "The Director's Credit at the End"
+    },
+    {
+      "id": "s2570",
+      "closest": "s1381",
+      "similarity": 0.0574,
+      "title": "The Scholar's Changed Mind in Print"
+    }
+  ]
+}

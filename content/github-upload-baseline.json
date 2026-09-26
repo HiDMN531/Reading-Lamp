@@ -1,0 +1,863 @@
+{
+  "repository": "HiDMN531/Reading-Lamp",
+  "branch": "main",
+  "head": "544f00170bb1ca2950c02ba950492dd9e0cace39",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd074af3e9c04f6d0f5071008abe7101cd7bac17",
+      "size": 175,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/dd074af3e9c04f6d0f5071008abe7101cd7bac17"
+    },
+    {
+      "path": "QUALITY_REPORT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fc7b15f53a246807be75da548fb3ebcc1a4ad8a",
+      "size": 19026,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4fc7b15f53a246807be75da548fb3ebcc1a4ad8a"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dea170c64ef46e696c2c069c2bb9489447c27495",
+      "size": 31970,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/dea170c64ef46e696c2c069c2bb9489447c27495"
+    },
+    {
+      "path": "RELEASE_CHECKLIST.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "042e3e7bc70c9bd6b6172b9ae7e7fea2c9e53b97",
+      "size": 6111,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/042e3e7bc70c9bd6b6172b9ae7e7fea2c9e53b97"
+    },
+    {
+      "path": "android-twa",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ab2d2c825951f9068e39ae77d886b903084a6dbb",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/ab2d2c825951f9068e39ae77d886b903084a6dbb"
+    },
+    {
+      "path": "android-twa/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28bcc8b33350f83bb9b44fb10e1288484acb4ff5",
+      "size": 1285,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/28bcc8b33350f83bb9b44fb10e1288484acb4ff5"
+    },
+    {
+      "path": "android-twa/app",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "714a1d4368ad995b8fb80dd2b7f025de713cea08",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/714a1d4368ad995b8fb80dd2b7f025de713cea08"
+    },
+    {
+      "path": "android-twa/app/build.gradle",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b8860101849f1247c278ef69c9e7ca2be711873",
+      "size": 9855,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/9b8860101849f1247c278ef69c9e7ca2be711873"
+    },
+    {
+      "path": "android-twa/app/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8d54c345aa9915bc3e9025a0504e796b957ddcb2",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/8d54c345aa9915bc3e9025a0504e796b957ddcb2"
+    },
+    {
+      "path": "android-twa/app/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "df09f3369ed7674f5c5d256d35b14396aa6483cb",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/df09f3369ed7674f5c5d256d35b14396aa6483cb"
+    },
+    {
+      "path": "android-twa/app/src/main/AndroidManifest.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f11c96107ecdf907a1bedd76a405d38866f683e1",
+      "size": 7208,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/f11c96107ecdf907a1bedd76a405d38866f683e1"
+    },
+    {
+      "path": "android-twa/app/src/main/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4e3e31196d73a6ad4a3189b3f646d430ca005af2",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/4e3e31196d73a6ad4a3189b3f646d430ca005af2"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a60887d4add5c87be37bd7ff68d9d85c4f259d2c",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/a60887d4add5c87be37bd7ff68d9d85c4f259d2c"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f5ae9a13ff7ecb478d4c72de923df6034ea5aa37",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/f5ae9a13ff7ecb478d4c72de923df6034ea5aa37"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github/hidmn531",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5f7d553c7afe0e801636b2ed41de79a575341e15",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/5f7d553c7afe0e801636b2ed41de79a575341e15"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github/hidmn531/readinglamp",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "812cd9a3df747e981a001ea3e762a4ddc0eea71f",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/812cd9a3df747e981a001ea3e762a4ddc0eea71f"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github/hidmn531/readinglamp/Application.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e310a911535520bea9beaab1e6c2595af89bdf92",
+      "size": 779,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/e310a911535520bea9beaab1e6c2595af89bdf92"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github/hidmn531/readinglamp/DelegationService.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eec2419868b18d273df3effec1949c760e9fc953",
+      "size": 238,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/eec2419868b18d273df3effec1949c760e9fc953"
+    },
+    {
+      "path": "android-twa/app/src/main/java/io/github/hidmn531/readinglamp/LauncherActivity.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6bc965c9e9bfeacdc6a1a44956c9b94b90d1e5dd",
+      "size": 1770,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/6bc965c9e9bfeacdc6a1a44956c9b94b90d1e5dd"
+    },
+    {
+      "path": "android-twa/app/src/main/res",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "958dbdb70d3d02e7562128c2c3ca705f48115eb9",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/958dbdb70d3d02e7562128c2c3ca705f48115eb9"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-anydpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7a03888108b3dca8ffe9452981dd254f58e1ef63",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/7a03888108b3dca8ffe9452981dd254f58e1ef63"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-anydpi/shortcut_legacy_background.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d53c148aceba588ad0eccfc5c1b80fbf81b2a306",
+      "size": 1020,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/d53c148aceba588ad0eccfc5c1b80fbf81b2a306"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-hdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "64472d0bd655b111c1abb7edd7b95db7684453eb",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/64472d0bd655b111c1abb7edd7b95db7684453eb"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-hdpi/ic_notification_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3412c531dcc717d7fc6d457356f18c063260b36a",
+      "size": 2297,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/3412c531dcc717d7fc6d457356f18c063260b36a"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-hdpi/splash.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "745da6fddb250b3eabc91598b014b2539d4dd824",
+      "size": 164255,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/745da6fddb250b3eabc91598b014b2539d4dd824"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-mdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "81224f8ef4a3ecc99eff2ecf0798b0988a2f35b8",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/81224f8ef4a3ecc99eff2ecf0798b0988a2f35b8"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-mdpi/ic_notification_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "220efde264829758273f9cd190f2eae12b77d314",
+      "size": 1220,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/220efde264829758273f9cd190f2eae12b77d314"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-mdpi/splash.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72790083cb5944ee5627b36e39e98005af1bda50",
+      "size": 79061,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/72790083cb5944ee5627b36e39e98005af1bda50"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "62435bab5b52d08462f443dd2d7f8af7112e39cd",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/62435bab5b52d08462f443dd2d7f8af7112e39cd"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xhdpi/ic_notification_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a20e18beb07ba793ad31af313be3a58731b30ae0",
+      "size": 3624,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/a20e18beb07ba793ad31af313be3a58731b30ae0"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xhdpi/splash.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6399d2551583d326c3d8607c840509bd1f689b8",
+      "size": 263108,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/a6399d2551583d326c3d8607c840509bd1f689b8"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cc43ba2251c527753abe22d1403d308785431bc1",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/cc43ba2251c527753abe22d1403d308785431bc1"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxhdpi/ic_notification_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "414622e686d7081657fcee4921080ed690b1d3a6",
+      "size": 6944,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/414622e686d7081657fcee4921080ed690b1d3a6"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxhdpi/splash.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea5c7f7c66f8f7bf38d786bf636fda006fb3fdf6",
+      "size": 475702,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/ea5c7f7c66f8f7bf38d786bf636fda006fb3fdf6"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxxhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3979a30ac0edcc1a12ebb8e1d656df7a90324c83",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/3979a30ac0edcc1a12ebb8e1d656df7a90324c83"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxxhdpi/ic_notification_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72c42e963464fcf6db4c796a516d12dd97d0ff33",
+      "size": 11224,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/72c42e963464fcf6db4c796a516d12dd97d0ff33"
+    },
+    {
+      "path": "android-twa/app/src/main/res/drawable-xxxhdpi/splash.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3c887b3080ecf92d3aa4b45bb953f68aec58243",
+      "size": 719927,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/d3c887b3080ecf92d3aa4b45bb953f68aec58243"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-anydpi-v26",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dc58e88e41203a4ec5a9b167c53d62879663365a",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/dc58e88e41203a4ec5a9b167c53d62879663365a"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04807978fd8fc37912223a16c6cf1ab5e90ca4e2",
+      "size": 1341,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/04807978fd8fc37912223a16c6cf1ab5e90ca4e2"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-hdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1e6df8ffbc84eddec66e0b8c935c8231b15af678",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/1e6df8ffbc84eddec66e0b8c935c8231b15af678"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "414622e686d7081657fcee4921080ed690b1d3a6",
+      "size": 6944,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/414622e686d7081657fcee4921080ed690b1d3a6"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-hdpi/ic_maskable.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "663e2ea604634cfdc79f96c1177e20fc7071a6ff",
+      "size": 16907,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/663e2ea604634cfdc79f96c1177e20fc7071a6ff"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-mdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7b335f5366e2ddcc9eb81254aca2f2d58c5b1f1c",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/7b335f5366e2ddcc9eb81254aca2f2d58c5b1f1c"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a20e18beb07ba793ad31af313be3a58731b30ae0",
+      "size": 3624,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/a20e18beb07ba793ad31af313be3a58731b30ae0"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-mdpi/ic_maskable.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5957b76205f42107ecc34a7aa5a918c58a19f03",
+      "size": 8554,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/f5957b76205f42107ecc34a7aa5a918c58a19f03"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8de4ac05327f3714beda10ddc6f78be782308b4b",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/8de4ac05327f3714beda10ddc6f78be782308b4b"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72c42e963464fcf6db4c796a516d12dd97d0ff33",
+      "size": 11224,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/72c42e963464fcf6db4c796a516d12dd97d0ff33"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xhdpi/ic_maskable.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3df83422d60d53d857f7a2a3e67ae53a65771fb6",
+      "size": 27274,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/3df83422d60d53d857f7a2a3e67ae53a65771fb6"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6cab33ec1c4fc265955fd868eaacb651f3bd3c5e",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/6cab33ec1c4fc265955fd868eaacb651f3bd3c5e"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48aca371d4a143d0550bead1caf334a29957e651",
+      "size": 21971,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/48aca371d4a143d0550bead1caf334a29957e651"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxhdpi/ic_maskable.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65aef86d3bbbadbb5a573c823a4e8db89aca5dd3",
+      "size": 54778,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/65aef86d3bbbadbb5a573c823a4e8db89aca5dd3"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxxhdpi",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fcac7dd9eac8387b7990680de6bbae7b258e9cb9",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/fcac7dd9eac8387b7990680de6bbae7b258e9cb9"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8575fc9e8de8434b5ca5da90e3c76e9cfab988df",
+      "size": 35666,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/8575fc9e8de8434b5ca5da90e3c76e9cfab988df"
+    },
+    {
+      "path": "android-twa/app/src/main/res/mipmap-xxxhdpi/ic_maskable.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d5d2a6ef321d7799575afe57e6882cf916288ff",
+      "size": 92952,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/1d5d2a6ef321d7799575afe57e6882cf916288ff"
+    },
+    {
+      "path": "android-twa/app/src/main/res/raw",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7c88f85c13a608b98466f36e8a8450c587a03db0",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/7c88f85c13a608b98466f36e8a8450c587a03db0"
+    },
+    {
+      "path": "android-twa/app/src/main/res/raw/web_app_manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd70cb70fa68eaea98b5c60465e0735e500ece73",
+      "size": 827,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/fd70cb70fa68eaea98b5c60465e0735e500ece73"
+    },
+    {
+      "path": "android-twa/app/src/main/res/values",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1b5bfe5186da97ab2a55e20d57f5100ed5d416fb",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/1b5bfe5186da97ab2a55e20d57f5100ed5d416fb"
+    },
+    {
+      "path": "android-twa/app/src/main/res/values/colors.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e66222d0025439110617820b4a8f5245295b9606",
+      "size": 710,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/e66222d0025439110617820b4a8f5245295b9606"
+    },
+    {
+      "path": "android-twa/app/src/main/res/values/strings.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2dee7dc291270b03d68d355648b8fc7b143536bc",
+      "size": 1416,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/2dee7dc291270b03d68d355648b8fc7b143536bc"
+    },
+    {
+      "path": "android-twa/app/src/main/res/xml",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d277e70cc3ca89154082142eeade96981efec762",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/d277e70cc3ca89154082142eeade96981efec762"
+    },
+    {
+      "path": "android-twa/app/src/main/res/xml/filepaths.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a54348527192adbd46cc968132365959cd2b804d",
+      "size": 704,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/a54348527192adbd46cc968132365959cd2b804d"
+    },
+    {
+      "path": "android-twa/app/src/main/res/xml/shortcuts.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5effdb1d119b941529666039f4dfa8ecf7ff36cf",
+      "size": 73,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/5effdb1d119b941529666039f4dfa8ecf7ff36cf"
+    },
+    {
+      "path": "android-twa/build.gradle",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3d57ce0e8906e37b8edc3b961513ee8452fc570",
+      "size": 1130,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/a3d57ce0e8906e37b8edc3b961513ee8452fc570"
+    },
+    {
+      "path": "android-twa/gradle.properties",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "784a1d43f91ab356d5f3ab94f4175b056e1c1751",
+      "size": 751,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/784a1d43f91ab356d5f3ab94f4175b056e1c1751"
+    },
+    {
+      "path": "android-twa/gradle",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "475ab41dd47779dbeafb2f9f9a1016673784306f",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/475ab41dd47779dbeafb2f9f9a1016673784306f"
+    },
+    {
+      "path": "android-twa/gradle/wrapper",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1edc574eff1f273adb236ffa3721efe66a1c7834",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/1edc574eff1f273adb236ffa3721efe66a1c7834"
+    },
+    {
+      "path": "android-twa/gradle/wrapper/gradle-wrapper.jar",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c2d1cf016b3885f6930543d57b744ea8c220a1a",
+      "size": 55616,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/5c2d1cf016b3885f6930543d57b744ea8c220a1a"
+    },
+    {
+      "path": "android-twa/gradle/wrapper/gradle-wrapper.properties",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "719e73646ded6bce2ca49d465c7ed2a9ec5cf423",
+      "size": 253,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/719e73646ded6bce2ca49d465c7ed2a9ec5cf423"
+    },
+    {
+      "path": "android-twa/gradlew",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b740cf13397ab16efc23cba3d6234ff8433403b1",
+      "size": 8706,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/b740cf13397ab16efc23cba3d6234ff8433403b1"
+    },
+    {
+      "path": "android-twa/gradlew.bat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25da30dbdeee93f6eaceea674c3b635de168ce06",
+      "size": 2826,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/25da30dbdeee93f6eaceea674c3b635de168ce06"
+    },
+    {
+      "path": "android-twa/manifest-checksum.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45fd971ff42162ca1e882aa9deda644ec032fde5",
+      "size": 40,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/45fd971ff42162ca1e882aa9deda644ec032fde5"
+    },
+    {
+      "path": "android-twa/settings.gradle",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
+      "size": 15,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/e7b4def49cb53d9aa04228dd3edb14c9e635e003"
+    },
+    {
+      "path": "android-twa/store_icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05fabafd0c8dc7eb06a5ff32a7153df6c05dfaf4",
+      "size": 218480,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/05fabafd0c8dc7eb06a5ff32a7153df6c05dfaf4"
+    },
+    {
+      "path": "android-twa/twa-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ae0c9c890b69e1af63f9cf25fd6d2955b3323c9",
+      "size": 1521,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/5ae0c9c890b69e1af63f9cf25fd6d2955b3323c9"
+    },
+    {
+      "path": "app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36bd6286af751c208122a166c5e922967289ac07",
+      "size": 194998,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/36bd6286af751c208122a166c5e922967289ac07"
+    },
+    {
+      "path": "config.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c41db80ed01512f1557daf899992b7196ad569b1",
+      "size": 106,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/c41db80ed01512f1557daf899992b7196ad569b1"
+    },
+    {
+      "path": "icons",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "488af964a0e7bc32cd7b3f79860bb7a5527b8806",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/488af964a0e7bc32cd7b3f79860bb7a5527b8806"
+    },
+    {
+      "path": "icons/apple-touch-icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "716b5ccae1a9fcf3dd0ff9281bff20b44c7ab43b",
+      "size": 39258,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/716b5ccae1a9fcf3dd0ff9281bff20b44c7ab43b"
+    },
+    {
+      "path": "icons/icon-192.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4417b2cf6249475b4bf8e6db8cf2214779122cd1",
+      "size": 32369,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4417b2cf6249475b4bf8e6db8cf2214779122cd1"
+    },
+    {
+      "path": "icons/icon-512.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5ad253c7f566b7e70ddc5accce08a28e8f2a175",
+      "size": 185904,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/c5ad253c7f566b7e70ddc5accce08a28e8f2a175"
+    },
+    {
+      "path": "icons/icon-maskable-192.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4417b2cf6249475b4bf8e6db8cf2214779122cd1",
+      "size": 32369,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4417b2cf6249475b4bf8e6db8cf2214779122cd1"
+    },
+    {
+      "path": "icons/icon-maskable-512.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5ad253c7f566b7e70ddc5accce08a28e8f2a175",
+      "size": 185904,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/c5ad253c7f566b7e70ddc5accce08a28e8f2a175"
+    },
+    {
+      "path": "icons/settings-gear.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e79d128b277473a727dcaa9b1e69bd9b74aec23b",
+      "size": 7170,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/e79d128b277473a727dcaa9b1e69bd9b74aec23b"
+    },
+    {
+      "path": "index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37c2dd7412495902823a2d68f2c0d8587185a989",
+      "size": 46809,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/37c2dd7412495902823a2d68f2c0d8587185a989"
+    },
+    {
+      "path": "manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8cf58e4d3f3d0a44259e0854f43143b81c4ccf94",
+      "size": 1045,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/8cf58e4d3f3d0a44259e0854f43143b81c4ccf94"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "707df5bb283433e5217934c12688a924a85cfd60",
+      "size": 360,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/707df5bb283433e5217934c12688a924a85cfd60"
+    },
+    {
+      "path": "play-store",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b712dadf32327e814736549a424e57d0d15f48c2",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/b712dadf32327e814736549a424e57d0d15f48c2"
+    },
+    {
+      "path": "play-store/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8facdcfae968641f57561978fb5ecb39369fc05c",
+      "size": 931,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/8facdcfae968641f57561978fb5ecb39369fc05c"
+    },
+    {
+      "path": "play-store/assetlinks-template.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb7a50fca4cb6b00b67a3be134c4c6a5de2bfd54",
+      "size": 266,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/fb7a50fca4cb6b00b67a3be134c4c6a5de2bfd54"
+    },
+    {
+      "path": "play-store/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bf663f6a3c9542fc69fc1ab4f57ef4319d0b0400",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/bf663f6a3c9542fc69fc1ab4f57ef4319d0b0400"
+    },
+    {
+      "path": "play-store/assets/feature-graphic-1024x500.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5fd9f75c512c7eb1f0eebc8f4d00e4df4ed0d9fb",
+      "size": 198751,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/5fd9f75c512c7eb1f0eebc8f4d00e4df4ed0d9fb"
+    },
+    {
+      "path": "play-store/assets/play-icon-512.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe9f35d074038d6f09e57035e1777ffddb5c492a",
+      "size": 185416,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/fe9f35d074038d6f09e57035e1777ffddb5c492a"
+    },
+    {
+      "path": "play-store/assets/screenshots",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4e7426a7a438e6f92e09f7769bbe26e1af1bdf4a",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/4e7426a7a438e6f92e09f7769bbe26e1af1bdf4a"
+    },
+    {
+      "path": "play-store/assets/screenshots/01-home.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "050e8dc64beb2458931aed8c0993e6387fa4e4d0",
+      "size": 246221,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/050e8dc64beb2458931aed8c0993e6387fa4e4d0"
+    },
+    {
+      "path": "play-store/assets/screenshots/02-reading.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dca0840cbb976edd9ec7eaa52587fff3a3495f70",
+      "size": 249380,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/dca0840cbb976edd9ec7eaa52587fff3a3495f70"
+    },
+    {
+      "path": "play-store/assets/screenshots/03-progress.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d6fa4207f89f58cd967a70bc684f7121022cf7a",
+      "size": 240481,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/2d6fa4207f89f58cd967a70bc684f7121022cf7a"
+    },
+    {
+      "path": "play-store/assets/screenshots/04-settings.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b1783171a9b48b2e63b69ad0d9d6051acc157f4",
+      "size": 177225,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/3b1783171a9b48b2e63b69ad0d9d6051acc157f4"
+    },
+    {
+      "path": "play-store/assets/screenshots/05-rewards.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1fb007c3728c8375b19a35b38558b8aafe17c0fb",
+      "size": 158875,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/1fb007c3728c8375b19a35b38558b8aafe17c0fb"
+    },
+    {
+      "path": "play-store/data-safety-ja.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27b65b8c7bdfc6a2aa850fa5e6ddb5cc2626c2d0",
+      "size": 1550,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/27b65b8c7bdfc6a2aa850fa5e6ddb5cc2626c2d0"
+    },
+    {
+      "path": "play-store/listing-ja.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ddad5b8a0e6466bfa7bbd4e7645196984d42a75",
+      "size": 2041,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4ddad5b8a0e6466bfa7bbd4e7645196984d42a75"
+    },
+    {
+      "path": "play-store/release-checklist.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8209df3c8dc91732c6a8d2f2b0592cf5b4573d74",
+      "size": 2556,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/8209df3c8dc91732c6a8d2f2b0592cf5b4573d74"
+    },
+    {
+      "path": "privacy.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4386e1645ef3c952261613cce7f44e3749e8fa7f",
+      "size": 7234,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4386e1645ef3c952261613cce7f44e3749e8fa7f"
+    },
+    {
+      "path": "rewards.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f35e7a019440418b2a9e50c8365b0981f945098",
+      "size": 20837,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/9f35e7a019440418b2a9e50c8365b0981f945098"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "63dc32c75d8d45f4e38f7b94713d7fa36300e4c3",
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/trees/63dc32c75d8d45f4e38f7b94713d7fa36300e4c3"
+    },
+    {
+      "path": "scripts/test_beginner_ui.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f171cc13ca39e23feaf7c91d2129d6039f8b438",
+      "size": 8204,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/3f171cc13ca39e23feaf7c91d2129d6039f8b438"
+    },
+    {
+      "path": "scripts/validate_current_release.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c228aee96f36cd38bedc8b5aed9477b681617348",
+      "size": 7507,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/c228aee96f36cd38bedc8b5aed9477b681617348"
+    },
+    {
+      "path": "scripts/validate_legacy_2000.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1cde4892708335d85d50e141b26d40c26b5b502",
+      "size": 28684,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/e1cde4892708335d85d50e141b26d40c26b5b502"
+    },
+    {
+      "path": "stories.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f587d8eeb91bd5eb9119498944411e0accbb60a",
+      "size": 3088297,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/6f587d8eeb91bd5eb9119498944411e0accbb60a"
+    },
+    {
+      "path": "styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c6cd04ecfc957be2c6ccf86dbd26105b8134c5d",
+      "size": 62148,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/4c6cd04ecfc957be2c6ccf86dbd26105b8134c5d"
+    },
+    {
+      "path": "sw.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afcd0c0135eeac5d6b95fce8b81132853318ff48",
+      "size": 4790,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/afcd0c0135eeac5d6b95fce8b81132853318ff48"
+    },
+    {
+      "path": "terms.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10619804814d4117755cdcf574a5cc8c12a99d67",
+      "size": 5122,
+      "url": "https://api.github.com/repos/HiDMN531/Reading-Lamp/git/blobs/10619804814d4117755cdcf574a5cc8c12a99d67"
+    }
+  ]
+}

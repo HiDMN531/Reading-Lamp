@@ -1,0 +1,49 @@
+{
+  "stories": 2570,
+  "words": 374734,
+  "errors": 0,
+  "flagged": 899,
+  "byLevel": {
+    "1": {
+      "count": 306,
+      "flagged": 143
+    },
+    "2": {
+      "count": 256,
+      "flagged": 133
+    },
+    "3": {
+      "count": 256,
+      "flagged": 112
+    },
+    "4": {
+      "count": 256,
+      "flagged": 76
+    },
+    "5": {
+      "count": 247,
+      "flagged": 83
+    },
+    "6": {
+      "count": 251,
+      "flagged": 88
+    },
+    "7": {
+      "count": 244,
+      "flagged": 71
+    },
+    "8": {
+      "count": 272,
+      "flagged": 101
+    },
+    "9": {
+      "count": 241,
+      "flagged": 48
+    },
+    "10": {
+      "count": 241,
+      "flagged": 44
+    }
+  },
+  "method": "wordfreq 3.1.1 Zipf token frequency; not a headword list, CEFR score or measured known-word percentage"
+}
