@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.14";
+const APP_VERSION = "2.11.15";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -2943,9 +2943,32 @@ function autumnEventState(history = getHistory(), now = new Date()) {
   };
 }
 
-function renderAutumnEvent() {
-  // Seasonal Reading is not part of the first release.
-  document.getElementById("autumnEvent").hidden = true;
+function renderAutumnEvent(history = getHistory()) {
+  const panel = document.getElementById("autumnEvent");
+  const state = autumnEventState(history);
+  panel.hidden = !(state.preview || state.active);
+  if (panel.hidden) return;
+  const capped = Math.min(10, state.count);
+  const progress = document.getElementById("autumnEventProgress");
+  progress.setAttribute("aria-valuenow", String(capped));
+  progress.querySelector("span").style.width = `${capped * 10}%`;
+  document.getElementById("autumnEventCount").textContent = `${capped} / 10篇`;
+  document.querySelectorAll("[data-autumn-step]").forEach((step) => {
+    step.classList.toggle("is-complete", state.count >= Number(step.dataset.autumnStep));
+  });
+  const button = document.getElementById("startAutumnEventBtn");
+  button.disabled = !state.active;
+  if (state.preview) {
+    document.getElementById("autumnEventMessage").textContent = "明日から、秋の夜に似合う限定英文を読めます。";
+    button.textContent = "9月23日から読めます";
+  } else if (state.count >= 10) {
+    document.getElementById("autumnEventMessage").textContent = "10篇達成。秋限定の灯り Autumn Ember を獲得しました。";
+    button.textContent = "もう一篇、秋を読む";
+  } else {
+    const next = state.count < 1 ? 1 : state.count < 5 ? 5 : 10;
+    document.getElementById("autumnEventMessage").textContent = `秋の限定英文を読み、${next}篇目の灯りを目指しましょう。`;
+    button.textContent = "秋の一篇を読む";
+  }
 }
 
 function renderHome() {
