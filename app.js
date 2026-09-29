@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.13";
+const APP_VERSION = "2.11.14";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -2797,7 +2797,7 @@ function renderAnalysisBars(container, items, valueFormatter) {
     track.setAttribute("aria-hidden", "true");
     const fill = document.createElement("span");
     fill.className = "analysis-bar-fill";
-    fill.style.width = `${Math.max(3, (item.value / max) * 100)}%`;
+    fill.style.width = item.value > 0 ? `${Math.max(3, (item.value / max) * 100)}%` : "0%";
     track.appendChild(fill);
 
     const value = document.createElement("span");
@@ -2809,6 +2809,44 @@ function renderAnalysisBars(container, items, valueFormatter) {
     row.appendChild(value);
     container.appendChild(row);
   });
+}
+
+function readingAnalysisPeriods(history, now = new Date()) {
+  const today = new Date(now);
+  today.setHours(12, 0, 0, 0);
+  const days = Array.from({ length: 60 }, (_, offset) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (59 - offset));
+    return { key: localDateKey(date), date };
+  });
+  const wordsByDay = new Map(days.map(({ key }) => [key, 0]));
+  const readingDays = new Set();
+  let measuredSeconds30 = 0;
+  let measuredEntries30 = 0;
+  for (const entry of history) {
+    const key = localDateKey(entry.date);
+    if (!wordsByDay.has(key)) continue;
+    if (entry.abandoned || !(Number(entry.words) > 0)) continue;
+    wordsByDay.set(key, wordsByDay.get(key) + Number(entry.words));
+    if (key >= days[30].key) {
+      readingDays.add(key);
+      if (Object.prototype.hasOwnProperty.call(entry, "activeSeconds") && Number.isFinite(Number(entry.activeSeconds))) {
+        measuredSeconds30 += Math.max(0, Number(entry.activeSeconds));
+        measuredEntries30++;
+      }
+    }
+  }
+  const sum = (period) => period.reduce((total, day) => total + wordsByDay.get(day.key), 0);
+  const recent = days.slice(30);
+  return {
+    last7: recent.slice(-7).map((day) => ({ ...day, words: wordsByDay.get(day.key) })),
+    words30: sum(recent),
+    previousWords30: sum(days.slice(0, 30)),
+    readingDays30: readingDays.size,
+    measuredSeconds30,
+    measuredEntries30,
+    completedEntries30: history.filter((entry) => !entry.abandoned && Number(entry.words) > 0 && readingDays.has(localDateKey(entry.date))).length,
+  };
 }
 
 function renderHistoryAnalysis(history) {
@@ -2829,10 +2867,8 @@ function renderHistoryAnalysis(history) {
   analysisContent.hidden = !hasRecords;
   if (!hasRecords) return;
 
-  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const last7Days = completed
-    .filter((h) => new Date(h.date).getTime() >= sevenDaysAgo)
-    .reduce((sum, h) => sum + Number(h.words || 0), 0);
+  const periods = readingAnalysisPeriods(history);
+  const last7Days = periods.last7.reduce((sum, day) => sum + day.words, 0);
   const totalCompletedWords = completed.reduce((sum, h) => sum + Number(h.words || 0), 0);
 
   document.getElementById("analysisCompleted").textContent = fmt(completed.length);
@@ -2843,6 +2879,25 @@ function renderHistoryAnalysis(history) {
   document.getElementById("analysisAbandonRate").textContent = attempts
     ? `${Math.round((abandoned.length / attempts) * 100)}%`
     : "0%";
+  document.getElementById("analysisLast30Days").textContent = fmt(periods.words30);
+  document.getElementById("analysisReadingDays30").textContent = `${periods.readingDays30}日`;
+  document.getElementById("analysisReadingTime30").textContent = periods.measuredEntries30
+    ? `${Math.round(periods.measuredSeconds30 / 60)}分`
+    : "—";
+  document.getElementById("analysisTotalWords").textContent = fmt(totalCompletedWords);
+  const wordDifference = periods.words30 - periods.previousWords30;
+  document.getElementById("analysisPeriodComparison").textContent = periods.previousWords30
+    ? wordDifference === 0
+      ? "直近30日間の読了語数は、その前の30日間と同じです。"
+      : `直近30日間は、その前の30日間より${wordDifference > 0 ? fmt(wordDifference) + "語多く" : fmt(-wordDifference) + "語少なく"}読みました。`
+    : "その前の30日間に読了記録はありません。";
+  document.getElementById("analysisTimeNote").textContent = periods.measuredEntries30 < periods.completedEntries30
+    ? `読書時間は計測記録のある${periods.measuredEntries30}篇分です。旧版などの時間未記録分は含みません。`
+    : "読書時間は読了時に計測された時間の合計です。";
+  renderAnalysisBars(document.getElementById("analysisDailyWords"), periods.last7.map((day) => ({
+    label: `${day.date.getMonth() + 1}/${day.date.getDate()}（${"日月火水木金土"[day.date.getDay()]}）`,
+    value: day.words,
+  })), (value) => `${fmt(value)}語`);
 
   const validWpm = completed.filter(isValidWpmEntry);
   const currentWpm = combinedWpm(validWpm.slice(0, 5));

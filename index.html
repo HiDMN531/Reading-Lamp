@@ -227,11 +227,19 @@
       <div id="analysisContent" hidden>
         <div class="analysis-grid" aria-label="読書履歴の概要">
           <div class="analysis-stat"><span id="analysisCompleted" class="analysis-value">0</span><span>読了篇数</span></div>
-          <div class="analysis-stat"><span id="analysisLast7Days" class="analysis-value">0</span><span>直近7日の語数</span></div>
+          <div class="analysis-stat"><span id="analysisLast7Days" class="analysis-value">0</span><span>直近7日間の語数</span></div>
           <div class="analysis-stat"><span id="analysisAvgWords" class="analysis-value">0</span><span>1篇平均語数</span></div>
           <div class="analysis-stat"><span id="analysisAbandonRate" class="analysis-value">0%</span><span>途中終了率</span></div>
+          <div class="analysis-stat"><span id="analysisLast30Days" class="analysis-value">0</span><span>直近30日間の語数</span></div>
+          <div class="analysis-stat"><span id="analysisReadingDays30" class="analysis-value">0</span><span>直近30日間の読書日数</span></div>
+          <div class="analysis-stat"><span id="analysisReadingTime30" class="analysis-value">—</span><span>直近30日間の読了分の計測時間</span></div>
+          <div class="analysis-stat"><span id="analysisTotalWords" class="analysis-value">0</span><span>累計読了語数</span></div>
         </div>
+        <p id="analysisPeriodComparison" class="analysis-trend"></p>
+        <p id="analysisTimeNote" class="analysis-note"></p>
         <p id="analysisWpmTrend" class="analysis-trend"></p>
+        <h3 class="analysis-heading">直近7日間の読了語数</h3>
+        <ul id="analysisDailyWords" class="analysis-bars" aria-label="日別の読了語数"></ul>
         <h3 class="analysis-heading">テーマ別の読了語数</h3>
         <ul id="analysisTopics" class="analysis-bars"></ul>
         <h3 class="analysis-heading">レベル別の読了篇数</h3>
@@ -246,7 +254,7 @@
         <a href="privacy.html">プライバシーポリシー</a>
         <a href="terms.html">利用規約</a>
       </nav>
-      <span>Reading Lamp v2.11.12</span>
+      <span>Reading Lamp Premium v2.11.14</span>
     </footer>
   </section>
 
