@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v92";
+const CACHE_NAME = "reading-lamp-v96";
 const OWN_CACHE_NAME = /^reading-lamp-v(\d+)$/;
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
@@ -9,6 +9,7 @@ const SHELL_FILES = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./premium.js",
   "./learning-policy.js",
   "./manifest.json",
   "./config.json",
@@ -29,29 +30,14 @@ const ownAssetPaths = new Set([...SHELL_FILES, ...OFFLINE_CONTENT_FILES]
     return `${url.origin}${url.pathname}`;
   }));
 
-async function previousContentResponse(request) {
-  const keys = (await caches.keys())
-    .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
-    .sort((a, b) => Number(b.match(OWN_CACHE_NAME)[1]) - Number(a.match(OWN_CACHE_NAME)[1]));
-  for (const key of keys) {
-    const response = await (await caches.open(key)).match(request, { ignoreSearch: true });
-    if (response) return response;
-  }
-  return null;
-}
-
 async function offlineContentStatus() {
   const currentCache = await caches.open(CACHE_NAME);
   const current = (await Promise.all(OFFLINE_CONTENT_FILES.map((file) => currentCache.match(file)))).every(Boolean);
   if (current) return { ready: true, current: true };
-  const previous = (await Promise.all(OFFLINE_CONTENT_FILES.map(previousContentResponse))).every(Boolean);
-  return { ready: previous, current: false };
+  return { ready: false, current: false };
 }
 
 async function deleteOldOwnCachesIfReady() {
-  const currentCache = await caches.open(CACHE_NAME);
-  const ready = (await Promise.all(OFFLINE_CONTENT_FILES.map((file) => currentCache.match(file)))).every(Boolean);
-  if (!ready) return;
   const keys = await caches.keys();
   await Promise.all(keys
     .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
@@ -108,8 +94,7 @@ self.addEventListener("fetch", (event) => {
   // Only handle this app's static files. API and unrelated requests use the network.
   if (event.request.method !== "GET" || !ownAssetPaths.has(`${url.origin}${url.pathname}`)) return;
 
-  // The newest cache takes priority. An older story bank is an offline fallback
-  // until the updated package has been saved successfully.
+  // Cache the complete personal story bank for offline reading.
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
       const cached = await cache.match(event.request, { ignoreSearch: true });
@@ -123,10 +108,7 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       } catch {
-        if (url.pathname.endsWith("/stories.json")) {
-          const previous = await previousContentResponse(event.request);
-          if (previous) return previous;
-        }
+
         return Response.error();
       }
     })

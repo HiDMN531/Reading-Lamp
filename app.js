@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.9";
+const APP_VERSION = "2.11.12";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -84,6 +84,10 @@ const REPORT_QUEUE_LIMIT = 100;
 const ANALYTICS_DAY_LIMIT = 90;
 let serviceWorkerRegistration = null;
 let offlinePreparing = false;
+
+const PREMIUM = window.ReadingLampPremium;
+const hasPremium = () => PREMIUM.state().premium;
+const FREE_REWARD_IDS = new Set(["words-1000", "words-5000", "stories-1", "stories-5", "stories-10", "days-3", "days-7", "streak-3", "topics-3"]);
 
 const AUTUMN_EVENT = {
   start: "2026-09-23",
@@ -359,14 +363,8 @@ function clearSessionApiKey() {
   return cleared;
 }
 
-// Migrate the short-lived key used by an earlier build when possible.
-try {
-  if (!getSessionApiKey()) {
-    const legacySessionKey = sessionStorage.getItem("rl_api_key_session");
-    if (legacySessionKey) setSessionApiKey(legacySessionKey);
-  }
-  sessionStorage.removeItem("rl_api_key_session");
-} catch {}
+// AI generation is unavailable in this release. Erase previously stored credentials.
+clearSessionApiKey();
 
 function getHistory() {
   try {
@@ -691,6 +689,7 @@ function clampDisplayNumber(value, min, max, fallback) {
 }
 
 function getReadingDisplaySettings() {
+  if (!hasPremium()) return { fontSize: 18, lineHeight: 185, fontFamily: "serif", theme: "night" };
   const fontFamily = get(LS.readingFontFamily, "serif");
   const theme = get(LS.readingTheme, "night");
   return {
@@ -742,15 +741,14 @@ function renderApiKeyStatus() {
 
 function usingOfflineBank() {
   // New users start with the bundled bank. Existing users keep their saved mode.
-  return getBool(LS.offlineBank, true);
+  return true; // Legacy AI mode settings cannot enable generation in this release.
 }
 
-function syncSettingsMode(useBank) {
-  apiKeySection.hidden = useBank;
-  wordCountSection.hidden = useBank;
-  modeDescription.textContent = useBank
-    ? "収録済みの文章を読みます。AIのAPI利用料はかかりません。端末に保存後はオフラインでも読めます。"
-    : "オフにするとAI生成モードになります。入力したAPIキーはこの端末に保存されます。";
+function syncSettingsMode() {
+  toggleOfflineBank.checked = true;
+  apiKeySection.hidden = true;
+  wordCountSection.hidden = true;
+  modeDescription.textContent = "収録済みの文章を読みます。端末に保存後はオフラインでも読めます。";
 }
 
 function renderLevelDescription(n) {
@@ -863,16 +861,7 @@ anonymousUsageInput.addEventListener("change", renderAnonymousUsageStatus);
 document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   apiKeyInput.blur(); // dismiss the mobile keyboard so nothing hides feedback
 
-  const typedApiKey = apiKeyInput.value.trim();
-  const okApiKey = !typedApiKey || setSessionApiKey(typedApiKey);
   apiKeyInput.value = "";
-
-  if (!toggleOfflineBank.checked && !getSessionApiKey()) {
-    renderApiKeyStatus();
-    showError("AI生成モードでは、Anthropic APIキーを入力してください。");
-    apiKeyInput.focus();
-    return;
-  }
 
   const previousLevel = getLevel();
   const selectedLevel = Math.min(10, Math.max(1, parseInt(levelInput.value, 10)));
@@ -881,8 +870,8 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
   const ok3 = set(LS.wordCount, String(parseInt(wordCountInput.value, 10)));
   const ok4 = set(LS.dailyGoal, String(parseInt(dailyGoalInput.value, 10)));
   const okWeeklyGoal = set(LS.weeklyGoalDays, String(Math.min(7, Math.max(1, parseInt(weeklyGoalDaysInput.value, 10) || 3))));
-  const ok8 = set(LS.offlineBank, toggleOfflineBank.checked ? "1" : "0");
-  const displaySettings = displaySettingsFromControls();
+  const ok8 = set(LS.offlineBank, "1");
+  const displaySettings = hasPremium() ? displaySettingsFromControls() : { fontSize: 18, lineHeight: 185, fontFamily: "serif", theme: "night" };
   const ok9 = set(LS.readingFontSize, String(displaySettings.fontSize));
   const ok10 = set(LS.readingLineHeight, String(displaySettings.lineHeight));
   const ok11 = set(LS.readingFontFamily, displaySettings.fontFamily);
@@ -908,7 +897,7 @@ document.getElementById("saveSettingsBtn").addEventListener("click", () => {
 
   applyReadingDisplay(displaySettings);
 
-  if (okApiKey && ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications && okPersonalizedSuggestions && okAnonymousUsage) {
+  if (ok2 && okSignals && ok3 && ok4 && okWeeklyGoal && ok8 && ok9 && ok10 && ok11 && ok12 && okRewardGoals && okRewardNotifications && okPersonalizedSuggestions && okAnonymousUsage) {
     closeSettings();
     renderHome();
   } else {
@@ -1742,7 +1731,7 @@ function saveRewardState(state) {
 
 function isLampStyleUnlocked(styleId, state = getRewardState()) {
   const style = LAMP_STYLES[styleId];
-  return Boolean(style && (!style.rewardId || hasOwn(state.earned, style.rewardId)));
+  return Boolean(style && (styleId === "classic" || (hasPremium() && (!style.rewardId || hasOwn(state.earned, style.rewardId)))));
 }
 
 let lampStyleTransitionTimer = null;
@@ -1778,7 +1767,7 @@ async function loadRewards() {
     .then((definitions) => {
       if (!Array.isArray(definitions) || !definitions.length) throw new Error("rewards.json is empty");
       const seen = new Set();
-      REWARD_DEFINITIONS = definitions.map((reward) => {
+      REWARD_DEFINITIONS = definitions.filter((reward) => hasPremium() || FREE_REWARD_IDS.has(reward.id)).map((reward) => {
         if (!reward || typeof reward.id !== "string" || !/^[a-z0-9-]{1,80}$/.test(reward.id) || seen.has(reward.id)) {
           throw new Error("invalid reward id");
         }
@@ -2829,6 +2818,13 @@ function renderHistoryAnalysis(history) {
   const analysisEmpty = document.getElementById("analysisEmpty");
   const analysisContent = document.getElementById("analysisContent");
   const hasRecords = attempts > 0;
+  if (!hasPremium()) {
+    analysisEmpty.textContent = "詳細な読書分析はPremiumで利用できます。基本の履歴は上に表示されます。";
+    analysisEmpty.hidden = false;
+    analysisContent.hidden = true;
+    return;
+  }
+  analysisEmpty.textContent = "読了記録はまだありません。";
   analysisEmpty.hidden = hasRecords;
   analysisContent.hidden = !hasRecords;
   if (!hasRecords) return;
@@ -2892,32 +2888,9 @@ function autumnEventState(history = getHistory(), now = new Date()) {
   };
 }
 
-function renderAutumnEvent(history = getHistory()) {
-  const panel = document.getElementById("autumnEvent");
-  const state = autumnEventState(history);
-  panel.hidden = !(state.preview || state.active);
-  if (panel.hidden) return;
-  const capped = Math.min(10, state.count);
-  const progress = document.getElementById("autumnEventProgress");
-  progress.setAttribute("aria-valuenow", String(capped));
-  progress.querySelector("span").style.width = `${capped * 10}%`;
-  document.getElementById("autumnEventCount").textContent = `${capped} / 10篇`;
-  document.querySelectorAll("[data-autumn-step]").forEach((step) => {
-    step.classList.toggle("is-complete", state.count >= Number(step.dataset.autumnStep));
-  });
-  const button = document.getElementById("startAutumnEventBtn");
-  button.disabled = !state.active;
-  if (state.preview) {
-    document.getElementById("autumnEventMessage").textContent = "明日から、秋の夜に似合う限定英文を読めます。";
-    button.textContent = "9月23日から読めます";
-  } else if (state.count >= 10) {
-    document.getElementById("autumnEventMessage").textContent = "10篇達成。秋限定の灯り Autumn Ember を獲得しました。";
-    button.textContent = "もう一篇、秋を読む";
-  } else {
-    const next = state.count < 1 ? 1 : state.count < 5 ? 5 : 10;
-    document.getElementById("autumnEventMessage").textContent = `秋の限定英文を読み、${next}篇目の灯りを目指しましょう。`;
-    button.textContent = "秋の一篇を読む";
-  }
+function renderAutumnEvent() {
+  // Seasonal Reading is not part of the first release.
+  document.getElementById("autumnEvent").hidden = true;
 }
 
 function renderHome() {
@@ -3274,49 +3247,8 @@ document.getElementById("discardReadingBtn").addEventListener("click", () => {
 });
 
 async function startSession({ preferShort = false } = {}) {
-  const useBank = usingOfflineBank();
-
-  if (useBank) {
-    return startOfflineSession({ preferShort });
-  }
-
-  const apiKey = getSessionApiKey();
-  if (!apiKey) {
-    openSettings();
-    showError("AI生成を使うにはAnthropic APIキーが必要です。設定でオフライン文章バンクへ戻すこともできます。");
-    return;
-  }
-
-  let topic = topicSelect.value;
-  if (topic === "random") {
-    topic = Math.random() < 1 / 7
-      ? "any topic of your own choosing — something fresh and a little unexpected"
-      : TOPIC_POOL[Math.floor(Math.random() * TOPIC_POOL.length)];
-  } else if (topic === "custom") {
-    const c = customTopicInput.value.trim();
-    if (!c) { showError("テーマを入力してください。"); return; }
-    topic = c;
-  }
-
-  showView("loading");
-  animateLoading();
-
-  try {
-    session = await generate({ topic, apiKey });
-    session._level = getLevel();
-    recordAnonymousEvent("story_start", { level: session._level });
-    stopLoading();
-    renderReading(session);
-    showView("reading");
-    startReadingTimer();
-    startActiveReadingAutosave();
-  } catch (err) {
-    stopLoading();
-    console.error(err);
-    if (/API error (401|403)/.test(String(err && err.message))) clearSessionApiKey();
-    showView("home");
-    showError(readableError(err));
-  }
+  // Only editorially reviewed, bundled stories are available in this release.
+  return startOfflineSession({ preferShort });
 }
 
 // ---------------------- Offline story bank ----------------------
@@ -3333,7 +3265,8 @@ async function loadStoryBank() {
     if (!res.ok) throw new Error("stories.json " + res.status);
     const storedStories = await res.json();
     if (!Array.isArray(storedStories)) throw new Error("stories.json is not an array");
-    STORY_BANK = storedStories.filter((story) =>
+    const premiumStories = await PREMIUM.loadStories().catch(() => []);
+    STORY_BANK = [...storedStories, ...premiumStories].filter((story) =>
       story &&
       story.editorialStatus === "published" &&
       typeof story.id === "string" &&
@@ -4466,3 +4399,22 @@ window.addEventListener("online", () => {
   flushStoryReports().then(renderReportQueueStatus).catch(() => {});
   flushAnonymousUsage().then(renderAnonymousUsageStatus).catch(() => {});
 });
+
+// Play Billing availability and entitlement can change after initial rendering.
+function refreshPremiumUI() {
+  const state = PREMIUM.state();
+  const status = document.getElementById("premiumStatus");
+  status.textContent = "個人用フル版：全2,570篇と103リワードを利用できます。";
+  document.querySelector(".reading-display-settings").disabled = false;
+}
+window.addEventListener("reading-lamp-premium-change", () => {
+  STORY_BANK = null;
+  REWARD_DEFINITIONS = null; rewardLoadPromise = null;
+  refreshPremiumUI();
+  applyEquippedLampStyle();
+  applyReadingDisplay();
+  renderHome();
+  evaluateRewards({ notify: false }).then(() => { renderHome(); renderRewardCollection(); }).catch(() => {});
+});
+refreshPremiumUI();
+PREMIUM.init().catch(() => refreshPremiumUI());

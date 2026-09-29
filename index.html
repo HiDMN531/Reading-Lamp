@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.anthropic.com; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#1B1E27" />
@@ -216,6 +216,12 @@
       <ul id="favoriteList" class="favorite-list"></ul>
     </details>
 
+    <section class="premium-panel" aria-labelledby="premiumTitle">
+      <h2 id="premiumTitle">Reading Lamp 個人用フル版</h2>
+      <p id="premiumStatus" role="status" aria-live="polite">全機能を利用できます。</p>
+      <p>全2,570篇・103リワードと、読書画面のカスタマイズ・詳細な分析を利用できます。AI英文生成は非公開です。</p>
+    </section>
+
     <div class="history-panel">
       <p class="history-title">最近の記録</p>
       <ul id="historyList" class="history-list"></ul>
@@ -246,7 +252,7 @@
         <a href="privacy.html">プライバシーポリシー</a>
         <a href="terms.html">利用規約</a>
       </nav>
-      <span>Reading Lamp v2.11.9</span>
+      <span>Reading Lamp v2.11.12</span>
     </footer>
   </section>
 
@@ -372,10 +378,10 @@
     <div class="toggle-section toggle-section-first">
       <label class="toggle-row">
         <span>
-          <span class="toggle-name">オフライン文章バンク（標準）</span>
-          <span class="toggle-desc">APIキー不要。2,570篇からレベルとテーマに合う文章を選びます</span>
+          <span class="toggle-name">オフライン文章バンク</span>
+          <span class="toggle-desc">収録済みの英文からレベルとテーマに合う文章を選びます</span>
         </span>
-        <input type="checkbox" id="toggleOfflineBank" aria-describedby="modeDescription" />
+        <input type="checkbox" id="toggleOfflineBank" aria-describedby="modeDescription" checked disabled hidden style="display:none" />
       </label>
       <p id="modeDescription" class="modal-hint mode-description"></p>
       <p class="mode-note settings-mode-note" id="modeNote"></p>
@@ -387,7 +393,7 @@
       </div>
     </div>
 
-    <div id="apiKeySection">
+    <div id="apiKeySection" hidden style="display:none">
       <label class="modal-label" for="apiKeyInput">AI生成用 Anthropic API キー</label>
       <input type="password" id="apiKeyInput" class="text-input" placeholder="sk-ant-...（変更時のみ入力）" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="apiKeyHint apiKeyStatus" />
       <p id="apiKeyHint" class="modal-hint">
@@ -403,7 +409,7 @@
     <div class="range-value" id="levelDescription"></div>
       <p id="levelHint" class="modal-hint">読後の選択によって調整されます。手動でも変更できます。</p>
 
-    <div id="wordCountSection">
+    <div id="wordCountSection" hidden style="display:none">
       <label class="modal-label" for="wordCountInput">AI生成する文章の目安語数</label>
       <input type="range" id="wordCountInput" min="400" max="1500" step="50" value="800" aria-describedby="wordCountDescription wordCountHint" />
       <div id="wordCountDescription" class="range-value"><span id="wordCountValue">800</span> words</div>
@@ -456,7 +462,7 @@
       <label class="toggle-row compact-toggle-row">
         <span>
           <span class="toggle-name">匿名の利用状況を記録</span>
-          <span class="toggle-desc">開始・読了・途中終了などの件数だけを集計します。文章名、自由入力、APIキーは含みません</span>
+          <span class="toggle-desc">開始・読了・途中終了などの件数だけを集計します。文章名と自由入力は含みません</span>
         </span>
         <input type="checkbox" id="anonymousUsageInput" aria-describedby="anonymousUsageStatus" />
       </label>
@@ -505,7 +511,7 @@
       <button id="confirmBackupBtn" class="btn-text-quiet" type="button" hidden>保存したファイルを確認した</button>
       <p id="backupExportHint" class="modal-hint">ダウンロードまたは共有の後、端末にJSONファイルがあることを確認してください。</p>
       <button id="exportRewardDiagnosticsBtn" class="btn-text-quiet" type="button">匿名のリワード診断を保存する</button>
-      <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名、読書日時、APIキーは含みません。</p>
+      <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名と読書日時は含みません。</p>
       <section class="report-queue-tools" aria-labelledby="reportQueueTitle">
         <h4 id="reportQueueTitle">未送信の文章報告</h4>
         <p id="reportQueueStatus" class="modal-hint" role="status" aria-live="polite"></p>
@@ -798,6 +804,7 @@
 </div>
 
 <script src="learning-policy.js"></script>
+<script src="premium.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
