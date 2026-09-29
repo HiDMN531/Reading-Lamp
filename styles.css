@@ -1839,6 +1839,29 @@ input[type="range"] {
 .settings-mode-note {
   margin: 12px 0 10px;
 }
+.settings-edition {
+  margin: 2px 0 20px;
+  padding: 15px 16px;
+  border: 1px solid var(--amber-soft);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+}
+.settings-edition h3 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 16px;
+}
+.settings-edition p {
+  margin: 6px 0 0;
+  color: var(--ink-muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.settings-section-heading {
+  margin: 0 0 4px;
+  color: var(--ink);
+  font-size: 14px;
+}
 .settings-offline-status {
   margin: 0;
 }

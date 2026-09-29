@@ -9,9 +9,9 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Reading Lamp" />
+<meta name="apple-mobile-web-app-title" content="Reading Lamp Premium" />
 <meta name="description" content="Extensive Reading の原則に沿った英語多読アプリ。やさしい英文を大量に、辞書なしで。" />
-<title>Reading Lamp — 英語多読</title>
+<title>Reading Lamp Premium — 英語多読</title>
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="icons/icon-192.png" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
@@ -24,7 +24,7 @@
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">Reading Lamp</span>
+      <span class="brand-name">Reading Lamp Premium</span>
     </div>
     <button id="settingsBtn" class="icon-btn" aria-label="設定を開く" aria-controls="settingsModal" aria-expanded="false" title="設定">
       <img src="icons/settings-gear.png" width="20" height="20" alt="" />
@@ -216,12 +216,6 @@
       <ul id="favoriteList" class="favorite-list"></ul>
     </details>
 
-    <section class="premium-panel" aria-labelledby="premiumTitle">
-      <h2 id="premiumTitle">Reading Lamp 個人用フル版</h2>
-      <p id="premiumStatus" role="status" aria-live="polite">全機能を利用できます。</p>
-      <p>全2,570篇・103リワードと、読書画面のカスタマイズ・詳細な分析を利用できます。AI英文生成は非公開です。</p>
-    </section>
-
     <div class="history-panel">
       <p class="history-title">最近の記録</p>
       <ul id="historyList" class="history-list"></ul>
@@ -373,16 +367,18 @@
       <h2 id="settingsTitle" class="modal-title">設定</h2>
       <button id="closeSettingsIconBtn" class="modal-close" type="button" aria-label="設定を閉じる">×</button>
     </div>
-    <p id="settingsIntro" class="modal-intro">読書モード、レベル、目標、記録を変更できます。</p>
+    <p id="settingsIntro" class="modal-intro">レベル、目標、表示、保存データを管理できます。</p>
+
+    <section class="settings-edition" aria-labelledby="premiumTitle">
+      <h3 id="premiumTitle">Reading Lamp Premium</h3>
+      <p id="premiumStatus" role="status" aria-live="polite">全2,570篇・103リワードを利用できます。</p>
+      <p>収録済みの全文、読書画面のカスタマイズ、詳細な読書分析を利用できます。この個人用版に購入操作はありません。AI英文生成は利用できません。</p>
+    </section>
 
     <div class="toggle-section toggle-section-first">
-      <label class="toggle-row">
-        <span>
-          <span class="toggle-name">オフライン文章バンク</span>
-          <span class="toggle-desc">収録済みの英文からレベルとテーマに合う文章を選びます</span>
-        </span>
-        <input type="checkbox" id="toggleOfflineBank" aria-describedby="modeDescription" checked disabled hidden style="display:none" />
-      </label>
+      <h3 class="settings-section-heading">収録済みの文章</h3>
+      <p class="modal-hint">レベルとテーマに合う文章を選びます。</p>
+      <input type="checkbox" id="toggleOfflineBank" checked disabled hidden />
       <p id="modeDescription" class="modal-hint mode-description"></p>
       <p class="mode-note settings-mode-note" id="modeNote"></p>
 
@@ -458,11 +454,11 @@
     </fieldset>
 
     <fieldset class="privacy-settings">
-      <legend>品質改善への協力</legend>
+      <legend>端末内の利用集計</legend>
       <label class="toggle-row compact-toggle-row">
         <span>
-          <span class="toggle-name">匿名の利用状況を記録</span>
-          <span class="toggle-desc">開始・読了・途中終了などの件数だけを集計します。文章名と自由入力は含みません</span>
+          <span class="toggle-name">利用状況を端末内に集計</span>
+          <span class="toggle-desc">開始・読了・途中終了などの件数を端末内に保存します。現在、送信先は設定していません</span>
         </span>
         <input type="checkbox" id="anonymousUsageInput" aria-describedby="anonymousUsageStatus" />
       </label>
@@ -511,12 +507,12 @@
       <button id="confirmBackupBtn" class="btn-text-quiet" type="button" hidden>保存したファイルを確認した</button>
       <p id="backupExportHint" class="modal-hint">ダウンロードまたは共有の後、端末にJSONファイルがあることを確認してください。</p>
       <button id="exportRewardDiagnosticsBtn" class="btn-text-quiet" type="button">匿名のリワード診断を保存する</button>
-      <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計だけを保存します。文章名と読書日時は含みません。</p>
+      <p id="rewardDiagnosticsHint" class="modal-hint">達成率などの集計を保存します。文章名、文章ID、個別の読書日時は含みません。</p>
       <section class="report-queue-tools" aria-labelledby="reportQueueTitle">
-        <h4 id="reportQueueTitle">未送信の文章報告</h4>
+        <h4 id="reportQueueTitle">端末に保存した文章報告</h4>
         <p id="reportQueueStatus" class="modal-hint" role="status" aria-live="polite"></p>
         <div class="report-queue-actions">
-          <button id="retryReportsBtn" class="btn-text-quiet" type="button">送信を再試行</button>
+          <button id="retryReportsBtn" class="btn-text-quiet" type="button" hidden>送信を再試行</button>
           <button id="exportQueuedReportsBtn" class="btn-text-quiet" type="button">報告を保存</button>
         </div>
       </section>
@@ -778,7 +774,7 @@
       <h2 id="reportTitle" class="modal-title">文章の問題を報告</h2>
       <button id="closeReportIconBtn" class="modal-close" type="button" aria-label="問題報告を閉じる">×</button>
     </div>
-    <p id="reportIntro" class="modal-intro">メールで送る場合は、メールアプリを開いて内容を確認してから送信してください。</p>
+    <p id="reportIntro" class="modal-intro">報告内容は端末に保存し、必要に応じて共有できます。</p>
     <p id="reportStoryContext" class="report-context"></p>
 
     <fieldset class="report-options">
