@@ -10,7 +10,7 @@
 - 広告：なし
 - アプリ内購入：なし
 - アプリID：`io.github.hidmn531.readinglamp`（Play Console登録前の仮設定）
-- 連絡先メール：Reading.Lamp012@gmail.com
+- 連絡先メール：[非公開]
 - プライバシーポリシー：https://hidmn531.github.io/Reading-Lamp/privacy.html
 - Web版：https://hidmn531.github.io/Reading-Lamp/
 

@@ -86,8 +86,8 @@ if (!app.includes("function topicRecommendationWeight(") || !app.includes('entry
 if (!app.includes("function returningReaderState(") || !app.includes("preferShort: returning.returning") || !app.includes("短い一篇から再開する")) fail("returning reader short-story preference is incomplete");
 if (!html.includes('id="firstCompletionGuide"') || !app.includes("LS.firstCompletionGuideSeen") || !app.includes("function dismissFirstCompletionGuide(")) fail("first completion guidance is incomplete");
 if (!app.includes("normalizeSupportEmail") || !app.includes("mailto:${config.supportEmail}")) fail("support email fallback is incomplete");
-if (config.supportEmail !== "Reading.Lamp012@gmail.com" || config.storyReportEndpoint || config.analyticsEndpoint) fail("support address or API routing is incorrect");
-if (!html.includes('href="mailto:Reading.Lamp012@gmail.com?subject=') || !read("privacy.html").includes('href="mailto:Reading.Lamp012@gmail.com"') || !read("terms.html").includes('href="mailto:Reading.Lamp012@gmail.com"')) fail("contact links are incomplete");
+if (config.supportEmail || config.storyReportEndpoint || config.analyticsEndpoint) fail("support address or API routing is incorrect");
+if (html.includes("mailto:") || read("privacy.html").includes("mailto:") || read("terms.html").includes("mailto:")) fail("unexpected contact link");
 if (!app.includes('shareButton.classList.toggle("btn-primary", Boolean(!config.storyReportEndpoint && config.supportEmail))') || !app.includes('運営者へ届けるには「メールで送る」')) fail("email-first story reporting is incomplete");
 if (!app.includes("pickStoryCandidates(bank, topicSelect.value, getLevel(), 3, { preferShort: returning.returning })")) fail("three-story candidates are missing");
 if ((html.match(/name="onboardingLevelSample"/g) || []).length !== 3) fail("three onboarding level samples are required");
