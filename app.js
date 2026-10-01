@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.15";
+const APP_VERSION = "2.11.18";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -79,7 +79,9 @@ const LS = {
   anonymousInstallId: "rl_anonymous_install_id_v1",
   reportQueue: "rl_story_report_queue_v1",
 };
-const HISTORY_LIMIT = 2000;
+// Bound external imports, but never silently discard completed readings.
+const HISTORY_IMPORT_LIMIT = 100000;
+const BACKUP_IMPORT_MAX_BYTES = 32 * 1024 * 1024;
 const REPORT_QUEUE_LIMIT = 100;
 const ANALYTICS_DAY_LIMIT = 90;
 let serviceWorkerRegistration = null;
@@ -96,6 +98,9 @@ const AUTUMN_EVENT = {
 };
 
 const get = (k, d) => {
+  if (Object.prototype.hasOwnProperty.call(memoryFallback, k)) {
+    return memoryFallback[k] === null ? d : memoryFallback[k];
+  }
   try {
     const v = localStorage.getItem(k);
     return v === null ? d : v;
@@ -118,14 +123,22 @@ const getBool = (k, d) => {
 const memoryFallback = {};
 let storageBlocked = false;
 
+function refreshStorageWarning() {
+  storageBlocked = Object.keys(memoryFallback).length > 0;
+  const warning = document.getElementById("storageWarning");
+  if (warning) warning.hidden = !storageBlocked;
+}
+
 function set(k, v) {
   try {
     localStorage.setItem(k, String(v));
+    delete memoryFallback[k];
+    refreshStorageWarning();
     return true;
   } catch (err) {
     console.error("localStorage write failed", err);
     memoryFallback[k] = String(v);
-    storageBlocked = true;
+    refreshStorageWarning();
     return false;
   }
 }
@@ -133,7 +146,9 @@ function set(k, v) {
 function removeStored(k) {
   let removed = true;
   try { localStorage.removeItem(k); } catch { removed = false; }
-  delete memoryFallback[k];
+  if (removed) delete memoryFallback[k];
+  else memoryFallback[k] = null;
+  refreshStorageWarning();
   return removed;
 }
 
@@ -368,16 +383,9 @@ clearSessionApiKey();
 
 function getHistory() {
   try {
-    if (storageBlocked && memoryFallback[LS.history]) {
-      const parsed = JSON.parse(memoryFallback[LS.history]);
-      return Array.isArray(parsed)
-        ? parsed.map(normalizeHistoryEntry).filter(Boolean).slice(0, HISTORY_LIMIT)
-        : [];
-    }
-    const stored = localStorage.getItem(LS.history);
-    const parsed = JSON.parse(stored === null ? (memoryFallback[LS.history] || "[]") : stored);
+    const parsed = JSON.parse(get(LS.history, "[]"));
     return Array.isArray(parsed)
-      ? parsed.map(normalizeHistoryEntry).filter(Boolean).slice(0, HISTORY_LIMIT)
+      ? parsed.map(normalizeHistoryEntry).filter(Boolean)
       : [];
   }
   catch { return []; }
@@ -385,18 +393,8 @@ function getHistory() {
 function writeHistory(entries) {
   const safeEntries = (Array.isArray(entries) ? entries : [])
     .map(normalizeHistoryEntry)
-    .filter(Boolean)
-    .slice(0, HISTORY_LIMIT);
-  const payload = JSON.stringify(safeEntries);
-  try {
-    localStorage.setItem(LS.history, payload);
-    return true;
-  } catch (err) {
-    console.error("localStorage write failed", err);
-    memoryFallback[LS.history] = payload;
-    storageBlocked = true;
-    return false;
-  }
+    .filter(Boolean);
+  return set(LS.history, JSON.stringify(safeEntries));
 }
 function pushHistory(entry) {
   const h = getHistory();
@@ -929,8 +927,7 @@ apiKeyInput.addEventListener("focus", () => {
 
 document.getElementById("resetHistoryBtn").addEventListener("click", () => {
   if (confirm("読書履歴と既読判定を消去します。お気に入りと獲得済みリワードは残ります。よろしいですか？")) {
-    try { localStorage.removeItem(LS.history); } catch {}
-    delete memoryFallback[LS.history];
+    removeStored(LS.history);
     removeStored(LS.historyRecovery);
     removeStored(LS.seenStoryIds);
     removeStored(LS.lastBackupAt);
@@ -976,7 +973,7 @@ function returningReaderState(history = getHistory(), now = new Date()) {
     .map((entry) => new Date(entry.date).getTime())
     .filter(Number.isFinite);
   if (!completedTimes.length) return { returning: false, daysAway: 0, thresholdDays };
-  const latestCompletedAt = Math.max(...completedTimes);
+  const latestCompletedAt = completedTimes.reduce((latest, time) => Math.max(latest, time), -Infinity);
   const daysAway = Math.max(0, Math.floor((now.getTime() - latestCompletedAt) / 86400000));
   return { returning: daysAway >= thresholdDays, daysAway, thresholdDays };
 }
@@ -1028,7 +1025,8 @@ function createBackupPackage() {
   const exportedAt = new Date().toISOString();
   return {
     schemaVersion: 5,
-    corpusVersion: "merged-2.11.9",
+    appVersion: APP_VERSION,
+    corpusVersion: "reviewed-2026-10-01-length-s2063-s2070",
     exportedAt,
     history: getHistory(),
     favoriteStoryIds: getFavoriteIds(),
@@ -1220,12 +1218,7 @@ function historyFingerprint(entry) {
 }
 
 function readRawHistory() {
-  try {
-    const stored = localStorage.getItem(LS.history);
-    return stored === null ? (memoryFallback[LS.history] || "[]") : stored;
-  } catch {
-    return memoryFallback[LS.history] || "[]";
-  }
+  return get(LS.history, "[]");
 }
 
 function getHistoryRecovery() {
@@ -1268,12 +1261,11 @@ function prepareHistoryRecovery() {
     originalCount = parsed.length;
     validEntries = parsed.map(normalizeHistoryEntry).filter(Boolean);
     if (validEntries.length !== parsed.length) reason = "invalid-entries";
-    else if (parsed.length > HISTORY_LIMIT) reason = "over-limit";
   }
 
   if (!reason) return { repaired: false };
 
-  const retainedEntries = validEntries.slice(0, HISTORY_LIMIT);
+  const retainedEntries = validEntries;
   const recovery = {
     schemaVersion: 1,
     createdAt: new Date().toISOString(),
@@ -1334,8 +1326,8 @@ restoreInput.addEventListener("change", async () => {
   settingsStatus.textContent = "";
   const file = restoreInput.files && restoreInput.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showError("復元ファイルが大きすぎます。5MB以下のJSONを選んでください。");
+  if (file.size > BACKUP_IMPORT_MAX_BYTES) {
+    showError("復元ファイルが大きすぎます。32MB以下のJSONを選んでください。");
     restoreInput.value = "";
     return;
   }
@@ -1343,7 +1335,11 @@ restoreInput.addEventListener("change", async () => {
   try {
     const parsed = JSON.parse(await file.text());
     const source = Array.isArray(parsed) ? parsed : parsed && Array.isArray(parsed.history) ? parsed.history : null;
-    if (!source || source.length > 5000) throw new Error("invalid history container");
+    if (!source) throw new Error("invalid history container");
+    if (source.length > HISTORY_IMPORT_LIMIT) {
+      showError("一度に復元できる履歴は100,000件までです。ファイルを分けて復元してください。");
+      return;
+    }
     const imported = source.map(normalizeHistoryEntry).filter(Boolean);
     const importedSeen = seenIdsFromBackup(parsed, imported);
     const importedFavorites = parsed && !Array.isArray(parsed) && Array.isArray(parsed.favoriteStoryIds)
@@ -1380,11 +1376,8 @@ restoreInput.addEventListener("change", async () => {
       additions.push(entry);
     });
     const merged = [...current, ...additions]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, HISTORY_LIMIT);
-    const retained = new Set(merged.map(historyFingerprint));
-    const restoredCount = additions.filter((entry) => retained.has(historyFingerprint(entry))).length;
-    const omittedCount = additions.length - restoredCount;
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    const restoredCount = additions.length;
     const currentFavorites = getFavoriteIds();
     const mergedFavorites = [...new Set([...currentFavorites, ...importedFavorites])].slice(0, 500);
     const favoriteAddedCount = mergedFavorites.length - currentFavorites.length;
@@ -1432,10 +1425,9 @@ restoreInput.addEventListener("change", async () => {
     if (rewardAddedIds.length || lampChanged || suppressionChanged) applyEquippedLampStyle(mergedRewardState);
     renderHome();
     evaluateRewards({ notify: false });
-    const omittedNote = omittedCount ? ` 古い${omittedCount}件は保存上限のため除外しました。` : "";
     settingsStatus.textContent = historySaved && favoritesSaved && seenSaved && rewardsSaved
-      ? `${confirmationParts.join("と")}を復元しました。${omittedNote}`
-      : `${confirmationParts.join("と")}を今回のセッションへ復元しましたが、端末には保存できませんでした。${omittedNote}`;
+      ? `${confirmationParts.join("と")}を復元しました。`
+      : `${confirmationParts.join("と")}を今回のセッションへ復元しましたが、端末には保存できませんでした。`;
   } catch (err) {
     showError("データを復元できませんでした。Reading Lampから書き出したJSONか確認してください。");
   } finally {
@@ -1537,7 +1529,9 @@ function recentWpm() {
 }
 
 function computeStreak(history = getHistory(), now = new Date()) {
-  const days = new Set(history.map((h) => new Date(h.date).toDateString()));
+  const days = new Set(history
+    .filter((h) => !h.abandoned && Number(h.words) > 0)
+    .map((h) => new Date(h.date).toDateString()));
   if (days.size === 0) return 0;
   let streak = 0;
   const cursor = new Date(now);
@@ -2901,7 +2895,7 @@ function renderHistoryAnalysis(history) {
 
   const validWpm = completed.filter(isValidWpmEntry);
   const currentWpm = combinedWpm(validWpm.slice(0, 5));
-  const previousWpm = combinedWpm(validWpm.slice(5, 10));
+  const previousWpm = validWpm.length >= 10 ? combinedWpm(validWpm.slice(5, 10)) : null;
   let trendText = "WPMの有効な記録はまだありません。";
   if (currentWpm !== null && previousWpm === null) {
     trendText = `最近の読む速さは ${currentWpm} WPMです。比較には10回分の有効記録が必要です。`;

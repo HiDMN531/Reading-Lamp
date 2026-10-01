@@ -1,4 +1,4 @@
-const CACHE_NAME = "reading-lamp-v99";
+const CACHE_NAME = "reading-lamp-v102";
 const OWN_CACHE_NAME = /^reading-lamp-v(\d+)$/;
 // Versions before v32 did not yet have an update prompt. Activate the current
 // release automatically once for those users; prompt-capable versions wait for
@@ -34,10 +34,23 @@ async function offlineContentStatus() {
   const currentCache = await caches.open(CACHE_NAME);
   const current = (await Promise.all(OFFLINE_CONTENT_FILES.map((file) => currentCache.match(file)))).every(Boolean);
   if (current) return { ready: true, current: true };
+  for (const key of await oldOwnCacheNames()) {
+    const cache = await caches.open(key);
+    if ((await Promise.all(OFFLINE_CONTENT_FILES.map((file) => cache.match(file)))).every(Boolean)) {
+      return { ready: true, current: false };
+    }
+  }
   return { ready: false, current: false };
 }
 
+async function oldOwnCacheNames() {
+  return (await caches.keys())
+    .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
+    .sort((a, b) => Number(OWN_CACHE_NAME.exec(b)[1]) - Number(OWN_CACHE_NAME.exec(a)[1]));
+}
+
 async function deleteOldOwnCachesIfReady() {
+  if (!(await offlineContentStatus()).current) return;
   const keys = await caches.keys();
   await Promise.all(keys
     .filter((key) => key !== CACHE_NAME && OWN_CACHE_NAME.test(key))
@@ -108,7 +121,14 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       } catch {
-
+        // This personal edition already exposes the full bank. Keep its last
+        // saved bank usable if connectivity drops while applying an update.
+        if (OFFLINE_CONTENT_FILES.some((file) => new URL(file, self.registration.scope).pathname === url.pathname)) {
+          for (const key of await oldOwnCacheNames()) {
+            const previous = await (await caches.open(key)).match(event.request, { ignoreSearch: true });
+            if (previous) return previous;
+          }
+        }
         return Response.error();
       }
     })
