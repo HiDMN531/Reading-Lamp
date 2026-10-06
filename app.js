@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.19";
+const APP_VERSION = "2.11.20";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -122,6 +122,8 @@ const getBool = (k, d) => {
 // Keeps the app usable for the current session even then.
 const memoryFallback = {};
 let storageBlocked = false;
+// Keep the original history durable until its recovery copy is durable too.
+let pendingHistoryRecovery = null;
 
 function refreshStorageWarning() {
   storageBlocked = Object.keys(memoryFallback).length > 0;
@@ -394,6 +396,14 @@ function writeHistory(entries) {
   const safeEntries = (Array.isArray(entries) ? entries : [])
     .map(normalizeHistoryEntry)
     .filter(Boolean);
+  if (pendingHistoryRecovery) {
+    if (!set(LS.historyRecovery, JSON.stringify(pendingHistoryRecovery))) {
+      memoryFallback[LS.history] = JSON.stringify(safeEntries);
+      refreshStorageWarning();
+      return false;
+    }
+    pendingHistoryRecovery = null;
+  }
   return set(LS.history, JSON.stringify(safeEntries));
 }
 function pushHistory(entry) {
@@ -439,14 +449,13 @@ function saveLevelSignals(level, easyStreak = 0) {
   return set(LS.levelSignals, JSON.stringify({ level, easyStreak }));
 }
 
-function adjustLevelFromFeedback(feedback, before) {
+function planLevelFromFeedback(feedback, before) {
   if (feedback === "hard") {
     const after = Math.max(1, before - 1);
-    setLevel(after);
-    saveLevelSignals(after, 0);
     return {
       before,
       after,
+      easyStreak: 0,
       note: after < before
         ? `次からレベル ${after} に下げます。`
         : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びます。",
@@ -455,30 +464,44 @@ function adjustLevelFromFeedback(feedback, before) {
 
   if (feedback === "easy") {
     if (before >= 10) {
-      saveLevelSignals(before, 0);
-      return { before, after: before, note: "最高レベルを続けます。" };
+      return { before, after: before, easyStreak: 0, note: "最高レベルを続けます。" };
     }
 
     const streak = getLevelSignals(before).easyStreak + 1;
     if (streak >= EASY_STREAK_REQUIRED) {
       const after = before + 1;
-      setLevel(after);
-      saveLevelSignals(after, 0);
-      return { before, after, note: `「やさしすぎた」が3回続いたため、次からレベル ${after} に上げます。` };
+      return { before, after, easyStreak: 0, note: `「やさしすぎた」が3回続いたため、次からレベル ${after} に上げます。` };
     }
 
-    saveLevelSignals(before, streak);
     const remaining = EASY_STREAK_REQUIRED - streak;
     return {
       before,
       after: before,
+      easyStreak: streak,
       note: `レベルはまだ上げません。「やさしすぎた」があと${remaining}回続いたら見直します。`,
     };
   }
 
   // "just" breaks an easy streak and confirms the current level.
-  saveLevelSignals(before, 0);
-  return { before, after: before, note: "" };
+  return { before, after: before, easyStreak: 0, note: "" };
+}
+
+function sessionLevelAdjustment(feedback) {
+  const current = getLevel();
+  const level = Number(session._level);
+  const before = Number.isInteger(level) && level >= 1 && level <= 10 ? level : current;
+  // A new preference selected while reading applies to the next story.
+  if (current !== before) return {
+    before, after: current, manual: true,
+    note: `設定で選んだレベル ${current} を次の文章に使います。`,
+  };
+  return planLevelFromFeedback(feedback, before);
+}
+
+function applyLevelAdjustment(adjustment) {
+  if (adjustment.manual) return;
+  setLevel(adjustment.after);
+  saveLevelSignals(adjustment.after, adjustment.easyStreak);
 }
 
 // ---------------------- Milestones ----------------------
@@ -927,6 +950,7 @@ apiKeyInput.addEventListener("focus", () => {
 
 document.getElementById("resetHistoryBtn").addEventListener("click", () => {
   if (confirm("読書履歴と既読判定を消去します。お気に入りと獲得済みリワードは残ります。よろしいですか？")) {
+    pendingHistoryRecovery = null;
     removeStored(LS.history);
     removeStored(LS.historyRecovery);
     removeStored(LS.seenStoryIds);
@@ -1276,7 +1300,15 @@ function prepareHistoryRecovery() {
     originalHistory: raw,
   };
   const backupSaved = set(LS.historyRecovery, JSON.stringify(recovery));
-  const historySaved = writeHistory(retainedEntries);
+  pendingHistoryRecovery = backupSaved ? null : recovery;
+  let historySaved = false;
+  if (backupSaved) {
+    historySaved = writeHistory(retainedEntries);
+  } else {
+    // Display valid entries without replacing the only persistent original.
+    memoryFallback[LS.history] = JSON.stringify(retainedEntries);
+    refreshStorageWarning();
+  }
 
   return {
     repaired: true,
@@ -1317,6 +1349,10 @@ downloadHistoryRecoveryBtn.addEventListener("click", () => {
 });
 
 dismissHistoryRecoveryBtn.addEventListener("click", () => {
+  if (pendingHistoryRecovery) {
+    settingsStatus.textContent = "修復前データの退避が未完了です。先にJSONで保存し、端末の空き容量を確保してください。元の履歴は保持しています。";
+    return;
+  }
   removeStored(LS.historyRecovery);
   renderHistoryRecovery();
   settingsStatus.textContent = "修復前データを端末から削除しました。";
@@ -4150,6 +4186,23 @@ const abandonModal = document.getElementById("abandonModal");
 const cancelAbandonBtn = document.getElementById("cancelAbandonBtn");
 const abandonReasonButtons = [...document.querySelectorAll("[data-abandon-reason]")];
 
+function saveSessionHistory(entry) {
+  // Retrying a failed write replaces the same pending entry, never adds it twice.
+  const pending = session._pendingHistoryEntry;
+  const history = getHistory();
+  const remaining = pending
+    ? history.filter((item) => historyFingerprint(item) !== historyFingerprint(pending))
+    : history;
+  if (pending) entry.date = pending.date;
+  session._pendingHistoryEntry = normalizeHistoryEntry(entry);
+  if (!writeHistory([session._pendingHistoryEntry, ...remaining])) {
+    showError("読書記録を端末に保存できませんでした。読みかけは残しています。設定からJSONバックアップを保存するか、空き容量を確保してもう一度選んでください。");
+    return false;
+  }
+  session._historySaved = true;
+  return true;
+}
+
 function cancelAbandon() {
   closeAccessibleModal();
 }
@@ -4164,15 +4217,13 @@ abandonModal.addEventListener("click", (e) => {
 });
 
 abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
+  if (!session || session._historySaved) return;
   const activeSeconds = finishReadingTimer();
   const abandonReason = btn.dataset.abandonReason;
-  const levelBefore = getLevel();
-  const adjustment = abandonReason === "too-hard"
-    ? adjustLevelFromFeedback("hard", levelBefore)
-    : { before: levelBefore, after: levelBefore };
-  if (abandonReason !== "too-hard") saveLevelSignals(levelBefore, 0);
+  const adjustment = sessionLevelAdjustment(abandonReason === "too-hard" ? "hard" : "just");
+  const levelBefore = adjustment.before;
 
-  pushHistory({
+  if (!saveSessionHistory({
     date: new Date().toISOString(),
     topic: session.topic,
     title: session.title,
@@ -4184,13 +4235,14 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
     levelAfter: adjustment.after,
     abandonReason,
     abandoned: true,
-  });
+  })) return;
+  applyLevelAdjustment(adjustment);
   recordAnonymousEvent("story_abandon", { level: adjustment.before, topic: session.topic });
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();
   closeAccessibleModal({ restoreFocus: false, resumeReading: false });
   startSession({ preferShort: abandonReason === "too-hard" && levelBefore === 1 }).then(() => {
-    if (abandonReason === "too-hard") {
+    if (abandonReason === "too-hard" && !adjustment.manual) {
       showError(adjustment.after < adjustment.before
         ? `次の候補からレベルを1つ下げました。辞書が必要だと感じるときは、設定からさらに下げてもかまいません。`
         : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びました。");
@@ -4205,6 +4257,7 @@ document.querySelectorAll(".calibrate-btn").forEach((btn) => {
 });
 
 function finishSession(feedback) {
+  if (!session || session._historySaved) return;
   const words = session._words;
   const activeSeconds = Math.max(0, session._elapsedSec || 0);
   const rawWpm = activeSeconds > 0 ? Math.round(words / (activeSeconds / 60)) : 0;
@@ -4220,10 +4273,9 @@ function finishSession(feedback) {
 
   // Hard feedback lowers the level immediately. Easy feedback must be
   // repeated three times at the same level before moving up.
-  const before = getLevel();
-  const adjustment = adjustLevelFromFeedback(feedback, before);
+  const adjustment = sessionLevelAdjustment(feedback);
 
-  pushHistory({
+  if (!saveSessionHistory({
     date: new Date().toISOString(),
     topic: session.topic,
     title: session.title,
@@ -4237,7 +4289,8 @@ function finishSession(feedback) {
     levelAfter: adjustment.after,
     feedback,
     abandoned: false,
-  });
+  })) return;
+  applyLevelAdjustment(adjustment);
   recordAnonymousEvent("story_complete", { level: adjustment.before, topic: session.topic });
   evaluateRewards({ notify: true });
   clearActiveReadingDraft();

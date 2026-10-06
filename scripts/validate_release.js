@@ -21,11 +21,11 @@ for(const s of additions){const a=policy.inspect(s);assert.deepEqual(a.errors,[]
 for(let l=1;l<=10;l++)assert.equal(additions.filter(s=>s.level===l).length,43);
 for(const t of topics)assert.equal(additions.filter(s=>s.topic===t).length,43);
 for(const f of ['app.js','sw.js','premium.js','learning-policy.js'])new vm.Script(read(f),{filename:f});
-assert.equal(pkg.version,'2.11.19');assert(read('app.js').includes(`const APP_VERSION = "${pkg.version}";`));
+assert.equal(pkg.version,'2.11.20');assert(read('app.js').includes(`const APP_VERSION = "${pkg.version}";`));
 assert(read('index.html').includes('Reading Lamp Premium v'+pkg.version));
-assert(read('sw.js').includes('const CACHE_NAME = "reading-lamp-v103";'));
+assert(read('sw.js').includes('const CACHE_NAME = "reading-lamp-v104";'));
 assert(read('app.js').includes('reviewed-2026-10-06-stock-3000'));
-for(const f of ['app.js','index.html','manifest.json'])assert(!/2,570篇|stories: 2570/.test(read(f)),f);
+for(const f of ['app.js','index.html','manifest.json','terms.html'])assert(!/2,570篇|stories: 2570/.test(read(f)),f);
 assert(read('README.md').includes('全3,000篇・415,357語'));
 assert(manifest.description.includes('3,000篇'));
 // Every asset cached by the worker must exist under the GitHub Pages subpath.

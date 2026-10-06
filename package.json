@@ -1,10 +1,11 @@
 {
   "name": "reading-lamp-personal",
-  "version": "2.11.19",
+  "version": "2.11.20",
   "private": true,
   "scripts": {
     "test": "node scripts/validate_release.js && node scripts/test_service_worker_update.js",
-    "test:ui": "node scripts/test_release_ui.mjs"
+    "test:ui": "node scripts/test_release_ui.mjs",
+    "test:storage": "node scripts/test_storage_safety.mjs"
   },
   "devDependencies": { "playwright": "1.62.1" }
 }
