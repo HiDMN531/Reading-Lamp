@@ -1,6 +1,6 @@
 // =====================================================================
 
-const APP_VERSION = "2.11.18";
+const APP_VERSION = "2.11.19";
 // Reading Lamp — an Extensive Reading (多読) app
 //
 // Design follows the ER principles in the reference material:
@@ -1026,7 +1026,7 @@ function createBackupPackage() {
   return {
     schemaVersion: 5,
     appVersion: APP_VERSION,
-    corpusVersion: "reviewed-2026-10-01-length-s2063-s2070",
+    corpusVersion: "reviewed-2026-10-06-stock-3000",
     exportedAt,
     history: getHistory(),
     favoriteStoryIds: getFavoriteIds(),
@@ -1104,7 +1104,7 @@ document.getElementById("exportRewardDiagnosticsBtn").addEventListener("click", 
       appVersion: APP_VERSION,
       generatedAt: new Date().toISOString(),
       privacy: "No story titles, story IDs, reading timestamps, notes, or API keys are included.",
-      corpus: { stories: 2570, rewardDefinitions: definitions.length },
+      corpus: { stories: 3000, rewardDefinitions: definitions.length },
       preferences: {
         goalsVisible: getBool(LS.showRewardGoals, true),
         notificationsEnabled: getBool(LS.rewardNotifications, true),
@@ -3403,7 +3403,7 @@ async function renderOfflineStatus() {
         persisted = await navigator.storage.persisted().catch(() => false);
       }
       if (status.current || typeof status.current !== "boolean") {
-        setOfflineStatus("ready", `2,570篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
+        setOfflineStatus("ready", `3,000篇をオフラインで利用できます${persisted ? "（保存保護済み）" : ""}。`, persisted ? "" : "保存を保護");
       } else if (navigator.onLine) {
         setOfflineStatus("working", "以前の版を利用できます。更新版の文章を保存しています…");
         prepareOfflineContent(false);
@@ -3413,7 +3413,7 @@ async function renderOfflineStatus() {
     } else if (!navigator.onLine) {
       setOfflineStatus("error", "準備が完了していません。オンライン時に保存してください。", "再試行");
     } else {
-      setOfflineStatus("working", "2,570篇を端末に保存しています…");
+      setOfflineStatus("working", "3,000篇を端末に保存しています…");
       prepareOfflineContent(false);
     }
   } catch {
@@ -3424,13 +3424,22 @@ async function renderOfflineStatus() {
 async function prepareOfflineContent(requestPersistence = false) {
   if (offlinePreparing || !usingOfflineBank()) return;
   offlinePreparing = true;
-  setOfflineStatus("working", "2,570篇を端末に保存しています…");
+  setOfflineStatus("working", "3,000篇を端末に保存しています…");
   try {
     if (requestPersistence && navigator.storage && typeof navigator.storage.persist === "function") {
       await navigator.storage.persist().catch(() => false);
     }
     const result = await serviceWorkerMessage("PREPARE_OFFLINE");
     if (!result.ready) throw new Error("offline cache incomplete");
+    // An interrupted update can leave the previous bank in memory even after
+    // the worker has saved the new bank. Refresh it without touching the reader
+    // session, history, favorites, or other saved preferences.
+    if (storyBankLoadPromise) await storyBankLoadPromise.catch(() => {});
+    STORY_BANK = null;
+    storyBankLoadError = null;
+    await loadStoryBank();
+    await renderStoryCandidates();
+    await renderFavorites();
     recordAnonymousEvent("offline_ready");
     await renderOfflineStatus();
   } catch {
@@ -4476,7 +4485,7 @@ window.addEventListener("online", () => {
 function refreshPremiumUI() {
   const state = PREMIUM.state();
   const status = document.getElementById("premiumStatus");
-  status.textContent = "全2,570篇と103リワードを利用できます。";
+  status.textContent = "全3,000篇と103リワードを利用できます。";
   document.querySelector(".reading-display-settings").disabled = false;
 }
 window.addEventListener("reading-lamp-premium-change", () => {
