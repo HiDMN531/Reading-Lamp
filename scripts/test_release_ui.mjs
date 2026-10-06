@@ -11,8 +11,18 @@ const baseline='f443f92886f58e4fe2520baf0f7c4092304fff31';
 const bank=JSON.parse(await fs.readFile(path.join(root,'stories.json'),'utf8'));
 const oldAssets=new Map();
 // Update scenarios use the actual previous app and bank, not a simulated UI.
-for(const file of execFileSync('git',['ls-tree','-r','--name-only',baseline],{cwd:root,encoding:'utf8'}).trim().split('\n'))
- oldAssets.set(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,maxBuffer:16*1024*1024}));
+if(process.env.READING_LAMP_BASELINE_DIR){
+ const dir=path.resolve(process.env.READING_LAMP_BASELINE_DIR);
+ for(const file of await fs.readdir(dir,{recursive:true})){
+  const target=path.join(dir,file);
+  if((await fs.stat(target)).isFile())oldAssets.set(file.split(path.sep).join('/'),await fs.readFile(target));
+ }
+}else{
+ for(const file of execFileSync('git',['ls-tree','-r','--name-only',baseline],{cwd:root,encoding:'utf8'}).trim().split('\n'))
+  oldAssets.set(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,maxBuffer:16*1024*1024}));
+}
+const baselineCount=JSON.parse(oldAssets.get('stories.json').toString()).length;
+const baselineCache=/const CACHE_NAME = "([^"]+)"/.exec(oldAssets.get('sw.js').toString())[1];
 let generation='current';
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.png':'image/png'};
 const server=http.createServer(async(req,res)=>{
@@ -35,7 +45,12 @@ async function context(viewport={width:390,height:844}){
  await c.addInitScript(values=>{if(!location.href.startsWith('http://127.0.0.1:'))return;if(!localStorage.getItem('reading_lamp_test_seeded')){Object.entries(values).forEach(([k,v])=>localStorage.setItem(k,v));localStorage.setItem('reading_lamp_test_seeded','1');}},seed);
  const p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));p.setDefaultTimeout(15000);return {c,p};
 }
-async function ready(p){await p.waitForFunction(()=>typeof loadStoryBank==='function'&&document.querySelector('#storyCandidateList .story-candidate'));}
+async function ready(p){
+ // First install claims this tab and the app reloads on controllerchange.
+ // Wait for that navigation before interacting with the initial document.
+ await p.waitForFunction(()=>navigator.serviceWorker.controller&&performance.getEntriesByType('navigation')[0]?.type==='reload');
+ await p.waitForFunction(()=>typeof loadStoryBank==='function'&&document.querySelector('#storyCandidateList .story-candidate'));
+}
 async function offlineReady(p){await p.waitForFunction(async()=>{try{return (await serviceWorkerMessage('OFFLINE_STATUS')).current===true}catch{return false}},{},{timeout:30000});}
 async function chooseLast(p){
  await p.evaluate(()=>{localStorage.removeItem('rl_active_reading_v1');localStorage.setItem('rl_level','10');localStorage.setItem('rl_preferred_topic','Mystery and adventure');topicSelect.value='Mystery and adventure';lastBankStoryId=null;set(LS.seenStoryIds,JSON.stringify((STORY_BANK||[]).filter(s=>s.level===10&&s.topic==='Mystery and adventure'&&s.id!=='s3000').map(s=>s.id)));renderStoryCandidates();});
@@ -49,25 +64,25 @@ try{
  browser=await chromium.launch({headless:true,...(process.env.READING_LAMP_BROWSER_PATH?{executablePath:process.env.READING_LAMP_BROWSER_PATH}:{}),args:JSON.parse(process.env.READING_LAMP_BROWSER_ARGS||'[]')});
  const {c,p}=await context();await p.goto(url);await ready(p);
  const loaded=await p.evaluate(async()=>{const b=await loadStoryBank();return {count:b.length,newIds:b.slice(2570).map(s=>s.id),status:document.getElementById('premiumStatus').textContent,version:APP_VERSION};});
- assert.equal(loaded.count,3000);assert.deepEqual(loaded.newIds,bank.slice(2570).map(s=>s.id));assert(loaded.status.includes('3,000'));assert.equal(loaded.version,'2.11.19');
+ assert.equal(loaded.count,3000);assert.deepEqual(loaded.newIds,bank.slice(2570).map(s=>s.id));assert(loaded.status.includes('3,000'));assert.equal(loaded.version,'2.11.20');
  await chooseLast(p);await p.locator('#favoriteBtn').click();await p.locator('#finishReadingBtn').click();await p.locator('.calibrate-btn[data-fb="just"]').click();await p.locator('#view-summary:not([hidden])').waitFor();
  const completed=await p.evaluate(()=>({history:getHistory(),favorites:getFavoriteIds()}));assert.equal(completed.history.length,11);assert.equal(completed.history[0].storyId,'s3000');assert.equal(completed.history[0].words,252);assert(completed.favorites.includes('s3000'));assert(completed.favorites.includes('s001'));
  await p.locator('#homeBtn').click();await p.locator('#settingsBtn').click();const downloadEvent=p.waitForEvent('download');await p.locator('#exportBtn').click();const downloaded=await downloadEvent;
- const backup=JSON.parse(await fs.readFile(await downloaded.path(),'utf8'));assert.equal(backup.appVersion,'2.11.19');assert.equal(backup.corpusVersion,'reviewed-2026-10-06-stock-3000');assert.equal(backup.schemaVersion,5);assert(backup.favoriteStoryIds.includes('s3000'));
+ const backup=JSON.parse(await fs.readFile(await downloaded.path(),'utf8'));assert.equal(backup.appVersion,'2.11.20');assert.equal(backup.corpusVersion,'reviewed-2026-10-06-stock-3000');assert.equal(backup.schemaVersion,5);assert(backup.favoriteStoryIds.includes('s3000'));
  assert.equal(await p.evaluate(()=>localStorage.getItem('rl_last_backup_at_v1')),null);await p.locator('#confirmBackupBtn').click();assert(await p.evaluate(()=>Boolean(localStorage.getItem('rl_last_backup_at_v1'))));
  const older={...backup,appVersion:'2.11.18',corpusVersion:'reviewed-2026-10-01-length-s2063-s2070',history:oldHistory,favoriteStoryIds:['s001','s2070'],seenStoryIds:['s001','s2070']};
  await p.evaluate(()=>{localStorage.removeItem('rl_history');localStorage.removeItem('rl_favorite_story_ids');localStorage.removeItem('rl_seen_story_ids');});p.once('dialog',d=>d.accept());
  await p.locator('#restoreInput').setInputFiles({name:'older-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(older))});
  await p.waitForFunction(()=>getHistory().length===10&&getFavoriteIds().includes('s2070'));assert.deepEqual(await p.evaluate(()=>getFavoriteIds()),['s001','s2070']);assert.equal(await p.evaluate(()=>localStorage.getItem('rl_daily_goal')),'200');
  await p.locator('#closeSettingsBtn').click();await offlineReady(p);await c.setOffline(true);await p.reload();await ready(p);assert.equal(await p.evaluate(async()=>(await loadStoryBank()).length),3000);await chooseLast(p);await c.close();
- // Actual v102 -> v103 transition, with a network loss after shell install.
- generation='baseline';const {c:upgrade,p:up}=await context({width:1280,height:800});await up.goto(url);await ready(up);await offlineReady(up);await up.reload();await ready(up);await offlineReady(up);await up.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));assert.equal(await up.evaluate(async()=>(await loadStoryBank()).length),2570);
+ // Actual baseline -> current transition, with a network loss after shell install.
+ generation='baseline';const {c:upgrade,p:up}=await context({width:1280,height:800});await up.goto(url);await ready(up);await offlineReady(up);await up.reload();await ready(up);await offlineReady(up);await up.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));assert.equal(await up.evaluate(async()=>(await loadStoryBank()).length),baselineCount);
  const oldSaved=await up.evaluate(()=>({history:getHistory(),favorites:getFavoriteIds()}));generation='current';
  await up.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update();});
  await up.waitForFunction(async()=>Boolean((await navigator.serviceWorker.getRegistration())?.waiting),{},{timeout:30000});
  await up.locator('#updateToast:not([hidden])').waitFor();await upgrade.setOffline(true);await up.locator('#applyUpdateBtn').click();
- await up.waitForFunction(()=>typeof APP_VERSION!=='undefined'&&APP_VERSION==='2.11.19');await ready(up);assert.equal(await up.evaluate(async()=>(await loadStoryBank()).length),2570);
- assert((await up.evaluate(()=>caches.keys())).includes('reading-lamp-v102'));assert.deepEqual(await up.evaluate(()=>({history:getHistory(),favorites:getFavoriteIds()})),oldSaved);
+ await up.waitForFunction(()=>typeof APP_VERSION!=='undefined'&&APP_VERSION==='2.11.20');await ready(up);assert.equal(await up.evaluate(async()=>(await loadStoryBank()).length),baselineCount);
+ assert((await up.evaluate(()=>caches.keys())).includes(baselineCache));assert.deepEqual(await up.evaluate(()=>({history:getHistory(),favorites:getFavoriteIds()})),oldSaved);
  await up.locator('#storyCandidateList .story-candidate').first().click();await up.locator('#view-reading:not([hidden])').waitFor();
  const activeBefore=await up.evaluate(()=>({id:session._bankId,title:readingTitle.textContent,text:readingText.textContent}));
  await upgrade.setOffline(false);await up.evaluate(()=>prepareOfflineContent(false));await offlineReady(up);
@@ -76,7 +91,7 @@ try{
  assert.deepEqual(await up.evaluate(()=>({id:session._bankId,title:readingTitle.textContent,text:readingText.textContent})),activeBefore);
  assert.deepEqual(await up.evaluate(()=>({history:getHistory(),favorites:getFavoriteIds()})),oldSaved);
  await up.locator('#finishReadingBtn').click();await up.locator('.calibrate-btn[data-fb="just"]').click();await up.locator('#homeBtn').click();await chooseLast(up);
- assert(!(await up.evaluate(()=>caches.keys())).includes('reading-lamp-v102'));await upgrade.close();
+ assert(!(await up.evaluate(()=>caches.keys())).includes(baselineCache));await upgrade.close();
  const {c:desktop,p:dp}=await context({width:1280,height:800});await dp.goto(url);await ready(dp);await dp.locator('#openRewardsBtn').click();await dp.locator('#rewardsModal:not([hidden])').waitFor();assert.equal(await dp.evaluate(async()=>(await loadRewards()).length),103);await desktop.close();
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({browser:browser.version(),subpath:'/Reading-Lamp/',published3000:'passed',new430Loaded:'passed',mobileLastStory:'passed',completionAndFavorite:'passed',oldBackupRestore:'passed',offline3000:'passed',interruptedUpdateFallback:'passed',updatedBankWithoutReload:'passed',activeReadingDuringBankRefresh:'preserved',oldHistoryAndFavorites:'preserved',desktopRewards103:'passed',runtimeErrors:0}));
