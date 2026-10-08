@@ -410,10 +410,10 @@ const LEVELS = [
   { n: 1,  headwords: 300,   label: "ごく易しい",     desc: "300語程度の基本語彙。短く単純な文" },
   { n: 2,  headwords: 600,   label: "易しい",         desc: "600語程度。日常的な話題" },
   { n: 3,  headwords: 800,   label: "易しい",         desc: "800語程度。単純な物語が読める" },
-  { n: 4,  headwords: 1000,  label: "初中級",         desc: "1,000語程度。過去・未来の時制が自在に" },
+  { n: 4,  headwords: 1000,  label: "初中級",         desc: "1,000語程度。過去・未来の時制を含む" },
   { n: 5,  headwords: 1400,  label: "中級",           desc: "1,400語程度。描写や説明が増える" },
   { n: 6,  headwords: 1800,  label: "中級",           desc: "1,800語程度。抽象的な話題も少し" },
-  { n: 7,  headwords: 2500,  label: "中上級",         desc: "2,500語程度。複文や比喩が自然に" },
+  { n: 7,  headwords: 2500,  label: "中上級",         desc: "2,500語程度。複文や比喩を含む" },
   { n: 8,  headwords: 3000,  label: "上級",           desc: "3,000語程度。論説的な文章も" },
   { n: 9,  headwords: 4000,  label: "上級",           desc: "4,000語程度。原書に近い語彙" },
   { n: 10, headwords: null,  label: "無制限",         desc: "簡略化なし。一般書・報道と同水準" },
@@ -449,7 +449,7 @@ function adjustLevelFromFeedback(feedback, before) {
       after,
       note: after < before
         ? `次からレベル ${after} に下げます。`
-        : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びます。",
+        : "次は短い文章を選びます。",
     };
   }
 
@@ -659,7 +659,7 @@ async function renderAnonymousUsageStatus() {
   const days = Object.keys(getAnonymousUsage().days).length;
   anonymousUsageStatus.textContent = config.analyticsEndpoint
     ? `オンです。個人を特定しない日別集計を自動送信します${days ? `（未送信${days}日分）` : ""}。`
-    : `オンです。現在は送信先未設定のため端末内だけに保存します${days ? `（${days}日分）` : ""}。`;
+    : `オンです。送信先が未設定のため、端末内にのみ保存します${days ? `（${days}日分）` : ""}。`;
 }
 
 async function renderReportQueueStatus(lastResult = null) {
@@ -746,7 +746,7 @@ function syncSettingsMode() {
   toggleOfflineBank.checked = true;
   apiKeySection.hidden = true;
   wordCountSection.hidden = true;
-  modeDescription.textContent = "収録済みの文章を読みます。端末に保存後はオフラインでも読めます。";
+  modeDescription.textContent = "収録済みの文章を読みます。端末に保存するとオフラインでも利用できます。";
 }
 
 function renderLevelDescription(n) {
@@ -1042,7 +1042,7 @@ function backupFilename(backup) {
 function offerBackupConfirmation(exportedAt) {
   pendingBackupAt = exportedAt;
   confirmBackupBtn.hidden = false;
-  settingsStatus.textContent = "ファイルへの保存を確認したら、下のボタンを押してください。";
+  settingsStatus.textContent = "ファイルが保存されたことを確認し、下のボタンを押してください。";
 }
 
 document.getElementById("exportBtn").addEventListener("click", () => {
@@ -1082,7 +1082,7 @@ confirmBackupBtn.addEventListener("click", () => {
   confirmBackupBtn.hidden = true;
   renderBackupStatus();
   settingsStatus.textContent = saved
-    ? "ファイルを確認しました。端末の外にも保管してください。"
+    ? "ファイルを確認しました。別の端末やクラウドにも保管してください。"
     : "保存時刻を端末に記録できませんでした。ファイルは保管してください。";
 });
 
@@ -1302,7 +1302,7 @@ function renderHistoryRecovery() {
   const recovery = getHistoryRecovery();
   historyRecoverySection.hidden = !recovery;
   if (!recovery) return;
-  historyRecoveryMessage.textContent = `${historyRecoverySummary(recovery)} 修復前のデータはJSONで保存できます。`;
+  historyRecoveryMessage.textContent = `${historyRecoverySummary(recovery)} 修復前のデータはJSON形式で保存できます。`;
 }
 
 downloadHistoryRecoveryBtn.addEventListener("click", () => {
@@ -1608,7 +1608,7 @@ function weeklyRhythmMessage(rhythm) {
     return `今日は読了済みです。目標まであと${rhythm.remaining}日。`;
   }
   if (rhythm.daysLeft < rhythm.remaining) {
-    return "今週の残り日数では目標に届きません。来週からまた数えます。";
+    return "今週は目標日数に届きません。来週からまた始めましょう。";
   }
   if (rhythm.completed === 0) {
     return "今週はまだ読了記録がありません。";
@@ -2177,7 +2177,7 @@ function renderRewardHome(state = getRewardState(), definitions = REWARD_DEFINIT
     renderRewardTargets(null, state, null);
     icon.style.setProperty("--reward-progress", "0deg");
     status.textContent = earnedIds.length
-      ? `${earnedIds.length}個の灯りを獲得 ・ 続きを確認できます`
+      ? `${earnedIds.length}個の灯りを獲得 ・ 続きを見られます`
       : "獲得済みのリワードはありません";
     return;
   }
@@ -2886,8 +2886,8 @@ function renderHistoryAnalysis(history) {
       : `直近30日間は、その前の30日間より${wordDifference > 0 ? fmt(wordDifference) + "語多く" : fmt(-wordDifference) + "語少なく"}読みました。`
     : "その前の30日間に読了記録はありません。";
   document.getElementById("analysisTimeNote").textContent = periods.measuredEntries30 < periods.completedEntries30
-    ? `読書時間は計測記録のある${periods.measuredEntries30}篇分です。旧版などの時間未記録分は含みません。`
-    : "読書時間は読了時に計測された時間の合計です。";
+    ? `読書時間は、計測できた${periods.measuredEntries30}篇分です。時間を記録していない読了分は含みません。`
+    : "読書時間は、読了までに計測した時間の合計です。";
   renderAnalysisBars(document.getElementById("analysisDailyWords"), periods.last7.map((day) => ({
     label: `${day.date.getMonth() + 1}/${day.date.getDate()}（${"日月火水木金土"[day.date.getDay()]}）`,
     value: day.words,
@@ -3003,7 +3003,7 @@ function renderHome() {
   const useBank = usingOfflineBank();
   syncTopicMode(useBank);
   document.getElementById("modeNote").textContent = useBank
-    ? `オフライン文章バンク ・ APIキー不要${topicSelect.value === "random" && recommendationHasSignal(history) ? " ・ 最近の記録を候補に反映" : ""}${returning.returning ? " ・ 短めの文章を優先" : ""}`
+    ? `オフライン文章バンク ・ APIキー不要${topicSelect.value === "random" && recommendationHasSignal(history) ? " ・ 最近の記録を候補に反映" : ""}${returning.returning ? " ・ 短い文章を優先" : ""}`
     : `AI生成 ・ 1篇 約${fmt(getNum(LS.wordCount, 800))}語`;
   document.getElementById("startBtn").textContent = useBank
     ? "読みはじめる"
@@ -4192,8 +4192,8 @@ abandonReasonButtons.forEach((btn) => btn.addEventListener("click", () => {
   startSession({ preferShort: abandonReason === "too-hard" && levelBefore === 1 }).then(() => {
     if (abandonReason === "too-hard") {
       showError(adjustment.after < adjustment.before
-        ? `次の候補からレベルを1つ下げました。辞書が必要だと感じるときは、設定からさらに下げてもかまいません。`
-        : "大丈夫です。この文章が合わなかっただけです。次は短い文章を選びました。");
+        ? `次の候補からレベルを1つ下げました。難しい場合は、設定からさらに下げられます。`
+        : "次は短い文章を選びました。");
     }
   });
 }));
@@ -4262,7 +4262,7 @@ function renderSummary(words, wpm, adjustment, wpmInvalidReason) {
   document.getElementById("summaryTotal").textContent = fmt(total);
 
   const notes = [];
-  if (gentleStart) notes.push("速く読まなくて大丈夫です。分かる部分を楽しみましょう。");
+  if (gentleStart) notes.push("速さを気にせず、分かる部分を楽しみましょう。");
   if (adjustment.note) notes.push(adjustment.note);
   const goal = getNum(LS.dailyGoal, 100);
   const today = wordsToday();

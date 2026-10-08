@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Reading Lamp Premium" />
-<meta name="description" content="Extensive Reading の原則に沿った英語多読アプリ。やさしい英文を大量に、辞書なしで。" />
+<meta name="description" content="やさしい英文を辞書なしでたくさん読む、英語多読アプリ。" />
 <title>Reading Lamp Premium — 英語多読</title>
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="icons/icon-192.png" />
@@ -31,7 +31,7 @@
     </button>
   </header>
 
-  <p id="storageWarning" class="settings-status" role="status" hidden>端末への保存に失敗しました。変更は今回のセッション中だけ利用できます。アプリを閉じる前に、設定から読書記録のJSONバックアップを保存してください。</p>
+  <p id="storageWarning" class="settings-status" role="status" hidden>端末に保存できませんでした。変更はアプリを閉じると失われます。設定から読書記録をJSON形式で保存してください。</p>
 
   <!-- ============ HOME ============ -->
   <section id="view-home" class="view" >
@@ -60,7 +60,7 @@
         <li data-autumn-step="10"><span>10</span>Autumn Ember</li>
       </ol>
       <button id="startAutumnEventBtn" class="btn-autumn" type="button">秋の一篇を読む</button>
-      <p class="autumn-event-hint">辞書を使わず、わかるところを楽しみながら。途中で別の文章に替えても大丈夫です。</p>
+      <p class="autumn-event-hint">辞書を使わず、分かるところを楽しみましょう。合わなければ、途中で別の文章に替えられます。</p>
     </section>
 
     <section class="home-start-area" aria-labelledby="todayReadingLabel">
@@ -68,7 +68,7 @@
         <div class="option-group">
           <label id="todayReadingLabel" class="option-label" for="topicSelect">今日読むもの</label>
           <select id="topicSelect" class="topic-select">
-            <option value="random">おまかせ (ランダム)</option>
+            <option value="random">おまかせ（ランダム）</option>
             <option value="Fantasy/stories">Fantasy</option>
             <option value="Famous books">Classics / Retellings</option>
             <option value="Nature and animals">Nature and animals</option>
@@ -106,7 +106,7 @@
 
     <section class="reading-method-card" aria-labelledby="readingMethodCardTitle">
       <div>
-        <p class="reading-method-kicker">Reading Lampの読み方</p>
+        <p class="reading-method-kicker">Reading Lamp の読み方</p>
         <h2 id="readingMethodCardTitle">英語を、英語のまま読む練習</h2>
         <p>辞書を使わず、分かるところから話の流れをつかみます。難しい場合はレベルを下げてください。</p>
       </div>
@@ -206,7 +206,7 @@
     <section id="backupReminder" class="backup-reminder" aria-labelledby="backupReminderTitle" hidden>
       <div>
         <h2 id="backupReminderTitle">記録のバックアップ</h2>
-        <p id="backupReminderMessage">JSON形式で保存しておくと、端末のデータが消えた場合も復元できます。</p>
+      <p id="backupReminderMessage">JSON形式で保存すると、端末のデータが消えても復元できます。</p>
       </div>
       <button id="openBackupSettingsBtn" class="btn-text-quiet" type="button">設定で保存</button>
     </section>
@@ -214,7 +214,7 @@
 
     <details id="favoritesPanel" class="favorites-panel" hidden>
       <summary>お気に入り <span id="favoriteCount" class="favorites-count">0篇</span></summary>
-      <p class="favorites-intro">保存した文章をいつでも開き、もう一度読めます。</p>
+      <p class="favorites-intro">お気に入りの文章をいつでも読み返せます。</p>
       <ul id="favoriteList" class="favorite-list"></ul>
     </details>
 
@@ -278,14 +278,14 @@
     <aside id="firstReadingTip" class="first-reading-tip" aria-labelledby="firstReadingTipTitle" hidden>
       <div>
         <h3 id="firstReadingTipTitle">全部を理解しなくても大丈夫です</h3>
-        <p>単語を調べず、そのまま読み進めてみてください。内容を追えない場合は、無理に読まず別の文章や低いレベルを選べます。</p>
+        <p>単語を調べず、そのまま読み進めてみてください。内容を追えないときは、別の文章を選ぶかレベルを下げましょう。</p>
       </div>
       <button id="dismissFirstReadingTipBtn" class="btn-text-quiet" type="button">閉じる</button>
     </aside>
     <article class="reading-text" id="readingText"></article>
     <div class="reading-actions">
       <button id="finishReadingBtn" class="btn-primary btn-lg">読み終えた</button>
-      <button id="abandonBtn" class="btn-quiet" aria-haspopup="dialog" aria-controls="abandonModal">これはやめて、別の文章にする</button>
+      <button id="abandonBtn" class="btn-quiet" aria-haspopup="dialog" aria-controls="abandonModal">別の文章を選ぶ</button>
       <button id="reportStoryBtn" class="btn-quiet" type="button" aria-haspopup="dialog" aria-controls="reportModal">この文章の問題を報告</button>
     </div>
   </section>
@@ -334,7 +334,7 @@
 
     <section id="firstCompletionGuide" class="first-completion-guide" aria-labelledby="firstCompletionGuideTitle" hidden>
       <h3 id="firstCompletionGuideTitle">次に読むときは</h3>
-      <p>今回の語数を記録しました。ホームでは今のレベルから次の文章を選べます。短い文章から始めることもできます。</p>
+      <p>語数を記録しました。ホームに戻って次の文章を選べます。</p>
       <button id="dismissFirstCompletionGuideBtn" class="btn-text-quiet" type="button">わかった</button>
     </section>
 
@@ -562,9 +562,9 @@
       <h2 id="wpmGuideTitle" class="modal-title">読む速さ（WPM）について</h2>
       <button id="closeWpmGuideBtn" class="modal-close" type="button" aria-label="WPMの説明を閉じる">×</button>
     </div>
-    <p class="reading-guide-lead">WPMは、1分間に読んだ英単語数の目安です。速さを競うものではありません。内容を追える、自分に合ったペースで読んでください。</p>
+    <p class="reading-guide-lead">WPMは、1分間に読んだ英単語数の目安です。速さを競わず、内容を理解できるペースで読んでください。</p>
     <p class="reading-guide-lead">たとえば、200語を2分で読むと100 WPMです。ホームには最近5回の有効な読書記録から、合計語数÷合計読書時間で計算した値を表示します。</p>
-    <p class="reading-guide-lead">画面ロック中や別のアプリを開いている時間は計測しません。10秒未満の読書など、計測条件を満たさない場合は「—」になります。文章の難しさでも数値は変わるので、毎回の上下を気にする必要はありません。</p>
+    <p class="reading-guide-lead">画面ロック中や別のアプリを開いている時間は計測しません。読書時間が10秒未満など、計測条件を満たさない場合は「—」と表示されます。文章の難しさによっても数値は変わります。</p>
   </div>
 </div>
 
@@ -601,7 +601,7 @@
 
     <div class="reading-guide-policy">
       <strong>日本語訳・単語帳・理解度テストを付けていない理由</strong>
-      <p>Reading Lampでは、調べるために立ち止まらず、英語を読み続けることを大切にしています。この読み方を「多読」といいます。</p>
+      <p>単語を調べるために立ち止まらず、英語を読み続ける「多読」を大切にしているためです。</p>
     </div>
     <button id="closeReadingGuideBtn" class="btn-primary btn-lg" type="button">使い方を確認した</button>
   </div>
@@ -680,7 +680,7 @@
     <section class="onboarding-step" data-onboarding-step="0">
       <p class="section-kicker">Reading Lampへようこそ</p>
       <h2 class="onboarding-title">英語を、英語のまま読む練習</h2>
-      <p id="onboardingIntro" class="onboarding-copy">Reading Lampは、やさしい英文をたくさん読むためのアプリです。単語を一つずつ覚えるのではなく、文章の流れを追う力を育てます。</p>
+      <p id="onboardingIntro" class="onboarding-copy">Reading Lampは、やさしい英文をたくさん読み、文章の流れを追う力を育てるアプリです。</p>
       <ul class="onboarding-points">
         <li>分からない単語は飛ばす</li>
         <li>難しいと感じたらレベルを下げる</li>
@@ -688,7 +688,7 @@
       </ul>
       <div class="onboarding-method-note">
         <strong>日本語訳・単語帳・理解度テストはありません。</strong>
-        <span>調べるために立ち止まらず、英語を読み続けることを大切にしているためです。</span>
+        <span>立ち止まらずに英語を読み続けることを大切にしているためです。</span>
       </div>
     </section>
 
@@ -765,13 +765,13 @@
 <div id="abandonModal" class="modal-backdrop" hidden>
   <div class="modal abandon-modal" role="dialog" aria-modal="true" aria-labelledby="abandonTitle" aria-describedby="abandonDescription">
     <h2 id="abandonTitle" class="modal-title">この文章をやめる理由</h2>
-    <p id="abandonDescription" class="modal-intro">記録はレベル調整と履歴分析にだけ使います。</p>
+    <p id="abandonDescription" class="modal-intro">回答はレベル調整と履歴分析に使用します。</p>
     <div class="abandon-options">
       <button type="button" data-abandon-reason="too-hard">難しすぎた</button>
       <button type="button" data-abandon-reason="not-interesting">内容に興味を持てなかった</button>
       <button type="button" data-abandon-reason="too-long">長すぎた・時間が足りない</button>
       <button type="button" data-abandon-reason="interrupted">用事などで中断する</button>
-      <button type="button" data-abandon-reason="other">その他・理由は記録しない</button>
+      <button type="button" data-abandon-reason="other">その他・記録しない</button>
     </div>
     <button id="cancelAbandonBtn" class="btn-ghost" type="button">読書に戻る</button>
   </div>
